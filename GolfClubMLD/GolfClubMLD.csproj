@@ -132,7 +132,9 @@
     <Compile Include="Models\EquipmentTypeBO.cs" />
     <Compile Include="Models\GolfCourseBO.cs" />
     <Compile Include="Models\ManagerBO.cs" />
-    <Compile Include="Models\UserBO.cs" />
+    <Compile Include="Models\RentItemBO.cs" />
+    <Compile Include="Models\RentoBO.cs" />
+    <Compile Include="Models\TermBO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
