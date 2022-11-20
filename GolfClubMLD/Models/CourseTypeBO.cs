@@ -14,7 +14,7 @@ namespace GolfClubMLD.Models
         public bool Cleaning { get; set; }
         public bool SprnklSys { get; set; }
         public string Descr { get; set; }
-        public float Par { get; set; }
+        public double Par { get; set; }
         public int NumOfHoles { get; set; }
         public int Surfc { get; set; }
 

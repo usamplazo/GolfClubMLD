@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 
 namespace GolfClubMLD.Models.EFRepository
@@ -12,78 +13,75 @@ namespace GolfClubMLD.Models.EFRepository
     public class HomeRepository : IHomeRepository
     {
         private GolfClubMldDBEntities _gcEntities = new GolfClubMldDBEntities();
-        public IEnumerable<GolfCourseBO> GetAllCourses()
+        public async Task<List<GolfCourseBO>> GetAllCourses()
         {
-            List<GolfCourseBO> allCourses = _gcEntities.GolfCourse
+            Task<List<GolfCourseBO>> allCourses = _gcEntities.GolfCourse
                  .Select(c => c)
                  .Include(t => t.CourseType)
                  .ProjectTo<GolfCourseBO>()
-                 .ToList();
+                 .ToListAsync();
 
-            return allCourses;
+            return await allCourses;
            
         }
-        public GolfCourseBO GetCourseById(int id)
+        public async Task<GolfCourseBO> GetCourseById(int id)
         {
-            GolfCourseBO specCourse = _gcEntities.GolfCourse
+            Task<GolfCourseBO> specCourse = _gcEntities.GolfCourse
                 .Where(c => c.id == id)
                 .Select(c => c)
                 .Include(t => t.CourseType)
                 .ProjectTo<GolfCourseBO>()
-                .FirstOrDefault();
+                .FirstOrDefaultAsync();
 
-            return specCourse;
+            return await specCourse;
         }
 
 
-        public IEnumerable<GolfCourseBO> GetCoursesBySearch(string search)
+        public async Task<List<GolfCourseBO>> GetCoursesBySearch(string search)
         {
-            List<GolfCourseBO> coursesBySeacrh = _gcEntities.GolfCourse
+            Task<List<GolfCourseBO>> coursesBySeacrh = _gcEntities.GolfCourse
                 .Where(c => c.name.Contains(search.ToLower()))
                 .Select(c => c)
                 .Include(t => t.CourseType)
                 .ProjectTo<GolfCourseBO>()
-                .ToList();
+                .ToListAsync();
 
-            return coursesBySeacrh;
+            return await coursesBySeacrh;
         }
-        public IEnumerable<CourseTermBO> GetAllCourseTerm()
+        public async Task<List<CourseTermBO>> GetAllCourseTerm()
         {
-            List<CourseTermBO> courseTerms = _gcEntities.CourseTerm
+            Task<List<CourseTermBO>> courseTerms = _gcEntities.CourseTerm
                 .Select(ct => ct)
                 .Include(c => c.GolfCourse)
                 .Include(t => t.Term)
                 .ProjectTo<CourseTermBO>()
-                .ToList();
+                .ToListAsync();
 
-            return courseTerms;
-
-
+            return await courseTerms;
         }
 
-        public IEnumerable<EquipmentBO> GetAllEquipment()
+        public async Task<List<EquipmentBO>> GetAllEquipment()
         {
-            List<EquipmentBO> allEquip = _gcEntities.Equipment
+            Task<List<EquipmentBO>> allEquip = _gcEntities.Equipment
                  .Select(e => e)
                  .Include(et => et.EquipmentTypes)
                  .ProjectTo<EquipmentBO>()
-                 .ToList();
+                 .ToListAsync();
 
-            return allEquip;
+            return await allEquip;
         }
 
 
-        public EquipmentBO GetEquipmentById(int id)
+        public async Task<EquipmentBO> GetEquipmentById(int id)
         {
-            EquipmentBO equip = _gcEntities.Equipment
+           Task<EquipmentBO> equip = _gcEntities.Equipment
                  .Where(e => e.id == id)
                  .Select(e => e)
                  .Include(et => et.EquipmentTypes)
                  .ProjectTo<EquipmentBO>()
-                 .FirstOrDefault();
+                 .FirstOrDefaultAsync();
 
-            return equip;
-
+            return await equip;
         }
 
     }

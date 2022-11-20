@@ -4,6 +4,7 @@ using GolfClubMLD.Models.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
@@ -16,22 +17,25 @@ namespace GolfClubMLD.Controllers
         {
             _homeRepo = new HomeRepository();
         }
-        public ActionResult Index()
+        public async Task<ActionResult> Index(string searchString)
         {
-            IEnumerable<GolfCourseBO> allCourses = _homeRepo.GetAllCourses();
-            return View(allCourses);
-        }
+            List<GolfCourseBO> allCourses = await _homeRepo.GetAllCourses();
 
-        public ActionResult About(int id)
+            if (allCourses == null)
+                return View();
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                allCourses =await _homeRepo.GetCoursesBySearch(searchString);
+            }
+            return View(allCourses);
+            }
+
+            public ActionResult About(int id)
         {
             //ViewBag.Message = "Your application description page.";
-            GolfCourseBO course = _homeRepo.GetCourseById(id);
+            Task<GolfCourseBO> course = _homeRepo.GetCourseById(id);
             return View(course);
-        }
-        public ActionResult SearchCourse(string search)
-        {
-            IEnumerable<GolfCourseBO> searchRes = _homeRepo.GetCoursesBySearch(search);
-            return View(searchRes);
         }
 
         public ActionResult Contact()

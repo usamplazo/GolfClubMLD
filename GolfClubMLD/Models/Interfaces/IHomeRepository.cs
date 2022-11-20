@@ -8,14 +8,14 @@ namespace GolfClubMLD.Models.Interfaces
 {
     public interface IHomeRepository
     {
-        IEnumerable<GolfCourseBO> GetAllCourses();
-        GolfCourseBO GetCourseById(int id);
-        IEnumerable<GolfCourseBO> GetCoursesBySearch(string search);
-        IEnumerable<CourseTermBO> GetAllCourseTerm();
+        Task<List<GolfCourseBO>> GetAllCourses();
+        Task<GolfCourseBO> GetCourseById(int id);
+        Task<List<GolfCourseBO>> GetCoursesBySearch(string search);
+        Task<List<CourseTermBO>> GetAllCourseTerm();
 
         // CourseTermBO GetCourseTermById(int id);
-        IEnumerable<EquipmentBO> GetAllEquipment();
+        Task<List<EquipmentBO>> GetAllEquipment();
 
-        EquipmentBO GetEquipmentById(int id);
+        Task<EquipmentBO> GetEquipmentById(int id);
     }
 }
