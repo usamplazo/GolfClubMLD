@@ -5,10 +5,10 @@ using System.Web;
 
 namespace GolfClubMLD.Models
 {
-    public class EquipmentTypeBO
+    public class EquipmentTypesBO
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public string Description { get; set; }
+        public string Descr { get; set; }
     }
 }

@@ -9,9 +9,9 @@ namespace GolfClubMLD.Models
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public string PictureUrl { get; set; }
+        public string PicUrl { get; set; }
         public decimal Price { get; set; }
-        public int CourseTypeId { get; set; }
+        public int CorTypId { get; set; }
         public CourseTypeBO CourseType { get; set; }
 
     }

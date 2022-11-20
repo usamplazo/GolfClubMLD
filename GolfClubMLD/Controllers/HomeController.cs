@@ -1,4 +1,7 @@
-﻿using System;
+﻿using GolfClubMLD.Models;
+using GolfClubMLD.Models.EFRepository;
+using GolfClubMLD.Models.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -8,16 +11,27 @@ namespace GolfClubMLD.Controllers
 {
     public class HomeController : Controller
     {
+        private IHomeRepository _homeRepo;
+        public HomeController()
+        {
+            _homeRepo = new HomeRepository();
+        }
         public ActionResult Index()
         {
-            return View();
+            IEnumerable<GolfCourseBO> allCourses = _homeRepo.GetAllCourses();
+            return View(allCourses);
         }
 
-        public ActionResult About()
+        public ActionResult About(int id)
         {
-            ViewBag.Message = "Your application description page.";
-
-            return View();
+            //ViewBag.Message = "Your application description page.";
+            GolfCourseBO course = _homeRepo.GetCourseById(id);
+            return View(course);
+        }
+        public ActionResult SearchCourse(string search)
+        {
+            IEnumerable<GolfCourseBO> searchRes = _homeRepo.GetCoursesBySearch(search);
+            return View(searchRes);
         }
 
         public ActionResult Contact()

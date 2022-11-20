@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GolfClubMLD.App_Start;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -13,6 +14,7 @@ namespace GolfClubMLD
         protected void Application_Start()
         {
             AreaRegistration.RegisterAllAreas();
+            AutoMapper.Mapper.Initialize(cfg => cfg.AddProfile<MappingProfile>());
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);

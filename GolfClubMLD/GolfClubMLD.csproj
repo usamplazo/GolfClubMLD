@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.props" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" />
   <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -45,10 +46,36 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AutoMapper, Version=8.0.0.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoMapper.8.0.0\lib\net461\AutoMapper.dll</HintPath>
+    </Reference>
+    <Reference Include="AutoMapper.EF6, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoMapper.EF6.2.1.1\lib\net461\AutoMapper.EF6.dll</HintPath>
+    </Reference>
+    <Reference Include="DelegateDecompiler, Version=1.0.0.0, Culture=neutral, PublicKeyToken=93b26a10a04705bd, processorArchitecture=MSIL">
+      <HintPath>..\packages\DelegateDecompiler.0.28.0\lib\net45\DelegateDecompiler.dll</HintPath>
+    </Reference>
+    <Reference Include="DelegateDecompiler.EntityFramework, Version=1.0.0.0, Culture=neutral, PublicKeyToken=93b26a10a04705bd, processorArchitecture=MSIL">
+      <HintPath>..\packages\DelegateDecompiler.EntityFramework.0.28.0\lib\net45\DelegateDecompiler.EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Mono.Reflection, Version=1.1.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <HintPath>..\packages\Mono.Reflection.Core.1.1.1\lib\net45\Mono.Reflection.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -119,21 +146,85 @@
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
+    <Compile Include="App_Start\MappingProfile.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AdminBO.cs" />
+    <Compile Include="Models\CourseTermBO.cs" />
     <Compile Include="Models\CourseTypeBO.cs" />
     <Compile Include="Models\CreditCardBO.cs" />
     <Compile Include="Models\CustomerBO.cs" />
+    <Compile Include="Models\EFRepository\Admin.cs">
+      <DependentUpon>GolfClubMldModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\EFRepository\CourseTerm.cs">
+      <DependentUpon>GolfClubMldModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\EFRepository\CourseType.cs">
+      <DependentUpon>GolfClubMldModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\EFRepository\CreditCard.cs">
+      <DependentUpon>GolfClubMldModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\EFRepository\Customer.cs">
+      <DependentUpon>GolfClubMldModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\EFRepository\Equipment.cs">
+      <DependentUpon>GolfClubMldModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\EFRepository\EquipmentTypes.cs">
+      <DependentUpon>GolfClubMldModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\EFRepository\GolfClubMldModel.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>GolfClubMldModel.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\EFRepository\GolfClubMldModel.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>GolfClubMldModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\EFRepository\GolfClubMldModel.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>GolfClubMldModel.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Models\EFRepository\GolfCourse.cs">
+      <DependentUpon>GolfClubMldModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\EFRepository\HomeRepository.cs" />
+    <Compile Include="Models\EFRepository\Manager.cs">
+      <DependentUpon>GolfClubMldModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\EFRepository\Rent.cs">
+      <DependentUpon>GolfClubMldModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\EFRepository\RentDetails.cs">
+      <DependentUpon>GolfClubMldModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\EFRepository\sp_helpdiagramdefinition_Result.cs">
+      <DependentUpon>GolfClubMldModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\EFRepository\sp_helpdiagrams_Result.cs">
+      <DependentUpon>GolfClubMldModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\EFRepository\sysdiagrams.cs">
+      <DependentUpon>GolfClubMldModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\EFRepository\Term.cs">
+      <DependentUpon>GolfClubMldModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\EquipmentBO.cs" />
-    <Compile Include="Models\EquipmentTypeBO.cs" />
+    <Compile Include="Models\EquipmentTypesBO.cs" />
     <Compile Include="Models\GolfCourseBO.cs" />
+    <Compile Include="Models\Interfaces\IHomeRepository.cs" />
     <Compile Include="Models\ManagerBO.cs" />
-    <Compile Include="Models\RentItemBO.cs" />
-    <Compile Include="Models\RentoBO.cs" />
+    <Compile Include="Models\RentDetailBO.cs" />
+    <Compile Include="Models\RentBO.cs" />
     <Compile Include="Models\TermBO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -146,8 +237,25 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Models\EFRepository\GolfClubMldModel.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>GolfClubMldModel.Context.cs</LastGenOutput>
+      <DependentUpon>GolfClubMldModel.edmx</DependentUpon>
+    </Content>
+    <Content Include="Models\EFRepository\GolfClubMldModel.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>GolfClubMldModel.edmx</DependentUpon>
+      <LastGenOutput>GolfClubMldModel.cs</LastGenOutput>
+    </Content>
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <EntityDeploy Include="Models\EFRepository\GolfClubMldModel.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>GolfClubMldModel.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="Models\EFRepository\GolfClubMldModel.edmx.diagram">
+      <DependentUpon>GolfClubMldModel.edmx</DependentUpon>
+    </Content>
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
@@ -176,8 +284,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Models\EFRepository\" />
-    <Folder Include="Models\Interfaces\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
@@ -191,6 +297,9 @@
     <None Include="packages.config" />
     <Content Include="Scripts\jquery-3.4.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.4.1.min.map" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -225,7 +334,10 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
+    <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.props'))" />
+    <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.targets'))" />
   </Target>
+  <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

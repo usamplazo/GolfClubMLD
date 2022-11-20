@@ -8,14 +8,15 @@ namespace GolfClubMLD.Models
     public class CourseTypeBO
     {
         public int Id { get; set; }
-        public bool Obstacles { get; set; }
-        public bool NightPlay { get; set; }
+        public string Name { get; set; }
+        public bool Obstcl { get; set; }
+        public bool NightPly { get; set; }
         public bool Cleaning { get; set; }
-        public bool SprinklerSystem { get; set; }
-        public string Description { get; set; }
+        public bool SprnklSys { get; set; }
+        public string Descr { get; set; }
         public float Par { get; set; }
-        public int NumberOfHoles { get; set; }
-        public int Surface { get; set; }
+        public int NumOfHoles { get; set; }
+        public int Surfc { get; set; }
 
     }
 }

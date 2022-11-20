@@ -6,17 +6,17 @@ using System.Web;
 
 namespace GolfClubMLD.Models
 {
-    public class CustomerBO:UserBO
+    public class CustomerBO
     {
         [Key]
         public string Email { get; set; }
-        public string Password { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string PhoneNumber { get; set; }
-        public string ProfilePicture { get; set; }
-        public bool isActive { get; set; }
-        public int CreditCardId { get; set; }
+        public string Pass { get; set; }
+        public string Fname { get; set; }
+        public string Lname { get; set; }
+        public string Phone { get; set; }
+        public string ProfPic { get; set; }
+        public bool IsActv { get; set; }
+        public int CredCardId { get; set; }
         public CreditCardBO CreditCard { get; set; }
     }
 }
