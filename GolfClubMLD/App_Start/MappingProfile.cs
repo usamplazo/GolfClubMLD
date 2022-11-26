@@ -16,6 +16,7 @@ namespace GolfClubMLD.App_Start
             CreateMap<GolfCourse, GolfCourseBO>();
             CreateMap<Equipment, EquipmentBO>();
             CreateMap<CourseTerm, CourseTermBO>();
+            CreateMap<CourseType, CourseTypeBO>();
         }
     }
 }

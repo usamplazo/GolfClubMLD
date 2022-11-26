@@ -143,5 +143,9 @@ namespace GolfClubMLD.Models.EFRepository
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("sp_upgraddiagrams");
         }
+
+        public System.Data.Entity.DbSet<GolfClubMLD.Models.EquipmentBO> EquipmentBOes { get; set; }
+
+        public System.Data.Entity.DbSet<GolfClubMLD.Models.EquipmentTypesBO> EquipmentTypesBOes { get; set; }
     }
 }
