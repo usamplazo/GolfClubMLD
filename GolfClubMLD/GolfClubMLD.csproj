@@ -148,15 +148,18 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\MappingProfile.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\ActionFilters\MyExpirePage.cs" />
     <Compile Include="Models\AdminBO.cs" />
     <Compile Include="Models\CourseTermBO.cs" />
     <Compile Include="Models\CourseTypeBO.cs" />
     <Compile Include="Models\CreditCardBO.cs" />
     <Compile Include="Models\CustomerBO.cs" />
+    <Compile Include="Models\EFRepository\AccountRepository.cs" />
     <Compile Include="Models\EFRepository\Admin.cs">
       <DependentUpon>GolfClubMldModel.tt</DependentUpon>
     </Compile>
@@ -221,6 +224,7 @@
     <Compile Include="Models\EquipmentBO.cs" />
     <Compile Include="Models\EquipmentTypesBO.cs" />
     <Compile Include="Models\GolfCourseBO.cs" />
+    <Compile Include="Models\Interfaces\IAccountRepository.cs" />
     <Compile Include="Models\Interfaces\IHomeRepository.cs" />
     <Compile Include="Models\ManagerBO.cs" />
     <Compile Include="Models\RentDetailBO.cs" />
@@ -283,6 +287,8 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Shared\GolfCourses.cshtml" />
     <Content Include="Views\Home\HomeEquipment.cshtml" />
+    <Content Include="Views\Account\Login.cshtml" />
+    <Content Include="Views\Account\CustDashBoard.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

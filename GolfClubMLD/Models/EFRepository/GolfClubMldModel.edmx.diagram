@@ -5,28 +5,28 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="519a841c152544d5963fa8946697118c" Name="Diagram1">
-        <EntityTypeShape EntityType="GolfClubMldDBModel.Admin" Width="1.5" PointX="7.75" PointY="8.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="GolfClubMldDBModel.CourseTerm" Width="1.5" PointX="5.25" PointY="1.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="GolfClubMldDBModel.CourseType" Width="1.5" PointX="0.75" PointY="1" IsExpanded="true" />
-        <EntityTypeShape EntityType="GolfClubMldDBModel.CreditCard" Width="1.5" PointX="3" PointY="9.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="GolfClubMldDBModel.Customer" Width="1.5" PointX="5.25" PointY="9.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="GolfClubMldDBModel.Equipment" Width="1.5" PointX="7.5" PointY="5.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="GolfClubMldDBModel.EquipmentTypes" Width="1.5" PointX="5.25" PointY="5.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="GolfClubMldDBModel.GolfCourse" Width="1.5" PointX="3" PointY="1.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="GolfClubMldDBModel.Manager" Width="1.5" PointX="9.75" PointY="4.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="GolfClubMldDBModel.Rent" Width="1.5" PointX="7.5" PointY="1.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="GolfClubMldDBModel.RentDetails" Width="1.5" PointX="9.75" PointY="1.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="GolfClubMldDBModel.sysdiagrams" Width="1.5" PointX="9.75" PointY="8.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="GolfClubMldDBModel.Term" Width="1.5" PointX="3" PointY="5.625" IsExpanded="true" />
-        <AssociationConnector Association="GolfClubMldDBModel.FK_CourseTerm_GolfCourse" ManuallyRouted="false" />
-        <AssociationConnector Association="GolfClubMldDBModel.FK_CourseTerm_Term" ManuallyRouted="false" />
-        <AssociationConnector Association="GolfClubMldDBModel.FK_Rent_CourseTerm" ManuallyRouted="false" />
-        <AssociationConnector Association="GolfClubMldDBModel.FK_GolfCourse_CourseType" ManuallyRouted="false" />
-        <AssociationConnector Association="GolfClubMldDBModel.FK_Customer_CreditCard" ManuallyRouted="false" />
-        <AssociationConnector Association="GolfClubMldDBModel.FK_Rent_Customer" ManuallyRouted="false" />
-        <AssociationConnector Association="GolfClubMldDBModel.FK_Equipment_EquipmentTypes" ManuallyRouted="false" />
-        <AssociationConnector Association="GolfClubMldDBModel.FK_RentDetails_Equipment" ManuallyRouted="false" />
-        <AssociationConnector Association="GolfClubMldDBModel.FK_RentDetails_Rent" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="GolfClubMldDBModel.Admin" Width="1.5" PointX="7.75" PointY="8.75" />
+        <EntityTypeShape EntityType="GolfClubMldDBModel.CourseTerm" Width="1.5" PointX="5.25" PointY="1.375" />
+        <EntityTypeShape EntityType="GolfClubMldDBModel.CourseType" Width="1.5" PointX="0.75" PointY="1" />
+        <EntityTypeShape EntityType="GolfClubMldDBModel.CreditCard" Width="1.5" PointX="3" PointY="9.5" />
+        <EntityTypeShape EntityType="GolfClubMldDBModel.Customer" Width="1.5" PointX="5.25" PointY="9" />
+        <EntityTypeShape EntityType="GolfClubMldDBModel.Equipment" Width="1.5" PointX="7.5" PointY="5.125" />
+        <EntityTypeShape EntityType="GolfClubMldDBModel.EquipmentTypes" Width="1.5" PointX="5.25" PointY="5.625" />
+        <EntityTypeShape EntityType="GolfClubMldDBModel.GolfCourse" Width="1.5" PointX="3" PointY="1.375" />
+        <EntityTypeShape EntityType="GolfClubMldDBModel.Manager" Width="1.5" PointX="9.75" PointY="4.75" />
+        <EntityTypeShape EntityType="GolfClubMldDBModel.Rent" Width="1.5" PointX="7.5" PointY="1.25" />
+        <EntityTypeShape EntityType="GolfClubMldDBModel.RentDetails" Width="1.5" PointX="9.75" PointY="1.5" />
+        <EntityTypeShape EntityType="GolfClubMldDBModel.sysdiagrams" Width="1.5" PointX="9.75" PointY="8.75" />
+        <EntityTypeShape EntityType="GolfClubMldDBModel.Term" Width="1.5" PointX="3" PointY="5.625" />
+        <AssociationConnector Association="GolfClubMldDBModel.FK_CourseTerm_GolfCourse" />
+        <AssociationConnector Association="GolfClubMldDBModel.FK_CourseTerm_Term" />
+        <AssociationConnector Association="GolfClubMldDBModel.FK_Rent_CourseTerm" />
+        <AssociationConnector Association="GolfClubMldDBModel.FK_GolfCourse_CourseType" />
+        <AssociationConnector Association="GolfClubMldDBModel.FK_Customer_CreditCard" />
+        <AssociationConnector Association="GolfClubMldDBModel.FK_Rent_Customer1" />
+        <AssociationConnector Association="GolfClubMldDBModel.FK_Equipment_EquipmentTypes" />
+        <AssociationConnector Association="GolfClubMldDBModel.FK_RentDetails_Equipment" />
+        <AssociationConnector Association="GolfClubMldDBModel.FK_RentDetails_Rent" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

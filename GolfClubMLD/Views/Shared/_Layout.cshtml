@@ -23,13 +23,16 @@
                     <li>@Html.ActionLink("Oprema", "HomeEquipment", "Home")</li>
                     <li>@Html.ActionLink("About", "About", "Home")</li>
                     <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
-                </ul>
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul>
-                    <li>@Html.ActionLink("Log in", "Index", "Home", new { option = "logIn" }, new { @class = "btn btn-primary" })</li>
-                    <li>@Html.ActionLink("Register", "Index", "Home", new { option = "reg" }, new { @class = "btn btn-secondary" })</li>
-                    
+                    @if (Session["LoginId"] != null && Session["LoginEmail"] != null)
+                    {
+                        <li>@Html.ActionLink(Session["LoginEmail"].ToString(), "", "", new { option = "logIn" }, new { @class = "btn btn-primary" })</li>
+                        <li>@Html.ActionLink("Odjavi se", "Logout", "Account", new { option = "reg" }, new { @class = "btn btn-secondary" })</li>
+                    }
+                    else
+                    {
+                        <li>@Html.ActionLink("Log in", "Login", "Account", new { option = "logIn" }, new { @class = "btn btn-primary" })</li>
+                        <li>@Html.ActionLink("Register", "", "Account", new { option = "reg" }, new { @class = "btn btn-secondary" })</li>
+                    }
                 </ul>
             </div>
         </div>

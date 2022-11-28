@@ -24,7 +24,7 @@ namespace GolfClubMLD.Models.EFRepository
         public System.DateTime conDate { get; set; }
         public double totPrice { get; set; }
         public int courTrmId { get; set; }
-        public string custEmail { get; set; }
+        public int custId { get; set; }
     
         public virtual CourseTerm CourseTerm { get; set; }
         public virtual Customer Customer { get; set; }
