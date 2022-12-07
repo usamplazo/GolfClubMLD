@@ -1,4 +1,5 @@
 ﻿using GolfClubMLD.Models;
+using GolfClubMLD.Models.ActionFilters;
 using GolfClubMLD.Models.EFRepository;
 using GolfClubMLD.Models.Interfaces;
 using System;
@@ -17,6 +18,8 @@ namespace GolfClubMLD.Controllers
         {
             _homeRepo = new HomeRepository();
         }
+        [HttpGet]
+        [MyExpirePage]
         public async Task<ActionResult> Index(string searchString)
         {
             List<GolfCourseBO> allCourses = await _homeRepo.GetAllCourses();

@@ -2,6 +2,7 @@
 using GolfClubMLD.Models.ActionFilters;
 using GolfClubMLD.Models.EFRepository;
 using GolfClubMLD.Models.Interfaces;
+using GolfClubMLD.Models.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,7 +48,8 @@ namespace GolfClubMLD.Controllers
                 {
                     Session["LoginId"] = customer.Id.ToString();
                     Session["LoginEmail"] = customer.Email.ToString();
-                    return RedirectToAction("CustDashBoard");
+                    return RedirectToAction("Index","Home");
+                    
                 }
                 ModelState.AddModelError("cust", "Ne posotji korisnik sa unetim podacima");
 
@@ -56,15 +58,23 @@ namespace GolfClubMLD.Controllers
             ModelState.AddModelError("cust", "Greska prilikom unosa");
             return View();
         }
+        [AllowAnonymous]
         [HttpGet]
-        [MyExpirePage]
-        public ActionResult CustDashBoard()
+        public ActionResult Register()
         {
-            if(Session["LoginId"] != null)
+            return View();
+        }
+        [AllowAnonymous]
+        [HttpPost]
+        public async Task<ActionResult> Register(CustomerCreditCardViewModel custCredCard)
+        {
+            if (ModelState.IsValid)
             {
-                return View();
+                bool areSaved = await _accRepo.RegisterCustomer(custCredCard);
+                //return RedirectToActio);
             }
-            return RedirectToAction("Login");
+            //thow new Exception()
+            return RedirectToAction("Index","Home");
         }
         [MyExpirePage]
         public ActionResult Logout()

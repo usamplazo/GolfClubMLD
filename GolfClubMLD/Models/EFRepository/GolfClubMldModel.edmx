@@ -45,17 +45,16 @@
           <Key>
             <PropertyRef Name="id" />
           </Key>
-          <Property Name="id" Type="int" Nullable="false" />
           <Property Name="carNum" Type="bigint" Nullable="false" />
           <Property Name="own" Type="varchar" MaxLength="80" Nullable="false" />
           <Property Name="expiry" Type="varchar" MaxLength="10" />
           <Property Name="cvv" Type="int" Nullable="false" />
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
         </EntityType>
         <EntityType Name="Customer">
           <Key>
             <PropertyRef Name="id" />
           </Key>
-          <Property Name="id" Type="int" Nullable="false" />
           <Property Name="email" Type="varchar" MaxLength="30" Nullable="false" />
           <Property Name="pass" Type="varchar" MaxLength="100" Nullable="false" />
           <Property Name="fname" Type="varchar" MaxLength="20" Nullable="false" />
@@ -63,7 +62,8 @@
           <Property Name="phone" Type="varchar" MaxLength="30" Nullable="false" />
           <Property Name="profPic" Type="varchar" MaxLength="500" />
           <Property Name="isActv" Type="bit" Nullable="false" />
-          <Property Name="credCardId" Type="int" Nullable="false" />
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="credCardId" Type="int" />
         </EntityType>
         <EntityType Name="Equipment">
           <Key>
@@ -169,7 +169,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Customer_CreditCard">
-          <End Role="CreditCard" Type="Self.CreditCard" Multiplicity="1" />
+          <End Role="CreditCard" Type="Self.CreditCard" Multiplicity="0..1" />
           <End Role="Customer" Type="Self.Customer" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="CreditCard">
@@ -216,7 +216,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Rent_Customer1">
+        <Association Name="FK_Rent_Customer">
           <End Role="Customer" Type="Self.Customer" Multiplicity="1" />
           <End Role="Rent" Type="Self.Rent" Multiplicity="*" />
           <ReferentialConstraint>
@@ -321,7 +321,7 @@
             <End Role="CourseTerm" EntitySet="CourseTerm" />
             <End Role="Rent" EntitySet="Rent" />
           </AssociationSet>
-          <AssociationSet Name="FK_Rent_Customer1" Association="Self.FK_Rent_Customer1">
+          <AssociationSet Name="FK_Rent_Customer" Association="Self.FK_Rent_Customer">
             <End Role="Customer" EntitySet="Customer" />
             <End Role="Rent" EntitySet="Rent" />
           </AssociationSet>
@@ -402,7 +402,7 @@
             <End Role="CreditCard" EntitySet="CreditCard" />
             <End Role="Customer" EntitySet="Customer" />
           </AssociationSet>
-          <AssociationSet Name="FK_Rent_Customer1" Association="GolfClubMldDBModel.FK_Rent_Customer1">
+          <AssociationSet Name="FK_Rent_Customer" Association="GolfClubMldDBModel.FK_Rent_Customer">
             <End Role="Customer" EntitySet="Customer" />
             <End Role="Rent" EntitySet="Rent" />
           </AssociationSet>
@@ -418,7 +418,7 @@
             <End Role="Rent" EntitySet="Rent" />
             <End Role="RentDetails" EntitySet="RentDetails" />
           </AssociationSet>
-        </EntityContainer>
+          </EntityContainer>
         <ComplexType Name="sp_helpdiagramdefinition_Result">
           <Property Type="Int32" Name="version" Nullable="true" />
           <Property Type="Binary" Name="definition" Nullable="true" />
@@ -474,18 +474,17 @@
           <Key>
             <PropertyRef Name="id" />
           </Key>
-          <Property Name="id" Type="Int32" Nullable="false" />
           <Property Name="carNum" Type="Int64" Nullable="false" />
           <Property Name="own" Type="String" Nullable="false" MaxLength="80" FixedLength="false" Unicode="false" />
           <Property Name="expiry" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="cvv" Type="Int32" Nullable="false" />
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <NavigationProperty Name="Customer" Relationship="GolfClubMldDBModel.FK_Customer_CreditCard" FromRole="CreditCard" ToRole="Customer" />
         </EntityType>
         <EntityType Name="Customer">
           <Key>
             <PropertyRef Name="id" />
           </Key>
-          <Property Name="id" Type="Int32" Nullable="false" />
           <Property Name="email" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
           <Property Name="pass" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="fname" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
@@ -493,9 +492,10 @@
           <Property Name="phone" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
           <Property Name="profPic" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
           <Property Name="isActv" Type="Boolean" Nullable="false" />
-          <Property Name="credCardId" Type="Int32" Nullable="false" />
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="credCardId" Type="Int32" />
           <NavigationProperty Name="CreditCard" Relationship="GolfClubMldDBModel.FK_Customer_CreditCard" FromRole="Customer" ToRole="CreditCard" />
-          <NavigationProperty Name="Rent" Relationship="GolfClubMldDBModel.FK_Rent_Customer1" FromRole="Customer" ToRole="Rent" />
+          <NavigationProperty Name="Rent" Relationship="GolfClubMldDBModel.FK_Rent_Customer" FromRole="Customer" ToRole="Rent" />
         </EntityType>
         <EntityType Name="Equipment">
           <Key>
@@ -554,7 +554,7 @@
           <Property Name="courTrmId" Type="Int32" Nullable="false" />
           <Property Name="custId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="CourseTerm" Relationship="GolfClubMldDBModel.FK_Rent_CourseTerm" FromRole="Rent" ToRole="CourseTerm" />
-          <NavigationProperty Name="Customer" Relationship="GolfClubMldDBModel.FK_Rent_Customer1" FromRole="Rent" ToRole="Customer" />
+          <NavigationProperty Name="Customer" Relationship="GolfClubMldDBModel.FK_Rent_Customer" FromRole="Rent" ToRole="Customer" />
           <NavigationProperty Name="RentDetails" Relationship="GolfClubMldDBModel.FK_RentDetails_Rent" FromRole="Rent" ToRole="RentDetails" />
         </EntityType>
         <EntityType Name="RentDetails">
@@ -636,7 +636,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Customer_CreditCard">
-          <End Type="GolfClubMldDBModel.CreditCard" Role="CreditCard" Multiplicity="1" />
+          <End Type="GolfClubMldDBModel.CreditCard" Role="CreditCard" Multiplicity="0..1" />
           <End Type="GolfClubMldDBModel.Customer" Role="Customer" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="CreditCard">
@@ -647,7 +647,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Rent_Customer1">
+        <Association Name="FK_Rent_Customer">
           <End Type="GolfClubMldDBModel.Customer" Role="Customer" Multiplicity="1" />
           <End Type="GolfClubMldDBModel.Rent" Role="Rent" Multiplicity="*" />
           <ReferentialConstraint>
@@ -695,7 +695,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-      </Schema>
+        </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
@@ -767,11 +767,11 @@
           <EntitySetMapping Name="CreditCard">
             <EntityTypeMapping TypeName="GolfClubMldDBModel.CreditCard">
               <MappingFragment StoreEntitySet="CreditCard">
+                <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="cvv" ColumnName="cvv" />
                 <ScalarProperty Name="expiry" ColumnName="expiry" />
                 <ScalarProperty Name="own" ColumnName="own" />
                 <ScalarProperty Name="carNum" ColumnName="carNum" />
-                <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -779,6 +779,7 @@
             <EntityTypeMapping TypeName="GolfClubMldDBModel.Customer">
               <MappingFragment StoreEntitySet="Customer">
                 <ScalarProperty Name="credCardId" ColumnName="credCardId" />
+                <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="isActv" ColumnName="isActv" />
                 <ScalarProperty Name="profPic" ColumnName="profPic" />
                 <ScalarProperty Name="phone" ColumnName="phone" />
@@ -786,7 +787,6 @@
                 <ScalarProperty Name="fname" ColumnName="fname" />
                 <ScalarProperty Name="pass" ColumnName="pass" />
                 <ScalarProperty Name="email" ColumnName="email" />
-                <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -877,7 +877,7 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-        </EntityContainerMapping>
+          </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
   </edmx:Runtime>

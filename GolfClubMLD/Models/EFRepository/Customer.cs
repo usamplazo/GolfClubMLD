@@ -20,7 +20,6 @@ namespace GolfClubMLD.Models.EFRepository
             this.Rent = new HashSet<Rent>();
         }
     
-        public int id { get; set; }
         public string email { get; set; }
         public string pass { get; set; }
         public string fname { get; set; }
@@ -28,7 +27,8 @@ namespace GolfClubMLD.Models.EFRepository
         public string phone { get; set; }
         public string profPic { get; set; }
         public bool isActv { get; set; }
-        public int credCardId { get; set; }
+        public int id { get; set; }
+        public Nullable<int> credCardId { get; set; }
     
         public virtual CreditCard CreditCard { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

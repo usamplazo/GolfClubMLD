@@ -23,7 +23,7 @@
         <AssociationConnector Association="GolfClubMldDBModel.FK_Rent_CourseTerm" />
         <AssociationConnector Association="GolfClubMldDBModel.FK_GolfCourse_CourseType" />
         <AssociationConnector Association="GolfClubMldDBModel.FK_Customer_CreditCard" />
-        <AssociationConnector Association="GolfClubMldDBModel.FK_Rent_Customer1" />
+        <AssociationConnector Association="GolfClubMldDBModel.FK_Rent_Customer" />
         <AssociationConnector Association="GolfClubMldDBModel.FK_Equipment_EquipmentTypes" />
         <AssociationConnector Association="GolfClubMldDBModel.FK_RentDetails_Equipment" />
         <AssociationConnector Association="GolfClubMldDBModel.FK_RentDetails_Rent" />

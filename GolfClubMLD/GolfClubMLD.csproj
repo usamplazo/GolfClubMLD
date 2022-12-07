@@ -230,6 +230,7 @@
     <Compile Include="Models\RentDetailBO.cs" />
     <Compile Include="Models\RentBO.cs" />
     <Compile Include="Models\TermBO.cs" />
+    <Compile Include="Models\ViewModel\CustomerCreditCardViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -289,6 +290,8 @@
     <Content Include="Views\Home\HomeEquipment.cshtml" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Account\CustDashBoard.cshtml" />
+    <Content Include="Views\Account\AddCreditCard.cshtml" />
+    <Content Include="Views\Account\Register.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

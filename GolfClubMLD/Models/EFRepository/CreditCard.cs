@@ -20,11 +20,11 @@ namespace GolfClubMLD.Models.EFRepository
             this.Customer = new HashSet<Customer>();
         }
     
-        public int id { get; set; }
         public long carNum { get; set; }
         public string own { get; set; }
         public string expiry { get; set; }
         public int cvv { get; set; }
+        public int id { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Customer> Customer { get; set; }
