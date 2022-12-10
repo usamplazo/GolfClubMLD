@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
+using PagedList;
 using System.Web.Mvc;
 
 namespace GolfClubMLD.Controllers
@@ -20,18 +20,18 @@ namespace GolfClubMLD.Controllers
         }
         [HttpGet]
         [MyExpirePage]
-        public async Task<ActionResult> Index(string searchString)
+        public async Task<ViewResult> Index(string searchString, int? page)
         {
             List<GolfCourseBO> allCourses = await _homeRepo.GetAllCourses();
             List<CourseTypeBO> allTypes = await _homeRepo.GetAllCourseTypes();
-
             ViewData["types"] = allTypes.Select(t => t).ToList<CourseTypeBO>();
             if (allCourses == null)
                 return View();
 
-            if(Int32.TryParse(searchString, out int typeId))
+            if (Int32.TryParse(searchString, out int typeId))
             {
                 allCourses = await _homeRepo.GetCoursesByType(typeId);
+                page = 1;
                 if (allCourses.Count == 0)
                     return View();
                 return View(allCourses);
@@ -40,8 +40,11 @@ namespace GolfClubMLD.Controllers
             if (!string.IsNullOrEmpty(searchString))
             {
                 allCourses = await _homeRepo.GetCoursesBySearch(searchString);
+                page = 1;
             }
-            return View(allCourses);
+            int pageSize = 3;
+            int pageNumber = (page ?? 1);
+            return View(allCourses.ToPagedList(pageNumber, pageSize));
         }
 
         public async Task<ActionResult> HomeEquipment(int typeId = 0)
@@ -63,6 +66,10 @@ namespace GolfClubMLD.Controllers
             }
             return View(allEquip);
         }
-       
+        public async Task<ActionResult> Details(int id)
+        {
+            GolfCourseBO gc = await _homeRepo.GetCourseById(id);
+            return View(gc);
+        }
     }
 }
