@@ -7,7 +7,13 @@
     <input type="submit" value="Pretrazi">
 </form>
 <form asp-controller="Home" asp-action="Index" method="get">
-    <select name="SearchString">
+    <select name="order" id="ord" onchange="this.form.submit();">
+        <option value="asc">Cena rastuca</option>
+        <option value="desc">Cena opadajuca</option>
+        </select>
+</form> 
+<form asp-controller="Home" asp-action="Index" method="get">
+    <select name="SearchString" onchange="this.form.submit();">
         @{
             var courseTypes = (List<CourseTypeBO>)ViewData["types"];
             foreach (var ct in courseTypes)
@@ -25,7 +31,6 @@
 
         }
     </select>
-    <input type="submit" value="Tip">
 </form>
 <p>
     @if (ViewData["CourseTypeName"] != null)
@@ -67,9 +72,14 @@
 Strana @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) od @Model.PageCount
 @{ 
     string searchString = "";
+    string order = "";
     if (ViewData["searchString"] != null)
     {
         searchString = ViewData["searchString"].ToString();
     }
-    @Html.PagedListPager(Model, page => Url.Action("Index", routeValues: new { searchString, page}))
+    if(ViewData["order"] != null)
+    {
+        order = ViewData["order"].ToString();
+    }
+    @Html.PagedListPager(Model, page => Url.Action("Index", routeValues: new { searchString, page, order}))
 }

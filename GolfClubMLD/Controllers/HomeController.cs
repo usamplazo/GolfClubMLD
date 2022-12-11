@@ -20,12 +20,13 @@ namespace GolfClubMLD.Controllers
         }
         [HttpGet]
         [MyExpirePage]
-        public async Task<ViewResult> Index(string searchString,int? page)
+        public async Task<ViewResult> Index(string searchString, int? page, string order = null)
         {
             List<GolfCourseBO> allCourses = await _homeRepo.GetAllCourses();
             List<CourseTypeBO> allTypes = await _homeRepo.GetAllCourseTypes();
             ViewData["types"] = allTypes.Select(t => t).ToList<CourseTypeBO>();
             ViewData["searchString"] = searchString;
+            ViewData["order"] = order;
             if (allCourses == null)
                 return View();
 
@@ -42,7 +43,20 @@ namespace GolfClubMLD.Controllers
                 allCourses = await _homeRepo.GetCoursesBySearch(searchString);
                 page = page ?? 1;
             }
-            int pageSize = 3;
+
+            switch (order)
+            {
+                case "asc":
+                    allCourses = allCourses.OrderBy(c => c.Price).ToList();
+                    break;
+                case "desc":
+                    allCourses = allCourses.OrderByDescending(c => c.Price).ToList();
+                    break;
+                default:
+                    allCourses = allCourses.OrderBy(c=>c.Name).ToList();
+                    break;
+            };
+            int pageSize = 5;
             int pageNumber = (page ?? 1);
             return View(allCourses.ToPagedList(pageNumber, pageSize));
         }
