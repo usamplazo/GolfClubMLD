@@ -20,27 +20,27 @@ namespace GolfClubMLD.Controllers
         }
         [HttpGet]
         [MyExpirePage]
-        public async Task<ViewResult> Index(string searchString, int? page)
+        public async Task<ViewResult> Index(string searchString,int? page)
         {
             List<GolfCourseBO> allCourses = await _homeRepo.GetAllCourses();
             List<CourseTypeBO> allTypes = await _homeRepo.GetAllCourseTypes();
             ViewData["types"] = allTypes.Select(t => t).ToList<CourseTypeBO>();
+            ViewData["searchString"] = searchString;
             if (allCourses == null)
                 return View();
 
-            if (Int32.TryParse(searchString, out int typeId))
+            if (searchString != null && Int32.TryParse(searchString, out int typeSearchId))
             {
-                allCourses = await _homeRepo.GetCoursesByType(typeId);
-                page = 1;
+                allCourses = await _homeRepo.GetCoursesByType(typeSearchId);
+                ViewData["CourseTypeName"] = allCourses[0].CourseType.Name;
+                page = page ?? 1;
                 if (allCourses.Count == 0)
                     return View();
-                return View(allCourses);
             }
-
-            if (!string.IsNullOrEmpty(searchString))
+            else if (!string.IsNullOrEmpty(searchString))
             {
                 allCourses = await _homeRepo.GetCoursesBySearch(searchString);
-                page = 1;
+                page = page ?? 1;
             }
             int pageSize = 3;
             int pageNumber = (page ?? 1);
