@@ -8,20 +8,20 @@ using System.Threading.Tasks;
 
 namespace GolfClubMLD.Models.Interfaces
 {
-    internal interface IAccountRepository
+    internal interface IAuthentificationRepository
     {
         #region Customer
         Task<string> HashPassword(string pass);
-        Task<CustomerBO> LoginCustomer(string email, string pass);
-        bool CheckExistingCustomer(string email);
+        Task<UsersBO> LoginCustomer(string email, string pass);
+        bool CheckExistingCustomer(string email, string username);
         Task<bool> RegisterCustomer(CustomerCreditCardViewModel custCredCard);
         Task RemoveAcc(int custId);
         Task UpdateAcc(int custId);
 
-        bool AddCustomerCreditCard(CreditCardBO ccBo);
+        bool CheckExistingCreditCard(long creditCardNum);
         Task<CreditCardBO> GetCredCardById(int credCardId);
-        bool UpdateCustomerCredCard();
-
-        #endregion
-    }
+        bool UpdateCustomerCredCard(Users cust);
+        List<string> GetRoles(string eml);
+            #endregion
+        }
 }

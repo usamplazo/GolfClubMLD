@@ -2,22 +2,25 @@
 @using GolfClubMLD.Models
 @using PagedList.Mvc
 @using System
+
 <form asp-controller="Home" asp-action="Index" method="get">
     <input type="text" name="SearchString" />
     <input type="submit" value="Pretrazi">
 </form>
 <form asp-controller="Home" asp-action="Index" method="get">
     <select name="order" id="ord" onchange="this.form.submit();">
+        <option value=""></option>
         <option value="asc">Cena rastuca</option>
         <option value="desc">Cena opadajuca</option>
-        </select>
-</form> 
+    </select>
+</form>
 <form asp-controller="Home" asp-action="Index" method="get">
     <select name="SearchString" onchange="this.form.submit();">
         @{
             var courseTypes = (List<CourseTypeBO>)ViewData["types"];
             foreach (var ct in courseTypes)
             {
+
                 if (ViewData["CourseTypeName"] != null && ViewData["CourseTypeName"].ToString() == ct.Name)
                 {
                     <option value="@ct.Id" selected>@ct.Name</option>
@@ -70,16 +73,16 @@
 </table>
 <br />
 Strana @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) od @Model.PageCount
-@{ 
+@{
     string searchString = "";
     string order = "";
     if (ViewData["searchString"] != null)
     {
         searchString = ViewData["searchString"].ToString();
     }
-    if(ViewData["order"] != null)
+    if (ViewData["order"] != null)
     {
         order = ViewData["order"].ToString();
     }
-    @Html.PagedListPager(Model, page => Url.Action("Index", routeValues: new { searchString, page, order}))
+    @Html.PagedListPager(Model, page => Url.Action("Index", routeValues: new { searchString, page, order }))
 }

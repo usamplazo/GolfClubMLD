@@ -60,7 +60,6 @@ namespace GolfClubMLD.Controllers
             int pageNumber = (page ?? 1);
             return View(allCourses.ToPagedList(pageNumber, pageSize));
         }
-
         public async Task<ActionResult> HomeEquipment(int typeId = 0)
         {
 

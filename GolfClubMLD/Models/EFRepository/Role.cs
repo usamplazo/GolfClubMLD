@@ -12,14 +12,18 @@ namespace GolfClubMLD.Models.EFRepository
     using System;
     using System.Collections.Generic;
     
-    public partial class Manager
+    public partial class Role
     {
-        public string email { get; set; }
-        public string username { get; set; }
-        public string pass { get; set; }
-        public string fname { get; set; }
-        public string lname { get; set; }
-        public string phone { get; set; }
-        public string profPic { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public Role()
+        {
+            this.Users = new HashSet<Users>();
+        }
+    
+        public int id { get; set; }
+        public string name { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Users> Users { get; set; }
     }
 }

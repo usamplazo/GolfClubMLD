@@ -5,18 +5,6 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="GolfClubMldDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
-        <EntityType Name="Admin">
-          <Key>
-            <PropertyRef Name="email" />
-          </Key>
-          <Property Name="email" Type="varchar" MaxLength="30" Nullable="false" />
-          <Property Name="username" Type="varchar" MaxLength="20" Nullable="false" />
-          <Property Name="pass" Type="char" MaxLength="100" />
-          <Property Name="fname" Type="varchar" MaxLength="20" Nullable="false" />
-          <Property Name="lname" Type="varchar" MaxLength="20" Nullable="false" />
-          <Property Name="phone" Type="varchar" MaxLength="30" Nullable="false" />
-          <Property Name="profPic" Type="varchar" MaxLength="500" />
-        </EntityType>
         <EntityType Name="CourseTerm">
           <Key>
             <PropertyRef Name="id" />
@@ -45,25 +33,11 @@
           <Key>
             <PropertyRef Name="id" />
           </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="carNum" Type="bigint" Nullable="false" />
           <Property Name="own" Type="varchar" MaxLength="80" Nullable="false" />
-          <Property Name="expiry" Type="varchar" MaxLength="10" />
+          <Property Name="expiry" Type="varchar" MaxLength="10" Nullable="false" />
           <Property Name="cvv" Type="int" Nullable="false" />
-          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-        </EntityType>
-        <EntityType Name="Customer">
-          <Key>
-            <PropertyRef Name="id" />
-          </Key>
-          <Property Name="email" Type="varchar" MaxLength="30" Nullable="false" />
-          <Property Name="pass" Type="varchar" MaxLength="100" Nullable="false" />
-          <Property Name="fname" Type="varchar" MaxLength="20" Nullable="false" />
-          <Property Name="lname" Type="varchar" MaxLength="20" Nullable="false" />
-          <Property Name="phone" Type="varchar" MaxLength="30" Nullable="false" />
-          <Property Name="profPic" Type="varchar" MaxLength="500" />
-          <Property Name="isActv" Type="bit" Nullable="false" />
-          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="credCardId" Type="int" />
         </EntityType>
         <EntityType Name="Equipment">
           <Key>
@@ -95,18 +69,6 @@
           <Property Name="price" Type="float" Nullable="false" />
           <Property Name="corTypId" Type="int" Nullable="false" />
         </EntityType>
-        <EntityType Name="Manager">
-          <Key>
-            <PropertyRef Name="email" />
-          </Key>
-          <Property Name="email" Type="varchar" MaxLength="30" Nullable="false" />
-          <Property Name="username" Type="varchar" MaxLength="20" Nullable="false" />
-          <Property Name="pass" Type="char" MaxLength="100" />
-          <Property Name="fname" Type="varchar" MaxLength="20" Nullable="false" />
-          <Property Name="lname" Type="varchar" MaxLength="20" Nullable="false" />
-          <Property Name="phone" Type="varchar" MaxLength="30" Nullable="false" />
-          <Property Name="profPic" Type="varchar" MaxLength="500" />
-        </EntityType>
         <EntityType Name="Rent">
           <Key>
             <PropertyRef Name="id" />
@@ -126,6 +88,13 @@
           <Property Name="rentId" Type="int" Nullable="false" />
           <Property Name="amount" Type="int" Nullable="false" />
         </EntityType>
+        <EntityType Name="Role">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="varchar" MaxLength="10" Nullable="false" />
+        </EntityType>
         <EntityType Name="sysdiagrams">
           <Key>
             <PropertyRef Name="diagram_id" />
@@ -143,6 +112,22 @@
           <Property Name="id" Type="int" Nullable="false" />
           <Property Name="startTime" Type="varchar" MaxLength="10" Nullable="false" />
           <Property Name="endTime" Type="varchar" MaxLength="10" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Users">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="email" Type="varchar" MaxLength="30" Nullable="false" />
+          <Property Name="username" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="pass" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="fname" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="lname" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="phone" Type="varchar" MaxLength="30" Nullable="false" />
+          <Property Name="profPic" Type="varchar" MaxLength="500" Nullable="false" />
+          <Property Name="isActv" Type="bit" Nullable="false" />
+          <Property Name="roleId" Type="int" Nullable="false" />
+          <Property Name="credCardId" Type="int" />
         </EntityType>
         <Association Name="FK_CourseTerm_GolfCourse">
           <End Role="GolfCourse" Type="Self.GolfCourse" Multiplicity="1" />
@@ -165,18 +150,6 @@
             </Principal>
             <Dependent Role="CourseTerm">
               <PropertyRef Name="termId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Customer_CreditCard">
-          <End Role="CreditCard" Type="Self.CreditCard" Multiplicity="0..1" />
-          <End Role="Customer" Type="Self.Customer" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="CreditCard">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="Customer">
-              <PropertyRef Name="credCardId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -216,11 +189,11 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Rent_Customer">
-          <End Role="Customer" Type="Self.Customer" Multiplicity="1" />
+        <Association Name="FK_Rent_Users">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
           <End Role="Rent" Type="Self.Rent" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Customer">
+            <Principal Role="Users">
               <PropertyRef Name="id" />
             </Principal>
             <Dependent Role="Rent">
@@ -252,51 +225,43 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Function Name="fn_diagramobjects" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="int" />
-        <Function Name="sp_alterdiagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
-          <Parameter Name="owner_id" Type="int" Mode="In" />
-          <Parameter Name="version" Type="int" Mode="In" />
-          <Parameter Name="definition" Type="varbinary(max)" Mode="In" />
-        </Function>
-        <Function Name="sp_creatediagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
-          <Parameter Name="owner_id" Type="int" Mode="In" />
-          <Parameter Name="version" Type="int" Mode="In" />
-          <Parameter Name="definition" Type="varbinary(max)" Mode="In" />
-        </Function>
-        <Function Name="sp_dropdiagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
-          <Parameter Name="owner_id" Type="int" Mode="In" />
-        </Function>
-        <Function Name="sp_helpdiagramdefinition" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
-          <Parameter Name="owner_id" Type="int" Mode="In" />
-        </Function>
-        <Function Name="sp_helpdiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
-          <Parameter Name="owner_id" Type="int" Mode="In" />
-        </Function>
-        <Function Name="sp_renamediagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
-          <Parameter Name="owner_id" Type="int" Mode="In" />
-          <Parameter Name="new_diagramname" Type="nvarchar" Mode="In" />
-        </Function>
-        <Function Name="sp_upgraddiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Association Name="FK_Users_CreditCard">
+          <End Role="CreditCard" Type="Self.CreditCard" Multiplicity="0..1" />
+          <End Role="Users" Type="Self.Users" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CreditCard">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Users">
+              <PropertyRef Name="credCardId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Users_Role">
+          <End Role="Role" Type="Self.Role" Multiplicity="1" />
+          <End Role="Users" Type="Self.Users" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Role">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Users">
+              <PropertyRef Name="roleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="GolfClubMldDBModelStoreContainer">
-          <EntitySet Name="Admin" EntityType="Self.Admin" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CourseTerm" EntityType="Self.CourseTerm" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CourseType" EntityType="Self.CourseType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CreditCard" EntityType="Self.CreditCard" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Customer" EntityType="Self.Customer" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Equipment" EntityType="Self.Equipment" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EquipmentTypes" EntityType="Self.EquipmentTypes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GolfCourse" EntityType="Self.GolfCourse" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Manager" EntityType="Self.Manager" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Rent" EntityType="Self.Rent" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RentDetails" EntityType="Self.RentDetails" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Role" EntityType="Self.Role" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Term" EntityType="Self.Term" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_CourseTerm_GolfCourse" Association="Self.FK_CourseTerm_GolfCourse">
             <End Role="GolfCourse" EntitySet="GolfCourse" />
             <End Role="CourseTerm" EntitySet="CourseTerm" />
@@ -304,10 +269,6 @@
           <AssociationSet Name="FK_CourseTerm_Term" Association="Self.FK_CourseTerm_Term">
             <End Role="Term" EntitySet="Term" />
             <End Role="CourseTerm" EntitySet="CourseTerm" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Customer_CreditCard" Association="Self.FK_Customer_CreditCard">
-            <End Role="CreditCard" EntitySet="CreditCard" />
-            <End Role="Customer" EntitySet="Customer" />
           </AssociationSet>
           <AssociationSet Name="FK_Equipment_EquipmentTypes" Association="Self.FK_Equipment_EquipmentTypes">
             <End Role="EquipmentTypes" EntitySet="EquipmentTypes" />
@@ -321,8 +282,8 @@
             <End Role="CourseTerm" EntitySet="CourseTerm" />
             <End Role="Rent" EntitySet="Rent" />
           </AssociationSet>
-          <AssociationSet Name="FK_Rent_Customer" Association="Self.FK_Rent_Customer">
-            <End Role="Customer" EntitySet="Customer" />
+          <AssociationSet Name="FK_Rent_Users" Association="Self.FK_Rent_Users">
+            <End Role="Users" EntitySet="Users" />
             <End Role="Rent" EntitySet="Rent" />
           </AssociationSet>
           <AssociationSet Name="FK_RentDetails_Equipment" Association="Self.FK_RentDetails_Equipment">
@@ -332,6 +293,14 @@
           <AssociationSet Name="FK_RentDetails_Rent" Association="Self.FK_RentDetails_Rent">
             <End Role="Rent" EntitySet="Rent" />
             <End Role="RentDetails" EntitySet="RentDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Users_CreditCard" Association="Self.FK_Users_CreditCard">
+            <End Role="CreditCard" EntitySet="CreditCard" />
+            <End Role="Users" EntitySet="Users" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Users_Role" Association="Self.FK_Users_Role">
+            <End Role="Role" EntitySet="Role" />
+            <End Role="Users" EntitySet="Users" />
           </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
@@ -369,19 +338,18 @@
             <Parameter Name="new_diagramname" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="sp_upgraddiagrams" />
-          <EntitySet Name="Admin" EntityType="GolfClubMldDBModel.Admin" />
           <EntitySet Name="CourseTerm" EntityType="GolfClubMldDBModel.CourseTerm" />
           <EntitySet Name="CourseType" EntityType="GolfClubMldDBModel.CourseType" />
           <EntitySet Name="CreditCard" EntityType="GolfClubMldDBModel.CreditCard" />
-          <EntitySet Name="Customer" EntityType="GolfClubMldDBModel.Customer" />
           <EntitySet Name="Equipment" EntityType="GolfClubMldDBModel.Equipment" />
           <EntitySet Name="EquipmentTypes" EntityType="GolfClubMldDBModel.EquipmentTypes" />
           <EntitySet Name="GolfCourse" EntityType="GolfClubMldDBModel.GolfCourse" />
-          <EntitySet Name="Manager" EntityType="GolfClubMldDBModel.Manager" />
           <EntitySet Name="Rent" EntityType="GolfClubMldDBModel.Rent" />
           <EntitySet Name="RentDetails" EntityType="GolfClubMldDBModel.RentDetails" />
+          <EntitySet Name="Role" EntityType="GolfClubMldDBModel.Role" />
           <EntitySet Name="sysdiagrams" EntityType="GolfClubMldDBModel.sysdiagrams" />
           <EntitySet Name="Term" EntityType="GolfClubMldDBModel.Term" />
+          <EntitySet Name="Users" EntityType="GolfClubMldDBModel.Users" />
           <AssociationSet Name="FK_CourseTerm_GolfCourse" Association="GolfClubMldDBModel.FK_CourseTerm_GolfCourse">
             <End Role="GolfCourse" EntitySet="GolfCourse" />
             <End Role="CourseTerm" EntitySet="CourseTerm" />
@@ -398,13 +366,9 @@
             <End Role="CourseType" EntitySet="CourseType" />
             <End Role="GolfCourse" EntitySet="GolfCourse" />
           </AssociationSet>
-          <AssociationSet Name="FK_Customer_CreditCard" Association="GolfClubMldDBModel.FK_Customer_CreditCard">
+          <AssociationSet Name="FK_Users_CreditCard" Association="GolfClubMldDBModel.FK_Users_CreditCard">
             <End Role="CreditCard" EntitySet="CreditCard" />
-            <End Role="Customer" EntitySet="Customer" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Rent_Customer" Association="GolfClubMldDBModel.FK_Rent_Customer">
-            <End Role="Customer" EntitySet="Customer" />
-            <End Role="Rent" EntitySet="Rent" />
+            <End Role="Users" EntitySet="Users" />
           </AssociationSet>
           <AssociationSet Name="FK_Equipment_EquipmentTypes" Association="GolfClubMldDBModel.FK_Equipment_EquipmentTypes">
             <End Role="EquipmentTypes" EntitySet="EquipmentTypes" />
@@ -414,9 +378,17 @@
             <End Role="Equipment" EntitySet="Equipment" />
             <End Role="RentDetails" EntitySet="RentDetails" />
           </AssociationSet>
+          <AssociationSet Name="FK_Rent_Users" Association="GolfClubMldDBModel.FK_Rent_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Rent" EntitySet="Rent" />
+          </AssociationSet>
           <AssociationSet Name="FK_RentDetails_Rent" Association="GolfClubMldDBModel.FK_RentDetails_Rent">
             <End Role="Rent" EntitySet="Rent" />
             <End Role="RentDetails" EntitySet="RentDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Users_Role" Association="GolfClubMldDBModel.FK_Users_Role">
+            <End Role="Role" EntitySet="Role" />
+            <End Role="Users" EntitySet="Users" />
           </AssociationSet>
           </EntityContainer>
         <ComplexType Name="sp_helpdiagramdefinition_Result">
@@ -430,18 +402,6 @@
           <Property Type="String" Name="Owner" Nullable="true" MaxLength="128" />
           <Property Type="Int32" Name="OwnerID" Nullable="false" />
         </ComplexType>
-        <EntityType Name="Admin">
-          <Key>
-            <PropertyRef Name="email" />
-          </Key>
-          <Property Name="email" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
-          <Property Name="username" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="pass" Type="String" MaxLength="100" FixedLength="true" Unicode="false" />
-          <Property Name="fname" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="lname" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="phone" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
-          <Property Name="profPic" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
-        </EntityType>
         <EntityType Name="CourseTerm">
           <Key>
             <PropertyRef Name="id" />
@@ -474,28 +434,12 @@
           <Key>
             <PropertyRef Name="id" />
           </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="carNum" Type="Int64" Nullable="false" />
           <Property Name="own" Type="String" Nullable="false" MaxLength="80" FixedLength="false" Unicode="false" />
-          <Property Name="expiry" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="expiry" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="cvv" Type="Int32" Nullable="false" />
-          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <NavigationProperty Name="Customer" Relationship="GolfClubMldDBModel.FK_Customer_CreditCard" FromRole="CreditCard" ToRole="Customer" />
-        </EntityType>
-        <EntityType Name="Customer">
-          <Key>
-            <PropertyRef Name="id" />
-          </Key>
-          <Property Name="email" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
-          <Property Name="pass" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="fname" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="lname" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="phone" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
-          <Property Name="profPic" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
-          <Property Name="isActv" Type="Boolean" Nullable="false" />
-          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="credCardId" Type="Int32" />
-          <NavigationProperty Name="CreditCard" Relationship="GolfClubMldDBModel.FK_Customer_CreditCard" FromRole="Customer" ToRole="CreditCard" />
-          <NavigationProperty Name="Rent" Relationship="GolfClubMldDBModel.FK_Rent_Customer" FromRole="Customer" ToRole="Rent" />
+          <NavigationProperty Name="Users" Relationship="GolfClubMldDBModel.FK_Users_CreditCard" FromRole="CreditCard" ToRole="Users" />
         </EntityType>
         <EntityType Name="Equipment">
           <Key>
@@ -532,18 +476,6 @@
           <NavigationProperty Name="CourseTerm" Relationship="GolfClubMldDBModel.FK_CourseTerm_GolfCourse" FromRole="GolfCourse" ToRole="CourseTerm" />
           <NavigationProperty Name="CourseType" Relationship="GolfClubMldDBModel.FK_GolfCourse_CourseType" FromRole="GolfCourse" ToRole="CourseType" />
         </EntityType>
-        <EntityType Name="Manager">
-          <Key>
-            <PropertyRef Name="email" />
-          </Key>
-          <Property Name="email" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
-          <Property Name="username" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="pass" Type="String" MaxLength="100" FixedLength="true" Unicode="false" />
-          <Property Name="fname" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="lname" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="phone" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
-          <Property Name="profPic" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
-        </EntityType>
         <EntityType Name="Rent">
           <Key>
             <PropertyRef Name="id" />
@@ -554,7 +486,7 @@
           <Property Name="courTrmId" Type="Int32" Nullable="false" />
           <Property Name="custId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="CourseTerm" Relationship="GolfClubMldDBModel.FK_Rent_CourseTerm" FromRole="Rent" ToRole="CourseTerm" />
-          <NavigationProperty Name="Customer" Relationship="GolfClubMldDBModel.FK_Rent_Customer" FromRole="Rent" ToRole="Customer" />
+          <NavigationProperty Name="Users" Relationship="GolfClubMldDBModel.FK_Rent_Users" FromRole="Rent" ToRole="Users" />
           <NavigationProperty Name="RentDetails" Relationship="GolfClubMldDBModel.FK_RentDetails_Rent" FromRole="Rent" ToRole="RentDetails" />
         </EntityType>
         <EntityType Name="RentDetails">
@@ -567,6 +499,14 @@
           <Property Name="amount" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Equipment" Relationship="GolfClubMldDBModel.FK_RentDetails_Equipment" FromRole="RentDetails" ToRole="Equipment" />
           <NavigationProperty Name="Rent" Relationship="GolfClubMldDBModel.FK_RentDetails_Rent" FromRole="RentDetails" ToRole="Rent" />
+        </EntityType>
+        <EntityType Name="Role">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Users" Relationship="GolfClubMldDBModel.FK_Users_Role" FromRole="Role" ToRole="Users" />
         </EntityType>
         <EntityType Name="sysdiagrams">
           <Key>
@@ -586,6 +526,25 @@
           <Property Name="startTime" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="endTime" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="CourseTerm" Relationship="GolfClubMldDBModel.FK_CourseTerm_Term" FromRole="Term" ToRole="CourseTerm" />
+        </EntityType>
+        <EntityType Name="Users">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="email" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="username" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="pass" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="fname" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="lname" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="phone" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="profPic" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="isActv" Type="Boolean" Nullable="false" />
+          <Property Name="roleId" Type="Int32" Nullable="false" />
+          <Property Name="credCardId" Type="Int32" />
+          <NavigationProperty Name="CreditCard" Relationship="GolfClubMldDBModel.FK_Users_CreditCard" FromRole="Users" ToRole="CreditCard" />
+          <NavigationProperty Name="Rent" Relationship="GolfClubMldDBModel.FK_Rent_Users" FromRole="Users" ToRole="Rent" />
+          <NavigationProperty Name="Role" Relationship="GolfClubMldDBModel.FK_Users_Role" FromRole="Users" ToRole="Role" />
         </EntityType>
         <Association Name="FK_CourseTerm_GolfCourse">
           <End Type="GolfClubMldDBModel.GolfCourse" Role="GolfCourse" Multiplicity="1" />
@@ -635,27 +594,15 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Customer_CreditCard">
+        <Association Name="FK_Users_CreditCard">
           <End Type="GolfClubMldDBModel.CreditCard" Role="CreditCard" Multiplicity="0..1" />
-          <End Type="GolfClubMldDBModel.Customer" Role="Customer" Multiplicity="*" />
+          <End Type="GolfClubMldDBModel.Users" Role="Users" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="CreditCard">
               <PropertyRef Name="id" />
             </Principal>
-            <Dependent Role="Customer">
+            <Dependent Role="Users">
               <PropertyRef Name="credCardId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Rent_Customer">
-          <End Type="GolfClubMldDBModel.Customer" Role="Customer" Multiplicity="1" />
-          <End Type="GolfClubMldDBModel.Rent" Role="Rent" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Customer">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="Rent">
-              <PropertyRef Name="custId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -683,6 +630,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Rent_Users">
+          <End Type="GolfClubMldDBModel.Users" Role="Users" Multiplicity="1" />
+          <End Type="GolfClubMldDBModel.Rent" Role="Rent" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Rent">
+              <PropertyRef Name="custId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_RentDetails_Rent">
           <End Type="GolfClubMldDBModel.Rent" Role="Rent" Multiplicity="1" />
           <End Type="GolfClubMldDBModel.RentDetails" Role="RentDetails" Multiplicity="*" />
@@ -695,49 +654,24 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Users_Role">
+          <End Type="GolfClubMldDBModel.Role" Role="Role" Multiplicity="1" />
+          <End Type="GolfClubMldDBModel.Users" Role="Users" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Role">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Users">
+              <PropertyRef Name="roleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="GolfClubMldDBModelStoreContainer" CdmEntityContainer="GolfClubMldDBEntities">
-          <FunctionImportMapping FunctionImportName="sp_alterdiagram" FunctionName="GolfClubMldDBModel.Store.sp_alterdiagram" />
-          <FunctionImportMapping FunctionImportName="sp_creatediagram" FunctionName="GolfClubMldDBModel.Store.sp_creatediagram" />
-          <FunctionImportMapping FunctionImportName="sp_dropdiagram" FunctionName="GolfClubMldDBModel.Store.sp_dropdiagram" />
-          <FunctionImportMapping FunctionImportName="sp_helpdiagramdefinition" FunctionName="GolfClubMldDBModel.Store.sp_helpdiagramdefinition">
-            <ResultMapping>
-              <ComplexTypeMapping TypeName="GolfClubMldDBModel.sp_helpdiagramdefinition_Result">
-                <ScalarProperty Name="version" ColumnName="version" />
-                <ScalarProperty Name="definition" ColumnName="definition" />
-              </ComplexTypeMapping>
-            </ResultMapping>
-          </FunctionImportMapping>
-          <FunctionImportMapping FunctionImportName="sp_helpdiagrams" FunctionName="GolfClubMldDBModel.Store.sp_helpdiagrams">
-            <ResultMapping>
-              <ComplexTypeMapping TypeName="GolfClubMldDBModel.sp_helpdiagrams_Result">
-                <ScalarProperty Name="Database" ColumnName="Database" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="Owner" ColumnName="Owner" />
-                <ScalarProperty Name="OwnerID" ColumnName="OwnerID" />
-              </ComplexTypeMapping>
-            </ResultMapping>
-          </FunctionImportMapping>
-          <FunctionImportMapping FunctionImportName="sp_renamediagram" FunctionName="GolfClubMldDBModel.Store.sp_renamediagram" />
-          <FunctionImportMapping FunctionImportName="sp_upgraddiagrams" FunctionName="GolfClubMldDBModel.Store.sp_upgraddiagrams" />
-          <EntitySetMapping Name="Admin">
-            <EntityTypeMapping TypeName="GolfClubMldDBModel.Admin">
-              <MappingFragment StoreEntitySet="Admin">
-                <ScalarProperty Name="profPic" ColumnName="profPic" />
-                <ScalarProperty Name="phone" ColumnName="phone" />
-                <ScalarProperty Name="lname" ColumnName="lname" />
-                <ScalarProperty Name="fname" ColumnName="fname" />
-                <ScalarProperty Name="pass" ColumnName="pass" />
-                <ScalarProperty Name="username" ColumnName="username" />
-                <ScalarProperty Name="email" ColumnName="email" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="CourseTerm">
             <EntityTypeMapping TypeName="GolfClubMldDBModel.CourseTerm">
               <MappingFragment StoreEntitySet="CourseTerm">
@@ -767,26 +701,11 @@
           <EntitySetMapping Name="CreditCard">
             <EntityTypeMapping TypeName="GolfClubMldDBModel.CreditCard">
               <MappingFragment StoreEntitySet="CreditCard">
-                <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="cvv" ColumnName="cvv" />
                 <ScalarProperty Name="expiry" ColumnName="expiry" />
                 <ScalarProperty Name="own" ColumnName="own" />
                 <ScalarProperty Name="carNum" ColumnName="carNum" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Customer">
-            <EntityTypeMapping TypeName="GolfClubMldDBModel.Customer">
-              <MappingFragment StoreEntitySet="Customer">
-                <ScalarProperty Name="credCardId" ColumnName="credCardId" />
                 <ScalarProperty Name="id" ColumnName="id" />
-                <ScalarProperty Name="isActv" ColumnName="isActv" />
-                <ScalarProperty Name="profPic" ColumnName="profPic" />
-                <ScalarProperty Name="phone" ColumnName="phone" />
-                <ScalarProperty Name="lname" ColumnName="lname" />
-                <ScalarProperty Name="fname" ColumnName="fname" />
-                <ScalarProperty Name="pass" ColumnName="pass" />
-                <ScalarProperty Name="email" ColumnName="email" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -823,19 +742,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Manager">
-            <EntityTypeMapping TypeName="GolfClubMldDBModel.Manager">
-              <MappingFragment StoreEntitySet="Manager">
-                <ScalarProperty Name="profPic" ColumnName="profPic" />
-                <ScalarProperty Name="phone" ColumnName="phone" />
-                <ScalarProperty Name="lname" ColumnName="lname" />
-                <ScalarProperty Name="fname" ColumnName="fname" />
-                <ScalarProperty Name="pass" ColumnName="pass" />
-                <ScalarProperty Name="username" ColumnName="username" />
-                <ScalarProperty Name="email" ColumnName="email" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Rent">
             <EntityTypeMapping TypeName="GolfClubMldDBModel.Rent">
               <MappingFragment StoreEntitySet="Rent">
@@ -853,6 +759,14 @@
                 <ScalarProperty Name="amount" ColumnName="amount" />
                 <ScalarProperty Name="rentId" ColumnName="rentId" />
                 <ScalarProperty Name="equipId" ColumnName="equipId" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Role">
+            <EntityTypeMapping TypeName="GolfClubMldDBModel.Role">
+              <MappingFragment StoreEntitySet="Role">
+                <ScalarProperty Name="name" ColumnName="name" />
                 <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -877,7 +791,24 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          </EntityContainerMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="GolfClubMldDBModel.Users">
+              <MappingFragment StoreEntitySet="Users">
+                <ScalarProperty Name="credCardId" ColumnName="credCardId" />
+                <ScalarProperty Name="roleId" ColumnName="roleId" />
+                <ScalarProperty Name="isActv" ColumnName="isActv" />
+                <ScalarProperty Name="profPic" ColumnName="profPic" />
+                <ScalarProperty Name="phone" ColumnName="phone" />
+                <ScalarProperty Name="lname" ColumnName="lname" />
+                <ScalarProperty Name="fname" ColumnName="fname" />
+                <ScalarProperty Name="pass" ColumnName="pass" />
+                <ScalarProperty Name="username" ColumnName="username" />
+                <ScalarProperty Name="email" ColumnName="email" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
   </edmx:Runtime>

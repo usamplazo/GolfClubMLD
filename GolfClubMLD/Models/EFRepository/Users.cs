@@ -12,26 +12,29 @@ namespace GolfClubMLD.Models.EFRepository
     using System;
     using System.Collections.Generic;
     
-    public partial class Customer
+    public partial class Users
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Customer()
+        public Users()
         {
             this.Rent = new HashSet<Rent>();
         }
     
+        public int id { get; set; }
         public string email { get; set; }
+        public string username { get; set; }
         public string pass { get; set; }
         public string fname { get; set; }
         public string lname { get; set; }
         public string phone { get; set; }
         public string profPic { get; set; }
         public bool isActv { get; set; }
-        public int id { get; set; }
+        public int roleId { get; set; }
         public Nullable<int> credCardId { get; set; }
     
         public virtual CreditCard CreditCard { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Rent> Rent { get; set; }
+        public virtual Role Role { get; set; }
     }
 }

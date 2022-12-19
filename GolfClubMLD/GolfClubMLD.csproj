@@ -154,22 +154,31 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\MappingProfile.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AuthentificationController.cs" />
     <Compile Include="Controllers\CourseRentController.cs" />
+    <Compile Include="Controllers\CustomerController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\ActionFilters\MyExpirePage.cs" />
-    <Compile Include="Models\AdminBO.cs" />
+    <Compile Include="Models\Classes\RoleAuthorizeAttribute .cs" />
+    <Compile Include="Models\Classes\MyExpirePage.cs" />
     <Compile Include="Models\CourseTermBO.cs" />
     <Compile Include="Models\CourseTypeBO.cs" />
     <Compile Include="Models\CreditCardBO.cs" />
-    <Compile Include="Models\CustomerBO.cs" />
-    <Compile Include="Models\EFRepository\AccountRepository.cs" />
-    <Compile Include="Models\EFRepository\Admin.cs">
+    <Compile Include="Models\CustomRoleProvider.cs" />
+    <Compile Include="Models\EFRepository\Role.cs">
       <DependentUpon>GolfClubMldModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\EFRepository\sysdiagrams.cs">
+      <DependentUpon>GolfClubMldModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\EFRepository\Users.cs">
+      <DependentUpon>GolfClubMldModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\RoleBO.cs" />
+    <Compile Include="Models\UsersBO.cs" />
+    <Compile Include="Models\EFRepository\AuthentificationRepository.cs" />
     <Compile Include="Models\EFRepository\CourseTerm.cs">
       <DependentUpon>GolfClubMldModel.tt</DependentUpon>
     </Compile>
@@ -179,9 +188,7 @@
     <Compile Include="Models\EFRepository\CreditCard.cs">
       <DependentUpon>GolfClubMldModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\EFRepository\Customer.cs">
-      <DependentUpon>GolfClubMldModel.tt</DependentUpon>
-    </Compile>
+    <Compile Include="Models\EFRepository\CustomerRepository.cs" />
     <Compile Include="Models\EFRepository\Equipment.cs">
       <DependentUpon>GolfClubMldModel.tt</DependentUpon>
     </Compile>
@@ -207,9 +214,6 @@
       <DependentUpon>GolfClubMldModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\EFRepository\HomeRepository.cs" />
-    <Compile Include="Models\EFRepository\Manager.cs">
-      <DependentUpon>GolfClubMldModel.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\EFRepository\Rent.cs">
       <DependentUpon>GolfClubMldModel.tt</DependentUpon>
     </Compile>
@@ -222,18 +226,15 @@
     <Compile Include="Models\EFRepository\sp_helpdiagrams_Result.cs">
       <DependentUpon>GolfClubMldModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\EFRepository\sysdiagrams.cs">
-      <DependentUpon>GolfClubMldModel.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\EFRepository\Term.cs">
       <DependentUpon>GolfClubMldModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\EquipmentBO.cs" />
     <Compile Include="Models\EquipmentTypesBO.cs" />
     <Compile Include="Models\GolfCourseBO.cs" />
-    <Compile Include="Models\Interfaces\IAccountRepository.cs" />
+    <Compile Include="Models\Interfaces\IAuthentificationRepository.cs" />
+    <Compile Include="Models\Interfaces\ICustomerRepository.cs" />
     <Compile Include="Models\Interfaces\IHomeRepository.cs" />
-    <Compile Include="Models\ManagerBO.cs" />
     <Compile Include="Models\RentDetailBO.cs" />
     <Compile Include="Models\RentBO.cs" />
     <Compile Include="Models\TermBO.cs" />
@@ -296,11 +297,12 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Shared\GolfCourses.cshtml" />
     <Content Include="Views\Home\HomeEquipment.cshtml" />
-    <Content Include="Views\Account\Login.cshtml" />
-    <Content Include="Views\Account\CustDashBoard.cshtml" />
-    <Content Include="Views\Account\AddCreditCard.cshtml" />
-    <Content Include="Views\Account\Register.cshtml" />
+    <Content Include="Views\Authentification\Login.cshtml" />
+    <Content Include="Views\Authentification\CustDashBoard.cshtml" />
+    <Content Include="Views\Authentification\AddCreditCard.cshtml" />
+    <Content Include="Views\Authentification\Register.cshtml" />
     <Content Include="Views\Home\Details.cshtml" />
+    <Content Include="Views\Customer\ReserveCourse.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -325,6 +327,10 @@
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>
+    </ApplicationIcon>
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />

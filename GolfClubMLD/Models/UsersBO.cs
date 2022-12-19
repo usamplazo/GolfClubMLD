@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Web;
 
 namespace GolfClubMLD.Models
 {
-    public class CustomerBO
+    public class UsersBO
     {
         public int Id { get; set; }
 
@@ -16,10 +12,15 @@ namespace GolfClubMLD.Models
         public string Email { get; set; }
 
         [Required(ErrorMessage = "Morate uneti lozinku")]
+        [Display(Name = "Korisnicko ime")]
+        //[StringLength(10, ErrorMessage = "Korisnicko ime \"{0}\" mora imati {2} karaktera"), MinLength(5, ErrorMessage = "Korisnicko ime mora imati minimum 5 karaktera")]
+        public string Username { get; set; }
+
+        [Required(ErrorMessage = "Morate uneti lozinku")]
         [Display(Name = "Lozinka")]
         [DataType(DataType.Password)]
-        [StringLength(100, ErrorMessage = "Lozinka \"{0}\" mora imati {2} karaktera"), MinLength(5, ErrorMessage = "Lozinka mora imati minimum 5 karaktera")]
-        [RegularExpression(@"^([a-zA-Z0-9@*#]{5,15})$" , ErrorMessage = "Lozinka mora da sadrzi 8 karaktera, velika slova, mala slova i sprecijalne karaktere")]
+        //[StringLength(100, ErrorMessage = "Lozinka \"{0}\" mora imati {2} karaktera"), MinLength(5, ErrorMessage = "Lozinka mora imati minimum 5 karaktera")]
+        //[RegularExpression(@"^([a-zA-Z0-9@*#]{5,15})$" , ErrorMessage = "Lozinka mora da sadrzi 8 karaktera, velika slova, mala slova i sprecijalne karaktere")]
         public string Pass { get; set; }
 
         [NotMapped]
@@ -41,6 +42,8 @@ namespace GolfClubMLD.Models
         public string Phone { get; set; }
         public string ProfPic { get; set; }
         public bool IsActv { get; set; }
+        public int RoleId { get; set; }
+        public RoleBO Role { get; set; }
         public int CredCardId { get; set; }
         public CreditCardBO CreditCard { get; set; }
     }

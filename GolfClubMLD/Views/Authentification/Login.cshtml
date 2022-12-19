@@ -1,4 +1,4 @@
-﻿@model GolfClubMLD.Models.CustomerBO
+﻿@model GolfClubMLD.Models.UsersBO
 
 @{
     ViewBag.Title = "Login";
@@ -7,7 +7,7 @@
 
 <h2>Login</h2>
 
-@using (Html.BeginForm("Login", "Account", FormMethod.Post))
+@using (Html.BeginForm("Login", "Authentification", FormMethod.Post))
 {
     @Html.AntiForgeryToken()
     

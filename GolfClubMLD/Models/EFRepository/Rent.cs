@@ -27,7 +27,7 @@ namespace GolfClubMLD.Models.EFRepository
         public int custId { get; set; }
     
         public virtual CourseTerm CourseTerm { get; set; }
-        public virtual Customer Customer { get; set; }
+        public virtual Users Users { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<RentDetails> RentDetails { get; set; }
     }

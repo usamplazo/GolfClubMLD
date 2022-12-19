@@ -27,19 +27,18 @@ namespace GolfClubMLD.Models.EFRepository
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<Admin> Admin { get; set; }
         public virtual DbSet<CourseTerm> CourseTerm { get; set; }
         public virtual DbSet<CourseType> CourseType { get; set; }
         public virtual DbSet<CreditCard> CreditCard { get; set; }
-        public virtual DbSet<Customer> Customer { get; set; }
         public virtual DbSet<Equipment> Equipment { get; set; }
         public virtual DbSet<EquipmentTypes> EquipmentTypes { get; set; }
         public virtual DbSet<GolfCourse> GolfCourse { get; set; }
-        public virtual DbSet<Manager> Manager { get; set; }
         public virtual DbSet<Rent> Rent { get; set; }
         public virtual DbSet<RentDetails> RentDetails { get; set; }
+        public virtual DbSet<Role> Role { get; set; }
         public virtual DbSet<sysdiagrams> sysdiagrams { get; set; }
         public virtual DbSet<Term> Term { get; set; }
+        public virtual DbSet<Users> Users { get; set; }
     
         public virtual int sp_alterdiagram(string diagramname, Nullable<int> owner_id, Nullable<int> version, byte[] definition)
         {
@@ -143,7 +142,5 @@ namespace GolfClubMLD.Models.EFRepository
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("sp_upgraddiagrams");
         }
-
-        public System.Data.Entity.DbSet<GolfClubMLD.Models.GolfCourseBO> GolfCourseBOes { get; set; }
     }
 }

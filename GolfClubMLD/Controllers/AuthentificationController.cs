@@ -13,13 +13,13 @@ using System.Web.Security;
 
 namespace GolfClubMLD.Controllers
 {
-    public class AccountController : Controller
+    public class AuthentificationController : Controller
     {
 
-        private IAccountRepository _accRepo;
-        public AccountController()
+        private IAuthentificationRepository _accRepo;
+        public AuthentificationController()
         {
-            _accRepo = new AccountRepository();
+            _accRepo = new AuthentificationRepository();
         }
         [HttpGet]
         public ActionResult Login()
@@ -43,11 +43,13 @@ namespace GolfClubMLD.Controllers
                 {
                     ModelState.AddModelError("pass", "Morate uneti lozniku");
                 }
-                CustomerBO customer = await _accRepo.LoginCustomer(email, pass);
+                UsersBO customer = await _accRepo.LoginCustomer(email, pass);
                 if (customer != null)
                 {
+                    FormsAuthentication.SetAuthCookie(customer.Username, true);
                     Session["LoginId"] = customer.Id.ToString();
                     Session["LoginEmail"] = customer.Email.ToString();
+                   
                     return RedirectToAction("Index","Home");
                     
                 }
@@ -80,8 +82,7 @@ namespace GolfClubMLD.Controllers
         public ActionResult Logout()
         {
             FormsAuthentication.SignOut();
-            Session["LoginId"] = null;
-            Session["LoginEmail"] = null;
+            Session.Clear();
             return RedirectToAction("Login");
         }
 

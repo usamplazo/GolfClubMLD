@@ -7,7 +7,7 @@ namespace GolfClubMLD.Models.ViewModel
 {
     public class CustomerCreditCardViewModel
     {
-        public CustomerBO Cust { get; set; }
+        public UsersBO Cust { get; set; }
         public CreditCardBO CredCard { get; set; }
     }
 }
