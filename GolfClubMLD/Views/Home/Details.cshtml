@@ -67,7 +67,7 @@
             @Html.DisplayFor(model => model.CourseType.NumOfHoles)
         </dd>
         <dd>
-                @Html.ActionLink("Rezervisi", "ReserveCourse", "Customer", routeValues: new { id = Model.Id }, htmlAttributes: new { @class="btn btn-success"})
+                @Html.ActionLink("Rezervisi", "ReserveCourse", "Customer", routeValues: new { courseId = Model.Id }, htmlAttributes: new { @class="btn btn-success"})
         </dd>
     </dl>
 </div>

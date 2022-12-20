@@ -20,11 +20,23 @@ namespace GolfClubMLD.Controllers
         }
         [HttpGet]
         [RoleAuthorize(Roles.Customer)]
-        public async Task<ActionResult> ReserveCourse(int courseId)
+        public async Task<ActionResult> ReserveCourse(int courseId, string selDay = "Mon")
         {
-            List<CourseTermBO> selCourseTerms = await _custRepo.GetTermsForSelCourse(courseId);
-            if(selCourseTerms != null)
-                return View(selCourseTerms);
+            List<CourseTermBO> allCourseTerms = await _custRepo.GetTermsForSelCourse(courseId);
+            if (allCourseTerms != null)
+            {
+                string[] daysOfWeek = new string[7] { "Mo", "Tue", "Wen", "Thu", "Fri", "Sat", "Sun" };
+                ViewData["DaysOfWeek"] = daysOfWeek;
+                List<CourseTermBO> selDayTerms = new List<CourseTermBO>();
+                    foreach (var ct in allCourseTerms)
+                    {
+                    if (ct.dayOfW == selDay)
+                        selDayTerms.Add(ct);
+                    }
+                return View(selDayTerms);
+
+            }
+            //Error handeling (nemamo termina za teren)
             return View();
         }
         [HttpPost]
