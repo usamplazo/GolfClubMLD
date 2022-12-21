@@ -1,16 +1,20 @@
-﻿@model IEnumerable<GolfClubMLD.Models.CourseTermBO>
-
+﻿@model List<GolfClubMLD.Models.CourseTermBO>
+@using GolfClubMLD.Models
 @{
     ViewBag.Title = "ReserveCourse";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h2>ReserveCourse</h2>
+@{ var mod = Model.First();
+    string[] days = new string[7] {"Monday", "Tuesday", "Wendsday", "Thursday", "Friday", "Saturday", "Sunday"};
+    }
 <form asp-controller="Customer" asp-action="ReserveCourse" method="get">
+    <input type="hidden" name="courseId" value="@mod.CourseId" />
     <select name="selDay" id="selDay" onchange="this.form.submit();">
         <option value="Mon" selected>Monday</option>
         <option value="Tue">Tuesday</option>
-        <option value="Wed">Wednesday</option>
+        <option value="Wen">Wednesday</option>
         <option value="Thu">Thursday</option>
         <option value="Fri">Friday</option>
         <option value="Sat">Saturday</option>
