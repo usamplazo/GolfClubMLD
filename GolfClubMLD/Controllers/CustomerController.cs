@@ -39,14 +39,13 @@ namespace GolfClubMLD.Controllers
                         selDayTerms.Add(ct);
                     }
                 return View(selDayTerms);
-
             }
             //Error handeling (nemamo termina za teren)
             return View();
         }
         [HttpPost]
         [RoleAuthorize(Roles.Customer)]
-        public async Task<ActionResult> ReserveCourse()
+        public async Task<ActionResult> ReserveCourse(string courseTerm)
         {
             return View();
         }
