@@ -8,6 +8,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using PagedList;
 using System.Web.Mvc;
+using GolfClubMLD.Models.Classes;
+using GolfClubMLD.Models.ViewModel;
 
 namespace GolfClubMLD.Controllers
 {

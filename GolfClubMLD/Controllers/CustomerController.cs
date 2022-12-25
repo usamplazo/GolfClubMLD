@@ -47,7 +47,8 @@ namespace GolfClubMLD.Controllers
         [RoleAuthorize(Roles.Customer)]
         public async Task<ActionResult> ReserveCourse(string courseTerm)
         {
-            return View();
+            Session["PickedCourseTermId"] = courseTerm;
+            return RedirectToAction("HomeEquipment", "Home", courseTerm);
         }
     }
 }
