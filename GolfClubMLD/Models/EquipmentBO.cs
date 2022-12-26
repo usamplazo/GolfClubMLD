@@ -12,7 +12,6 @@ namespace GolfClubMLD.Models
         public string PicUrl { get; set; }
         public string Descr { get; set; }
         public double Price { get; set; }
-        public int Amount { get; set; }
         public int EquipmentTypeId { get; set; }
         public EquipmentTypesBO EquipmentType { get; set; }
     }

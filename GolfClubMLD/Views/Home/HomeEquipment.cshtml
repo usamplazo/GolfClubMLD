@@ -36,9 +36,6 @@ Layout = "~/Views/Shared/_Layout.cshtml";
         @Html.DisplayNameFor(model => model.Price)
     </th>
     <th>
-        @Html.DisplayNameFor(model => model.Amount)
-    </th>
-    <th>
         @Html.DisplayNameFor(model => model.EquipmentTypeId)
     </th>
     <th></th>
@@ -59,9 +56,6 @@ Layout = "~/Views/Shared/_Layout.cshtml";
         @Html.DisplayFor(modelItem => item.Price)
     </td>
     <td>
-        @Html.DisplayFor(modelItem => item.Amount)
-    </td>
-    <td>
         @Html.DisplayFor(modelItem => item.EquipmentTypeId)
     </td>
     <td>
@@ -75,6 +69,9 @@ Layout = "~/Views/Shared/_Layout.cshtml";
 </div>
 Selektovano
 <div id="selEquip">
+    <form asp-controller="Customer" asp-action="" method="post">
+        <input type="submit"/>
+    </form>
 </div>
 <script type="text/javascript">
     function GetDynamicListItem(value) {

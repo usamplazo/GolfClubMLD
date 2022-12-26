@@ -48,7 +48,6 @@
           <Property Name="picUrl" Type="varchar" MaxLength="500" Nullable="false" />
           <Property Name="descr" Type="varchar" MaxLength="500" Nullable="false" />
           <Property Name="price" Type="float" Nullable="false" />
-          <Property Name="amount" Type="int" Nullable="false" />
           <Property Name="equipmentTypId" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="EquipmentTypes">
@@ -450,7 +449,6 @@
           <Property Name="picUrl" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
           <Property Name="descr" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
           <Property Name="price" Type="Double" Nullable="false" />
-          <Property Name="amount" Type="Int32" Nullable="false" />
           <Property Name="equipmentTypId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="EquipmentTypes" Relationship="GolfClubMldDBModel.FK_Equipment_EquipmentTypes" FromRole="Equipment" ToRole="EquipmentTypes" />
           <NavigationProperty Name="RentDetails" Relationship="GolfClubMldDBModel.FK_RentDetails_Equipment" FromRole="Equipment" ToRole="RentDetails" />
@@ -713,7 +711,6 @@
             <EntityTypeMapping TypeName="GolfClubMldDBModel.Equipment">
               <MappingFragment StoreEntitySet="Equipment">
                 <ScalarProperty Name="equipmentTypId" ColumnName="equipmentTypId" />
-                <ScalarProperty Name="amount" ColumnName="amount" />
                 <ScalarProperty Name="price" ColumnName="price" />
                 <ScalarProperty Name="descr" ColumnName="descr" />
                 <ScalarProperty Name="picUrl" ColumnName="picUrl" />

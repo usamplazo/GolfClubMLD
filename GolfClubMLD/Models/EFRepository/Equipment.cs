@@ -25,7 +25,6 @@ namespace GolfClubMLD.Models.EFRepository
         public string picUrl { get; set; }
         public string descr { get; set; }
         public double price { get; set; }
-        public int amount { get; set; }
         public int equipmentTypId { get; set; }
     
         public virtual EquipmentTypes EquipmentTypes { get; set; }
