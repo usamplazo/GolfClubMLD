@@ -37,7 +37,7 @@
     <select name="CourseTerm">
         @foreach (var ct in Model)
         {
-            <option value="@ct.TermId">@ct.Term.StartTime - @ct.Term.EndTime</option>
+            <option value="@ct.Id">@ct.Term.StartTime - @ct.Term.EndTime</option>
         }
     </select>
     <input type="submit" value="Potvrdi" />

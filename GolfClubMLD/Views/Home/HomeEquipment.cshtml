@@ -8,70 +8,61 @@ Layout = "~/Views/Shared/_Layout.cshtml";
 <h2>EquipmentALL</h2>
 
 <div class="row">
-<div class="col-md-4">
-<div class="row">
-@{
-        var equipTypes = (List<EquipmentTypesBO>)ViewData["equipTypes"];
-        int numOfTypes = equipTypes.Count;
-        foreach (var et in equipTypes)
-        {
-    <div class="col-md-@numOfTypes" name="@et.Id">@Html.ActionLink(@et.Name, "HomeEquipment", "Home", new { typeId = et.Id }, new { @class = "link" })</div>
-}
-}
-</div>
-</div>
-<div class="col-md-8">
-<table class="table">
-<tr>
-    <th>
-        @Html.DisplayNameFor(model => model.Name)
-    </th>
-    <th>
-        @Html.DisplayNameFor(model => model.PicUrl)
-    </th>
-    <th>
-        @Html.DisplayNameFor(model => model.Descr)
-    </th>
-    <th>
-        @Html.DisplayNameFor(model => model.Price)
-    </th>
-    <th>
-        @Html.DisplayNameFor(model => model.EquipmentTypeId)
-    </th>
-    <th></th>
-</tr>
-
-@foreach (var item in Model) {
-<tr>
-    <td>
-        @Html.DisplayFor(modelItem => item.Name)
-    </td>
-    <td>
-        @Html.DisplayFor(modelItem => item.PicUrl)
-    </td>
-    <td>
-        @Html.DisplayFor(modelItem => item.Descr)
-    </td>
-    <td>
-        @Html.DisplayFor(modelItem => item.Price)
-    </td>
-    <td>
-        @Html.DisplayFor(modelItem => item.EquipmentTypeId)
-    </td>
-    <td>
-        <input type="button" name="equipInput" value="Dodaj" onclick="Add('@item.Name.Trim()')"/>
-    </td>
-</tr>
-}
-
-</table>
-</div>
+    <div class="col-md-4">
+        <div class="row">
+            @{
+                var equipTypes = (List<EquipmentTypesBO>)ViewData["equipTypes"];
+                int numOfTypes = equipTypes.Count;
+                foreach (var et in equipTypes)
+                {
+                    <div class="col-md-@numOfTypes" name="@et.Id">@Html.ActionLink(@et.Name, "HomeEquipment", "Home", new { typeId = et.Id }, new { @class = "link" })</div>
+                }
+            }
+        </div>
+    </div>
+    <div class="col-md-8">
+        @using (Html.BeginForm("SelectedItem", "Customer", FormMethod.Post)) {
+            <table class="table">
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            <input type="checkbox" id="selItems" name="selItems" value="@item.Id"/>
+                        </td>
+                        <td>
+                            <input type="hidden" value="@item.Id" name="item"/>
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.PicUrl)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Descr)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Price)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.EquipmentTypeId)
+                        </td>
+                        <td>
+                            @*<input type="button" name="equipInput" id="equipInput" value="Dodaj" onclick="Add('@item.Name.Trim()')" />*@
+                        </td>
+                    </tr>
+                }
+            </table>
+            <input id="Submit" type="submit" value="submit" />
+        }
+    </div>
+   
 </div>
 Selektovano
 <div id="selEquip">
-    <form asp-controller="Customer" asp-action="" method="post">
+    @*<form asp-controller="Customer" asp-action="" method="post">
         <input type="submit"/>
-    </form>
+    </form>*@
 </div>
 <script type="text/javascript">
     function GetDynamicListItem(value) {
@@ -81,8 +72,10 @@ Selektovano
         var div = document.createElement('DIV');
         div.innerHTML = GetDynamicListItem(item);
         document.getElementById("selEquip").appendChild(div);
+        document.querySelector("#equipInput").disabled = true;
     }
     function RemoveEquip(div) {
         document.getElementById("selEquip").removeChild(div.parentNode.parentNode);
+        document.querySelector("#equipInput").disabled = false;
     }
 </script>

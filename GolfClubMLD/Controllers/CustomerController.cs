@@ -2,6 +2,7 @@
 using GolfClubMLD.Models.Classes;
 using GolfClubMLD.Models.EFRepository;
 using GolfClubMLD.Models.Interfaces;
+using GolfClubMLD.Models.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,6 +50,22 @@ namespace GolfClubMLD.Controllers
         {
             Session["PickedCourseTermId"] = courseTerm;
             return RedirectToAction("HomeEquipment", "Home", courseTerm);
+        }
+        [HttpPost]
+        public ActionResult SelectedItem(int[] selItems)
+        {
+            int customerId = Convert.ToInt32(Session["LoginId"]);
+            int courseTermId = Convert.ToInt32(Session["PickedCourseTermId"]);
+            CustomerCreditCardViewModel custCC = _custRepo.GetCustomerCC(customerId);
+            CourseTermBO Cterm = _custRepo.SelectTermById(courseTermId);
+            GolfCourseBO gc = Cterm.GolfCourse;
+            List<EquipmentBO> selection = _custRepo.GetSelEquipmentById(selItems);
+            RentInfoConfirmViewModel info = new RentInfoConfirmViewModel();
+            info.CustomerCredCard = custCC;
+            info.Equipment = selection;
+            info.Course = gc;
+            info.CorTerm = Cterm;
+            return View();
         }
     }
 }

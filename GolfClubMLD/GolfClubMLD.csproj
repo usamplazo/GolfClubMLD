@@ -239,6 +239,7 @@
     <Compile Include="Models\RentBO.cs" />
     <Compile Include="Models\TermBO.cs" />
     <Compile Include="Models\ViewModel\CustomerCreditCardViewModel.cs" />
+    <Compile Include="Models\ViewModel\RentInfoConfirmViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -303,6 +304,7 @@
     <Content Include="Views\Authentification\Register.cshtml" />
     <Content Include="Views\Home\Details.cshtml" />
     <Content Include="Views\Customer\ReserveCourse.cshtml" />
+    <Content Include="Views\Customer\SelectedItem.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
