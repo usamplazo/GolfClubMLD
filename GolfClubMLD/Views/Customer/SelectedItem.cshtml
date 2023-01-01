@@ -1,8 +1,55 @@
 ﻿@model GolfClubMLD.Models.ViewModel.RentInfoConfirmViewModel
+@using GolfClubMLD.Models
 @{
     ViewBag.Title = "SelectedItem";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>SelectedItem</h2>
+<h2>Podaci o iznajmljivanju</h2>
+<p>
+    *Ime:@Html.DisplayFor(model => model.CustomerCredCard.Cust.Fname)
+</p>
+<p>
+    *Prezime: @Html.DisplayFor(model => model.CustomerCredCard.Cust.Lname)
+</p>
 
+<p>
+    *Email: @Html.DisplayFor(model => model.CustomerCredCard.Cust.Email)
+</p>
+
+<p>
+    *Broj kartice: @Html.DisplayFor(model => model.CustomerCredCard.CredCard.CarNum)
+</p>
+
+<p>
+    *Teren: @Html.DisplayFor(model => model.Course.Name)
+</p>
+
+<p>
+    *Tip terena: @Html.DisplayFor(model => model.Course.CourseType.Name)
+</p>
+
+<p>
+    *Datum iznajmljivanja: @Html.DisplayFor(model => model.CorTerm.dayOfW)
+</p>
+
+<p>
+    *Vreme iznajmljivanja: @Html.DisplayFor(model => model.CorTerm.Term.StartTime) - @Html.DisplayFor(model => model.CorTerm.Term.EndTime)
+</p>
+<p>
+    @{
+        var allEqiup = Model.Equipment;
+    }
+    Oprema:
+    @foreach (var e in allEqiup)
+    {
+        Html.DisplayFor(model => e.EquipmentType.Name); Html.DisplayFor(model => e.Name);
+    }
+</p>
+<p>
+    Cena: @Html.DisplayFor(model => model.Course.Price)
+</p>
+@using (Html.BeginForm("", "Customer", FormMethod.Post))
+{
+    <input type="submit" value="Potvrdi" />
+}

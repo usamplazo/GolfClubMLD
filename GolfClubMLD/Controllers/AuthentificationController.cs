@@ -49,7 +49,7 @@ namespace GolfClubMLD.Controllers
                     FormsAuthentication.SetAuthCookie(customer.Username, true);
                     Session["LoginId"] = customer.Id.ToString();
                     Session["LoginEmail"] = customer.Email.ToString();
-                   
+                    Session["LogCustCC"] = _accRepo.GetCredCardById(customer.CredCardId);
                     return RedirectToAction("Index","Home");
                     
                 }

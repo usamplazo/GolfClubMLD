@@ -17,9 +17,11 @@ namespace GolfClubMLD.Models.EFRepository
     {
         private GolfClubMldDBEntities _gcEntities = new GolfClubMldDBEntities();
       
-        public Task<CreditCardBO> GetCredCardById(int credCardId)
+        public async Task<CreditCardBO> GetCredCardById(int credCardId)
         {
-            throw new NotImplementedException();
+            CreditCard credCard = await _gcEntities.CreditCard.FirstOrDefaultAsync(cc => cc.id == credCardId);
+            CreditCardBO crCd = Mapper.Map<CreditCardBO>(credCard);
+            return crCd;
         }
         public async Task<string> HashPassword(string pass)
         {

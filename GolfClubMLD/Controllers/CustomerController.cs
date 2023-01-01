@@ -65,7 +65,7 @@ namespace GolfClubMLD.Controllers
             info.Equipment = selection;
             info.Course = gc;
             info.CorTerm = Cterm;
-            return View();
+            return View(info);
         }
     }
 }
