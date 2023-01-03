@@ -15,21 +15,21 @@ namespace GolfClubMLD.Controllers
     public class CustomerController : Controller
     {
         private ICustomerRepository _custRepo;
-        private Dictionary<int, DayOfWeek> m_daysOfWeek = new Dictionary<int, DayOfWeek>();
+        private Dictionary<int, string> m_daysOfWeek = new Dictionary<int, string>();
         public CustomerController()
         {
             _custRepo = new CustomerRepository();
-            m_daysOfWeek.Add(0, DayOfWeek.Sunday);
-            m_daysOfWeek.Add(1, DayOfWeek.Monday);
-            m_daysOfWeek.Add(2, DayOfWeek.Tuesday);
-            m_daysOfWeek.Add(3, DayOfWeek.Wednesday);
-            m_daysOfWeek.Add(4, DayOfWeek.Thursday);
-            m_daysOfWeek.Add(5, DayOfWeek.Friday);
-            m_daysOfWeek.Add(6, DayOfWeek.Saturday);
+            m_daysOfWeek.Add(1, "Monday");
+            m_daysOfWeek.Add(2, "Tuesday");
+            m_daysOfWeek.Add(3, "Wednesday");
+            m_daysOfWeek.Add(4, "Thursday");
+            m_daysOfWeek.Add(5, "Friday");
+            m_daysOfWeek.Add(6, "Saturday");
+            m_daysOfWeek.Add(7, "Sunday");
         }
         [HttpGet]
         [RoleAuthorize(Roles.Customer)]
-        public async Task<ActionResult> ReserveCourse(int courseId, int selDay=1)
+        public async Task<ActionResult> ReserveCourse(int courseId, int selDay = 1)
         {
             List<CourseTermBO> allCourseTerms;
             allCourseTerms = await _custRepo.GetTermsForSelCourse(courseId);
@@ -44,7 +44,8 @@ namespace GolfClubMLD.Controllers
                     if (ct.dayOfW == m_daysOfWeek[selDay].ToString())
                         selDayTerms.Add(ct);
                     }
-                return View(selDayTerms);
+                List<CourseTermBO> viewCT = await _custRepo.CheckForRentCourses(selDayTerms, courseId);
+                return View(viewCT);
             }
             //Error handeling (nemamo termina za teren)
             return View();

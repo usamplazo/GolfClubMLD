@@ -7,39 +7,39 @@
 
 <h2>ReserveCourse</h2>
 @{ var mod = Model.First();
-    Dictionary<int, DayOfWeek> days = new Dictionary<int, DayOfWeek>()
+    Dictionary<int, string> days = new Dictionary<int, string>()
     {
-        {0, DayOfWeek.Sunday},
-        {1, DayOfWeek.Monday},
-        {2, DayOfWeek.Tuesday},
-        {3, DayOfWeek.Wednesday},
-        {4, DayOfWeek.Thursday},
-        {5, DayOfWeek.Friday},
-        {6, DayOfWeek.Saturday}
+        {1, "Monday"},
+        {2, "Tuesday"},
+        {3, "Wednesday"},
+        {4, "Thursday"},
+        {5, "Friday"},
+        {6, "Saturday"},
+        {7, "Sunday"},
     };
     var today = DateTime.Now.DayOfWeek;
 }
 <form asp-controller="Customer" asp-action="ReserveCourse" method="get">
     <input type="hidden" name="courseId" value="@mod.CourseId" />
     <select name="selDay" id="selDay" onchange="this.form.submit();">
-        @foreach (KeyValuePair<int, DayOfWeek> s in days)
+        @for (int i = 0; i < days.Keys.Count; i++)
         {
-            if (s.Value >= today)
+            if (i >= (int)DateTime.Now.DayOfWeek)
             {
-                if (s.Value.Equals(ViewData["SelDay"].ToString()))
+                if (days[i].Equals(ViewData["SelDay"].ToString()))
                 {
 
-
-                <option value="@s.Key" selected>@s.Value</option>
+                    <option value="@i" selected>@days[i]</option>
                 }
                 else
                 {
-                <option value="@s.Key">@s.Value</option>
+                    <option value="@i">@days[i]</option>
                 }
             }
         }
     </select>
 </form>
+
 <form asp-controller="Customer" asp-action="ReserveCourse" method="post">
     <select name="CourseTerm">
         @foreach (var ct in Model)

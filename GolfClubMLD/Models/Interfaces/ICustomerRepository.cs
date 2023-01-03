@@ -15,6 +15,8 @@ namespace GolfClubMLD.Models.Interfaces
         GolfCourseBO SelectCourseById(int id);
         CourseTermBO SelectTermById(int id);
         bool SaveRent(int ctId, int custId);
+        CourseTermBO SelectCourseTermById(int ctId);
+        Task<List<CourseTermBO>> CheckForRentCourses(List<CourseTermBO> courseTerms, int courseId);
         bool SaveRentItems(int ctId, int custId, int[] equipIds);
         DateTime CalculateDate(DateTime now);
         void SendEmail();

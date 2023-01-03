@@ -16,6 +16,7 @@ namespace GolfClubMLD.Models.EFRepository
     {
         private GolfClubMldDBEntities _custEntities = new GolfClubMldDBEntities();
         private DateTime m_rentConf;
+        private List<CourseTermBO> m_avlCourseTerms;
         public async Task<List<CourseTermBO>> GetTermsForSelCourse(int courseId)
         {
             Task<List<CourseTermBO>> terms = _custEntities.CourseTerm.Select(ct=>ct)
@@ -24,13 +25,32 @@ namespace GolfClubMLD.Models.EFRepository
                                                 .Include(ct=>ct.Term)
                                                 .ProjectTo<CourseTermBO>()
                                                 .ToListAsync();
-            CheckForRentCourses(await terms);
-            return await terms;                                  
+            return await CheckForRentCourses(await terms, courseId);
+                                           
         }
-        public void CheckForRentCourses(List<CourseTermBO> courseTermBOs)
+        public async Task<List<CourseTermBO>> CheckForRentCourses(List<CourseTermBO> courseTerms, int courseId)
         {
-            List<RentBO> currentWeekRents = _custEntities.Rent.Select(r=>r)
-                                                .Where(r=>r.)
+            DateTime start = DateTime.Now;
+            DateTime end = start.AddDays(DayOfWeek.Saturday - start.DayOfWeek);
+            var currentWeekRents = await _custEntities.Rent.Select(r => r)
+                                                            .Where(r => r.CourseTerm.courseId == courseId && (r.rentDate >= start && r.rentDate <= end))
+                                                            .ToListAsync();
+
+            List<CourseTermBO> corTrm = new List<CourseTermBO>(courseTerms);
+            if (currentWeekRents != null)
+            {
+                foreach (CourseTermBO ct in courseTerms)
+                {
+                    foreach (Rent r in currentWeekRents)
+                    {
+                        if (r.courTrmId == ct.Id)
+                            corTrm.Remove(ct);
+                    }
+                }
+            }
+            m_avlCourseTerms = corTrm;
+            return corTrm;
+            
         }
 
         public List<EquipmentBO> GetSelEquipmentById(int[] sel)
@@ -80,12 +100,15 @@ namespace GolfClubMLD.Models.EFRepository
             try
             {
                 m_rentConf = DateTime.Now;
+                CourseTermBO selCt = SelectCourseTermById(ctId);
+                //DateTime rd = 
                 Rent rentInfo = new Rent()
                 {
                     billDate = m_rentConf,
                     totPrice = 1000,
                     courTrmId = ctId,
-                    custId = custId
+                    custId = custId,
+                    //rentDate = 
                 };
                 _custEntities.Rent.Add(rentInfo);
                 _custEntities.SaveChanges();
@@ -97,6 +120,14 @@ namespace GolfClubMLD.Models.EFRepository
             return true;
         }
 
+        public CourseTermBO SelectCourseTermById(int ctId)
+        {
+            CourseTerm ct = _custEntities.CourseTerm.FirstOrDefault(c => c.id == ctId);
+            CourseTermBO courTerm = Mapper.Map<CourseTermBO>(ct);
+
+            return courTerm;
+        }
+
         public bool SaveRentItems(int ctId, int custId, int[] equipIds)
         {
             try
@@ -105,14 +136,12 @@ namespace GolfClubMLD.Models.EFRepository
                                                                 && r.custId == custId
                                                                 && r.billDate == m_rentConf);
                 List<EquipmentBO> equip = GetSelEquipmentById(equipIds);
-                DateTime rentDt = CalculateDate(DateTime.Now);
                 if (rent != null) {
                     RentItems re = new RentItems();
                     foreach (var eq in equip)
                     {
                         re.equipId = eq.Id;
                         re.price = eq.Price;
-                        re.rentDate = m_rentConf;
                     }
                     _custEntities.RentItems.Add(re);
                     _custEntities.SaveChanges();

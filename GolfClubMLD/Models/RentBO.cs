@@ -14,5 +14,6 @@ namespace GolfClubMLD.Models
         public CourseTermBO CourTrm { get; set; }
         public int CustId { get; set; }
         public UsersBO Customer { get; set; }
+        public DateTime RentDate { get; set; }
     }
 }
