@@ -34,7 +34,7 @@ namespace GolfClubMLD.Models.EFRepository
         public virtual DbSet<EquipmentTypes> EquipmentTypes { get; set; }
         public virtual DbSet<GolfCourse> GolfCourse { get; set; }
         public virtual DbSet<Rent> Rent { get; set; }
-        public virtual DbSet<RentDetails> RentDetails { get; set; }
+        public virtual DbSet<RentItems> RentItems { get; set; }
         public virtual DbSet<Role> Role { get; set; }
         public virtual DbSet<sysdiagrams> sysdiagrams { get; set; }
         public virtual DbSet<Term> Term { get; set; }

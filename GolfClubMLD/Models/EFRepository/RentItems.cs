@@ -12,12 +12,12 @@ namespace GolfClubMLD.Models.EFRepository
     using System;
     using System.Collections.Generic;
     
-    public partial class RentDetails
+    public partial class RentItems
     {
         public int id { get; set; }
         public int equipId { get; set; }
+        public double price { get; set; }
         public int rentId { get; set; }
-        public int amount { get; set; }
     
         public virtual Equipment Equipment { get; set; }
         public virtual Rent Rent { get; set; }

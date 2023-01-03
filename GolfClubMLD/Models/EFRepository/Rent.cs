@@ -17,18 +17,19 @@ namespace GolfClubMLD.Models.EFRepository
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Rent()
         {
-            this.RentDetails = new HashSet<RentDetails>();
+            this.RentItems = new HashSet<RentItems>();
         }
     
         public int id { get; set; }
-        public System.DateTime conDate { get; set; }
+        public System.DateTime billDate { get; set; }
         public double totPrice { get; set; }
         public int courTrmId { get; set; }
         public int custId { get; set; }
+        public System.DateTime rentDate { get; set; }
     
         public virtual CourseTerm CourseTerm { get; set; }
         public virtual Users Users { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<RentDetails> RentDetails { get; set; }
+        public virtual ICollection<RentItems> RentItems { get; set; }
     }
 }

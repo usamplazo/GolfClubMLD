@@ -17,7 +17,7 @@ namespace GolfClubMLD.Models.EFRepository
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Equipment()
         {
-            this.RentDetails = new HashSet<RentDetails>();
+            this.RentItems = new HashSet<RentItems>();
         }
     
         public int id { get; set; }
@@ -29,6 +29,6 @@ namespace GolfClubMLD.Models.EFRepository
     
         public virtual EquipmentTypes EquipmentTypes { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<RentDetails> RentDetails { get; set; }
+        public virtual ICollection<RentItems> RentItems { get; set; }
     }
 }

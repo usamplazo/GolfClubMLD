@@ -11,9 +11,12 @@ namespace GolfClubMLD.Models.Interfaces
     {
         Task<List<CourseTermBO>> GetTermsForSelCourse(int courseId);
         List<EquipmentBO> GetSelEquipmentById(int[] selEqip);
-        void ConfirmRentInfo(RentInfoConfirmViewModel conf);
         CustomerCreditCardViewModel GetCustomerCC(int id);
         GolfCourseBO SelectCourseById(int id);
         CourseTermBO SelectTermById(int id);
+        bool SaveRent(int ctId, int custId);
+        bool SaveRentItems(int ctId, int custId, int[] equipIds);
+        DateTime CalculateDate(DateTime now);
+        void SendEmail();
     }
 }

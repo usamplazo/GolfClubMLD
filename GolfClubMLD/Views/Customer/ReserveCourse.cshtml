@@ -7,28 +7,35 @@
 
 <h2>ReserveCourse</h2>
 @{ var mod = Model.First();
-    List<string> days = new List<string>{"Mon",
-                                        "Tue",
-                                        "Wen",
-                                        "Thu",
-                                        "Fri",
-                                        "Sat",
-                                        "Sun"};
+    Dictionary<int, DayOfWeek> days = new Dictionary<int, DayOfWeek>()
+    {
+        {0, DayOfWeek.Sunday},
+        {1, DayOfWeek.Monday},
+        {2, DayOfWeek.Tuesday},
+        {3, DayOfWeek.Wednesday},
+        {4, DayOfWeek.Thursday},
+        {5, DayOfWeek.Friday},
+        {6, DayOfWeek.Saturday}
+    };
+    var today = DateTime.Now.DayOfWeek;
 }
 <form asp-controller="Customer" asp-action="ReserveCourse" method="get">
     <input type="hidden" name="courseId" value="@mod.CourseId" />
     <select name="selDay" id="selDay" onchange="this.form.submit();">
-        @foreach (string s in days)
+        @foreach (KeyValuePair<int, DayOfWeek> s in days)
         {
-            if (s.Equals(ViewData["SelDay"].ToString()))
+            if (s.Value >= today)
             {
+                if (s.Value.Equals(ViewData["SelDay"].ToString()))
+                {
 
 
-                <option value="@s" selected>@s</option>
-            }
-            else
-            {
-                <option value="@s">@s</option>
+                <option value="@s.Key" selected>@s.Value</option>
+                }
+                else
+                {
+                <option value="@s.Key">@s.Value</option>
+                }
             }
         }
     </select>

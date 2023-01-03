@@ -15,28 +15,33 @@ namespace GolfClubMLD.Controllers
     public class CustomerController : Controller
     {
         private ICustomerRepository _custRepo;
+        private Dictionary<int, DayOfWeek> m_daysOfWeek = new Dictionary<int, DayOfWeek>();
         public CustomerController()
         {
             _custRepo = new CustomerRepository();
+            m_daysOfWeek.Add(0, DayOfWeek.Sunday);
+            m_daysOfWeek.Add(1, DayOfWeek.Monday);
+            m_daysOfWeek.Add(2, DayOfWeek.Tuesday);
+            m_daysOfWeek.Add(3, DayOfWeek.Wednesday);
+            m_daysOfWeek.Add(4, DayOfWeek.Thursday);
+            m_daysOfWeek.Add(5, DayOfWeek.Friday);
+            m_daysOfWeek.Add(6, DayOfWeek.Saturday);
         }
         [HttpGet]
         [RoleAuthorize(Roles.Customer)]
-        public async Task<ActionResult> ReserveCourse(int courseId, string selDay)
+        public async Task<ActionResult> ReserveCourse(int courseId, int selDay=1)
         {
             List<CourseTermBO> allCourseTerms;
             allCourseTerms = await _custRepo.GetTermsForSelCourse(courseId);
             ViewData["CourseId"] = courseId;
             if (allCourseTerms != null)
             {
-                string[] daysOfWeek = new string[7] { "Mon", "Tue", "Wen", "Thu", "Fri", "Sat", "Sun" };
-                ViewData["DaysOfWeek"] = daysOfWeek;
-                if (string.IsNullOrEmpty(selDay))
-                    selDay = "Mon";
-                ViewData["SelDay"] = selDay;
+                ViewData["DaysOfWeek"] = m_daysOfWeek;
+                ViewData["SelDay"] = m_daysOfWeek[selDay];
                 List<CourseTermBO> selDayTerms = new List<CourseTermBO>();
                     foreach (var ct in allCourseTerms)
                     {
-                    if (ct.dayOfW == selDay)
+                    if (ct.dayOfW == m_daysOfWeek[selDay].ToString())
                         selDayTerms.Add(ct);
                     }
                 return View(selDayTerms);
@@ -46,7 +51,7 @@ namespace GolfClubMLD.Controllers
         }
         [HttpPost]
         [RoleAuthorize(Roles.Customer)]
-        public async Task<ActionResult> ReserveCourse(string courseTerm)
+        public ActionResult ReserveCourse(string courseTerm)
         {
             Session["PickedCourseTermId"] = courseTerm;
             return RedirectToAction("HomeEquipment", "Home", courseTerm);
@@ -66,6 +71,21 @@ namespace GolfClubMLD.Controllers
             info.Course = gc;
             info.CorTerm = Cterm;
             return View(info);
+        }
+        [HttpGet]
+        public ActionResult Rent()
+        {
+            return View();
+        }
+        [HttpPost]
+        public ActionResult Rent(RentInfoConfirmViewModel info, int[] equipIds)
+        {
+            if (_custRepo.SaveRent(info.CorTerm.Id, info.CustomerCredCard.Cust.Id))
+            {
+                _custRepo.SaveRentItems(info.CorTerm.Id, info.CustomerCredCard.Cust.Id, equipIds);
+                _custRepo.SendEmail();
+            }
+            return View();
         }
     }
 }

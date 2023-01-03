@@ -12,7 +12,7 @@
           <Property Name="id" Type="int" Nullable="false" />
           <Property Name="courseId" Type="int" Nullable="false" />
           <Property Name="termId" Type="int" Nullable="false" />
-          <Property Name="dayOfW" Type="varchar" MaxLength="5" />
+          <Property Name="dayOfW" Type="varchar" MaxLength="10" />
         </EntityType>
         <EntityType Name="CourseType">
           <Key>
@@ -72,20 +72,21 @@
           <Key>
             <PropertyRef Name="id" />
           </Key>
-          <Property Name="id" Type="int" Nullable="false" />
-          <Property Name="conDate" Type="date" Nullable="false" />
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="billDate" Type="datetime" Nullable="false" />
           <Property Name="totPrice" Type="float" Nullable="false" />
           <Property Name="courTrmId" Type="int" Nullable="false" />
           <Property Name="custId" Type="int" Nullable="false" />
+          <Property Name="rentDate" Type="datetime" Nullable="false" />
         </EntityType>
-        <EntityType Name="RentDetails">
+        <EntityType Name="RentItems">
           <Key>
             <PropertyRef Name="id" />
           </Key>
-          <Property Name="id" Type="int" Nullable="false" />
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="equipId" Type="int" Nullable="false" />
+          <Property Name="price" Type="float" Nullable="false" />
           <Property Name="rentId" Type="int" Nullable="false" />
-          <Property Name="amount" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="Role">
           <Key>
@@ -200,26 +201,26 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_RentDetails_Equipment">
+        <Association Name="FK_RentItems_Equipment">
           <End Role="Equipment" Type="Self.Equipment" Multiplicity="1" />
-          <End Role="RentDetails" Type="Self.RentDetails" Multiplicity="*" />
+          <End Role="RentItems" Type="Self.RentItems" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Equipment">
               <PropertyRef Name="id" />
             </Principal>
-            <Dependent Role="RentDetails">
+            <Dependent Role="RentItems">
               <PropertyRef Name="equipId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_RentDetails_Rent">
+        <Association Name="FK_RentItems_Rent">
           <End Role="Rent" Type="Self.Rent" Multiplicity="1" />
-          <End Role="RentDetails" Type="Self.RentDetails" Multiplicity="*" />
+          <End Role="RentItems" Type="Self.RentItems" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Rent">
               <PropertyRef Name="id" />
             </Principal>
-            <Dependent Role="RentDetails">
+            <Dependent Role="RentItems">
               <PropertyRef Name="rentId" />
             </Dependent>
           </ReferentialConstraint>
@@ -256,7 +257,7 @@
           <EntitySet Name="EquipmentTypes" EntityType="Self.EquipmentTypes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GolfCourse" EntityType="Self.GolfCourse" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Rent" EntityType="Self.Rent" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="RentDetails" EntityType="Self.RentDetails" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="RentItems" EntityType="Self.RentItems" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Role" EntityType="Self.Role" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Term" EntityType="Self.Term" Schema="dbo" store:Type="Tables" />
@@ -285,13 +286,13 @@
             <End Role="Users" EntitySet="Users" />
             <End Role="Rent" EntitySet="Rent" />
           </AssociationSet>
-          <AssociationSet Name="FK_RentDetails_Equipment" Association="Self.FK_RentDetails_Equipment">
+          <AssociationSet Name="FK_RentItems_Equipment" Association="Self.FK_RentItems_Equipment">
             <End Role="Equipment" EntitySet="Equipment" />
-            <End Role="RentDetails" EntitySet="RentDetails" />
+            <End Role="RentItems" EntitySet="RentItems" />
           </AssociationSet>
-          <AssociationSet Name="FK_RentDetails_Rent" Association="Self.FK_RentDetails_Rent">
+          <AssociationSet Name="FK_RentItems_Rent" Association="Self.FK_RentItems_Rent">
             <End Role="Rent" EntitySet="Rent" />
-            <End Role="RentDetails" EntitySet="RentDetails" />
+            <End Role="RentItems" EntitySet="RentItems" />
           </AssociationSet>
           <AssociationSet Name="FK_Users_CreditCard" Association="Self.FK_Users_CreditCard">
             <End Role="CreditCard" EntitySet="CreditCard" />
@@ -344,7 +345,7 @@
           <EntitySet Name="EquipmentTypes" EntityType="GolfClubMldDBModel.EquipmentTypes" />
           <EntitySet Name="GolfCourse" EntityType="GolfClubMldDBModel.GolfCourse" />
           <EntitySet Name="Rent" EntityType="GolfClubMldDBModel.Rent" />
-          <EntitySet Name="RentDetails" EntityType="GolfClubMldDBModel.RentDetails" />
+          <EntitySet Name="RentItems" EntityType="GolfClubMldDBModel.RentItems" />
           <EntitySet Name="Role" EntityType="GolfClubMldDBModel.Role" />
           <EntitySet Name="sysdiagrams" EntityType="GolfClubMldDBModel.sysdiagrams" />
           <EntitySet Name="Term" EntityType="GolfClubMldDBModel.Term" />
@@ -373,17 +374,17 @@
             <End Role="EquipmentTypes" EntitySet="EquipmentTypes" />
             <End Role="Equipment" EntitySet="Equipment" />
           </AssociationSet>
-          <AssociationSet Name="FK_RentDetails_Equipment" Association="GolfClubMldDBModel.FK_RentDetails_Equipment">
+          <AssociationSet Name="FK_RentItems_Equipment" Association="GolfClubMldDBModel.FK_RentItems_Equipment">
             <End Role="Equipment" EntitySet="Equipment" />
-            <End Role="RentDetails" EntitySet="RentDetails" />
+            <End Role="RentItems" EntitySet="RentItems" />
           </AssociationSet>
           <AssociationSet Name="FK_Rent_Users" Association="GolfClubMldDBModel.FK_Rent_Users">
             <End Role="Users" EntitySet="Users" />
             <End Role="Rent" EntitySet="Rent" />
           </AssociationSet>
-          <AssociationSet Name="FK_RentDetails_Rent" Association="GolfClubMldDBModel.FK_RentDetails_Rent">
+          <AssociationSet Name="FK_RentItems_Rent" Association="GolfClubMldDBModel.FK_RentItems_Rent">
             <End Role="Rent" EntitySet="Rent" />
-            <End Role="RentDetails" EntitySet="RentDetails" />
+            <End Role="RentItems" EntitySet="RentItems" />
           </AssociationSet>
           <AssociationSet Name="FK_Users_Role" Association="GolfClubMldDBModel.FK_Users_Role">
             <End Role="Role" EntitySet="Role" />
@@ -408,7 +409,7 @@
           <Property Name="id" Type="Int32" Nullable="false" />
           <Property Name="courseId" Type="Int32" Nullable="false" />
           <Property Name="termId" Type="Int32" Nullable="false" />
-          <Property Name="dayOfW" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="dayOfW" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="GolfCourse" Relationship="GolfClubMldDBModel.FK_CourseTerm_GolfCourse" FromRole="CourseTerm" ToRole="GolfCourse" />
           <NavigationProperty Name="Term" Relationship="GolfClubMldDBModel.FK_CourseTerm_Term" FromRole="CourseTerm" ToRole="Term" />
           <NavigationProperty Name="Rent" Relationship="GolfClubMldDBModel.FK_Rent_CourseTerm" FromRole="CourseTerm" ToRole="Rent" />
@@ -451,7 +452,7 @@
           <Property Name="price" Type="Double" Nullable="false" />
           <Property Name="equipmentTypId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="EquipmentTypes" Relationship="GolfClubMldDBModel.FK_Equipment_EquipmentTypes" FromRole="Equipment" ToRole="EquipmentTypes" />
-          <NavigationProperty Name="RentDetails" Relationship="GolfClubMldDBModel.FK_RentDetails_Equipment" FromRole="Equipment" ToRole="RentDetails" />
+          <NavigationProperty Name="RentItems" Relationship="GolfClubMldDBModel.FK_RentItems_Equipment" FromRole="Equipment" ToRole="RentItems" />
         </EntityType>
         <EntityType Name="EquipmentTypes">
           <Key>
@@ -478,25 +479,26 @@
           <Key>
             <PropertyRef Name="id" />
           </Key>
-          <Property Name="id" Type="Int32" Nullable="false" />
-          <Property Name="conDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="billDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="totPrice" Type="Double" Nullable="false" />
           <Property Name="courTrmId" Type="Int32" Nullable="false" />
           <Property Name="custId" Type="Int32" Nullable="false" />
+          <Property Name="rentDate" Type="DateTime" Nullable="false" Precision="3" />
           <NavigationProperty Name="CourseTerm" Relationship="GolfClubMldDBModel.FK_Rent_CourseTerm" FromRole="Rent" ToRole="CourseTerm" />
           <NavigationProperty Name="Users" Relationship="GolfClubMldDBModel.FK_Rent_Users" FromRole="Rent" ToRole="Users" />
-          <NavigationProperty Name="RentDetails" Relationship="GolfClubMldDBModel.FK_RentDetails_Rent" FromRole="Rent" ToRole="RentDetails" />
+          <NavigationProperty Name="RentItems" Relationship="GolfClubMldDBModel.FK_RentItems_Rent" FromRole="Rent" ToRole="RentItems" />
         </EntityType>
-        <EntityType Name="RentDetails">
+        <EntityType Name="RentItems">
           <Key>
             <PropertyRef Name="id" />
           </Key>
-          <Property Name="id" Type="Int32" Nullable="false" />
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="equipId" Type="Int32" Nullable="false" />
+          <Property Name="price" Type="Double" Nullable="false" />
           <Property Name="rentId" Type="Int32" Nullable="false" />
-          <Property Name="amount" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Equipment" Relationship="GolfClubMldDBModel.FK_RentDetails_Equipment" FromRole="RentDetails" ToRole="Equipment" />
-          <NavigationProperty Name="Rent" Relationship="GolfClubMldDBModel.FK_RentDetails_Rent" FromRole="RentDetails" ToRole="Rent" />
+          <NavigationProperty Name="Equipment" Relationship="GolfClubMldDBModel.FK_RentItems_Equipment" FromRole="RentItems" ToRole="Equipment" />
+          <NavigationProperty Name="Rent" Relationship="GolfClubMldDBModel.FK_RentItems_Rent" FromRole="RentItems" ToRole="Rent" />
         </EntityType>
         <EntityType Name="Role">
           <Key>
@@ -616,14 +618,14 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_RentDetails_Equipment">
+        <Association Name="FK_RentItems_Equipment">
           <End Type="GolfClubMldDBModel.Equipment" Role="Equipment" Multiplicity="1" />
-          <End Type="GolfClubMldDBModel.RentDetails" Role="RentDetails" Multiplicity="*" />
+          <End Type="GolfClubMldDBModel.RentItems" Role="RentItems" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Equipment">
               <PropertyRef Name="id" />
             </Principal>
-            <Dependent Role="RentDetails">
+            <Dependent Role="RentItems">
               <PropertyRef Name="equipId" />
             </Dependent>
           </ReferentialConstraint>
@@ -640,14 +642,14 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_RentDetails_Rent">
+        <Association Name="FK_RentItems_Rent">
           <End Type="GolfClubMldDBModel.Rent" Role="Rent" Multiplicity="1" />
-          <End Type="GolfClubMldDBModel.RentDetails" Role="RentDetails" Multiplicity="*" />
+          <End Type="GolfClubMldDBModel.RentItems" Role="RentItems" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Rent">
               <PropertyRef Name="id" />
             </Principal>
-            <Dependent Role="RentDetails">
+            <Dependent Role="RentItems">
               <PropertyRef Name="rentId" />
             </Dependent>
           </ReferentialConstraint>
@@ -742,19 +744,20 @@
           <EntitySetMapping Name="Rent">
             <EntityTypeMapping TypeName="GolfClubMldDBModel.Rent">
               <MappingFragment StoreEntitySet="Rent">
+                <ScalarProperty Name="rentDate" ColumnName="rentDate" />
                 <ScalarProperty Name="custId" ColumnName="custId" />
                 <ScalarProperty Name="courTrmId" ColumnName="courTrmId" />
                 <ScalarProperty Name="totPrice" ColumnName="totPrice" />
-                <ScalarProperty Name="conDate" ColumnName="conDate" />
+                <ScalarProperty Name="billDate" ColumnName="billDate" />
                 <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="RentDetails">
-            <EntityTypeMapping TypeName="GolfClubMldDBModel.RentDetails">
-              <MappingFragment StoreEntitySet="RentDetails">
-                <ScalarProperty Name="amount" ColumnName="amount" />
+          <EntitySetMapping Name="RentItems">
+            <EntityTypeMapping TypeName="GolfClubMldDBModel.RentItems">
+              <MappingFragment StoreEntitySet="RentItems">
                 <ScalarProperty Name="rentId" ColumnName="rentId" />
+                <ScalarProperty Name="price" ColumnName="price" />
                 <ScalarProperty Name="equipId" ColumnName="equipId" />
                 <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
