@@ -1,4 +1,4 @@
-﻿@model List<GolfClubMLD.Models.CourseTermBO>
+﻿@model Dictionary<string, List<GolfClubMLD.Models.CourseTermBO>>
 @using GolfClubMLD.Models
 @{
     ViewBag.Title = "ReserveCourse";
@@ -6,51 +6,56 @@
 }
 
 <h2>ReserveCourse</h2>
-@{ var mod = Model.First();
-    Dictionary<int, string> days = new Dictionary<int, string>()
+@{ 
+    DateTime dt = DateTime.Now;
+    if (Session["selRentDate"] != null)
     {
-        {1, "Monday"},
-        {2, "Tuesday"},
-        {3, "Wednesday"},
-        {4, "Thursday"},
-        {5, "Friday"},
-        {6, "Saturday"},
-        {7, "Sunday"},
-    };
-    var today = DateTime.Now.DayOfWeek;
+        dt = DateTime.Parse(Session["selRentDate"].ToString());
+    }
+
 }
 <form asp-controller="Customer" asp-action="ReserveCourse" method="get">
-    <input type="hidden" name="courseId" value="@mod.CourseId" />
-    <select name="selDay" id="selDay" onchange="this.form.submit();">
-        @for (int i = 0; i < days.Keys.Count; i++)
-        {
-            if (i >= (int)DateTime.Now.DayOfWeek)
+        <input type="hidden" name="courseId" value="@Session["selCourse"]" />
+        <select name="ctDay" onchange="this.form.submit();">
+            @foreach (string dateT in Model.Keys)
             {
-                if (days[i].Equals(ViewData["SelDay"].ToString()))
+                DateTime dd = DateTime.Parse(dateT);
+                if (dd.DayOfWeek == dt.DayOfWeek)
                 {
-
-                    <option value="@i" selected>@days[i]</option>
+                    <option value="@dateT" selected>@dd.DayOfWeek</option>
                 }
                 else
                 {
-                    <option value="@i">@days[i]</option>
+                    <option value="@dateT">@dd.DayOfWeek</option>
+                }
+
+            }
+        </select>
+        @*<input type="submit" id="day" name="Odaberi" onclick="myFunction()" />*@
+    </form>
+<form asp-controller="Customer" asp-action="ReserveCourse" method="post">
+    <input type="hidden" name="courseId" value="@Session["selCourse"]" />
+    <div id="myDIV">
+        <select name="courseTermId" id="dateSel">
+            @{
+                string strDt = dt.ToShortDateString();
+                List<CourseTermBO> selCt = Model[strDt];
+                foreach (var tr in selCt)
+                {
+                    <option value="@tr.Id">@tr.Term.StartTime - @tr.Term.EndTime</option>
                 }
             }
-        }
-    </select>
-</form>
-
-<form asp-controller="Customer" asp-action="ReserveCourse" method="post">
-    <select name="CourseTerm">
-        @foreach (var ct in Model)
-        {
-            <option value="@ct.Id">@ct.Term.StartTime - @ct.Term.EndTime</option>
-        }
-    </select>
-    <input type="submit" value="Potvrdi" />
+        </select>
+    <input type="submit" value="Potvrdi" id="buttonConf"/>
+    </div>
 </form>
 <script>
-    const sl = document.querySelector('#selDay');
-    this.form
+    function myFunction() {
+        var x = document.getElementById("buttonConf");
+        x.disabled = false;
+        x = document.getElementById("dateSel");
+        x.disabled = false;
+        this.form.submit();
+    }
 </script>
 

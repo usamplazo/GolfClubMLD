@@ -16,6 +16,7 @@ namespace GolfClubMLD.Models.EFRepository
     {
         private GolfClubMldDBEntities _custEntities = new GolfClubMldDBEntities();
         private DateTime m_rentConf;
+        private DateTime m_rentDate;
         private List<CourseTermBO> m_avlCourseTerms;
         public async Task<List<CourseTermBO>> GetTermsForSelCourse(int courseId)
         {
@@ -31,9 +32,9 @@ namespace GolfClubMLD.Models.EFRepository
         public async Task<List<CourseTermBO>> CheckForRentCourses(List<CourseTermBO> courseTerms, int courseId)
         {
             DateTime start = DateTime.Now;
-            DateTime end = start.AddDays(DayOfWeek.Saturday - start.DayOfWeek);
+            DateTime end = start.AddDays(7 - (int)start.DayOfWeek);
             var currentWeekRents = await _custEntities.Rent.Select(r => r)
-                                                            .Where(r => r.CourseTerm.courseId == courseId && (r.rentDate >= start && r.rentDate <= end))
+                                                            .Where(r => r.CourseTerm.courseId == courseId && (r.rentDate >= start.Date && r.rentDate < end.Date))
                                                             .ToListAsync();
 
             List<CourseTermBO> corTrm = new List<CourseTermBO>(courseTerms);
@@ -51,6 +52,12 @@ namespace GolfClubMLD.Models.EFRepository
             m_avlCourseTerms = corTrm;
             return corTrm;
             
+        }
+        public void CalculateDateFromDayNumber(int dayNum)
+        {
+            var tod = DateTime.Now;
+            var d = (int)tod.DayOfWeek;
+            DateTime test = tod.AddDays(dayNum-d);
         }
 
         public List<EquipmentBO> GetSelEquipmentById(int[] sel)
@@ -95,20 +102,19 @@ namespace GolfClubMLD.Models.EFRepository
 
             return custCC;
         }
-        public bool SaveRent(int ctId, int custId)
+        public bool SaveRent(int ctId, int custId, DateTime rentDte)
         {
             try
             {
                 m_rentConf = DateTime.Now;
                 CourseTermBO selCt = SelectCourseTermById(ctId);
-                //DateTime rd = 
                 Rent rentInfo = new Rent()
                 {
                     billDate = m_rentConf,
                     totPrice = 1000,
                     courTrmId = ctId,
                     custId = custId,
-                    //rentDate = 
+                    rentDate = rentDte
                 };
                 _custEntities.Rent.Add(rentInfo);
                 _custEntities.SaveChanges();
@@ -132,8 +138,8 @@ namespace GolfClubMLD.Models.EFRepository
         {
             try
             {
-                Rent rent = _custEntities.Rent.FirstOrDefault(r => r.courTrmId == ctId
-                                                                && r.custId == custId
+                Rent rent = _custEntities.Rent.FirstOrDefault(r => r.custId == custId 
+                                                                && r.courTrmId == ctId
                                                                 && r.billDate == m_rentConf);
                 List<EquipmentBO> equip = GetSelEquipmentById(equipIds);
                 if (rent != null) {

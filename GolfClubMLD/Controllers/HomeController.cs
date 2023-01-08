@@ -64,7 +64,6 @@ namespace GolfClubMLD.Controllers
         }
         public async Task<ActionResult> HomeEquipment(int typeId = 0)
         {
-
             List<EquipmentBO> allEquip = await _homeRepo.GetAllEquipment();
             List<EquipmentTypesBO> allTypes = await _homeRepo.GetAllEquipmentTypes();
             ViewData["equipTypes"] = allTypes.Select(et => et).ToList<EquipmentTypesBO>();
@@ -84,6 +83,7 @@ namespace GolfClubMLD.Controllers
         public async Task<ActionResult> Details(int id)
         {
             GolfCourseBO gc = await _homeRepo.GetCourseById(id);
+            Session["selCourse"] = id;
             return View(gc);
         }
     }

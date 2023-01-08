@@ -26,67 +26,90 @@ namespace GolfClubMLD.Controllers
             m_daysOfWeek.Add(5, "Friday");
             m_daysOfWeek.Add(6, "Saturday");
             m_daysOfWeek.Add(7, "Sunday");
+
         }
         [HttpGet]
         [RoleAuthorize(Roles.Customer)]
-        public async Task<ActionResult> ReserveCourse(int courseId, int selDay = 1)
+        public async Task<ActionResult> ReserveCourse(int courseId, string ctDay = null)
         {
             List<CourseTermBO> allCourseTerms;
             allCourseTerms = await _custRepo.GetTermsForSelCourse(courseId);
-            ViewData["CourseId"] = courseId;
+            if (string.IsNullOrWhiteSpace(ctDay))
+                ctDay = DateTime.Now.Date.ToString();
+            Session["selRentDate"] = ctDay;
             if (allCourseTerms != null)
             {
-                ViewData["DaysOfWeek"] = m_daysOfWeek;
-                ViewData["SelDay"] = m_daysOfWeek[selDay];
-                List<CourseTermBO> selDayTerms = new List<CourseTermBO>();
-                    foreach (var ct in allCourseTerms)
+                List<string> avalDates = System.Web.Helpers.Json.Decode<List<string>>(Session["allDates"].ToString());
+                Dictionary<string, List<CourseTermBO>> terms = new Dictionary<string, List<CourseTermBO>>();
+                foreach (string ad in avalDates)
+                {
+                    List<CourseTermBO> selDayTerms = new List<CourseTermBO>();
+                    foreach (CourseTermBO ct in allCourseTerms)
                     {
-                    if (ct.dayOfW == m_daysOfWeek[selDay].ToString())
-                        selDayTerms.Add(ct);
+                        DateTime availableDate = DateTime.Parse(ad);
+                        if (availableDate.DayOfWeek.ToString() == ct.dayOfW)
+                        {
+                            selDayTerms.Add(ct);
+                        }
                     }
-                List<CourseTermBO> viewCT = await _custRepo.CheckForRentCourses(selDayTerms, courseId);
-                return View(viewCT);
+                    if (selDayTerms != null)
+                    {
+                        terms.Add(ad, selDayTerms);
+                    }
+                    //List<CourseTermBO> viewCT = await _custRepo.CheckForRentCourses(selDayTerms, courseId);
+                }
+                return View(terms);
             }
-            //Error handeling (nemamo termina za teren)
-            return View();
+                //Error handeling (nemamo termina za teren)
+                return View();
         }
-        [HttpPost]
-        [RoleAuthorize(Roles.Customer)]
-        public ActionResult ReserveCourse(string courseTerm)
-        {
-            Session["PickedCourseTermId"] = courseTerm;
-            return RedirectToAction("HomeEquipment", "Home", courseTerm);
-        }
-        [HttpPost]
-        public ActionResult SelectedItem(int[] selItems)
-        {
-            int customerId = Convert.ToInt32(Session["LoginId"]);
-            int courseTermId = Convert.ToInt32(Session["PickedCourseTermId"]);
-            CustomerCreditCardViewModel custCC = _custRepo.GetCustomerCC(customerId);
-            CourseTermBO Cterm = _custRepo.SelectTermById(courseTermId);
-            GolfCourseBO gc = Cterm.GolfCourse;
-            List<EquipmentBO> selection = _custRepo.GetSelEquipmentById(selItems);
-            RentInfoConfirmViewModel info = new RentInfoConfirmViewModel();
-            info.CustomerCredCard = custCC;
-            info.Equipment = selection;
-            info.Course = gc;
-            info.CorTerm = Cterm;
-            return View(info);
-        }
-        [HttpGet]
-        public ActionResult Rent()
-        {
-            return View();
-        }
-        [HttpPost]
-        public ActionResult Rent(RentInfoConfirmViewModel info, int[] equipIds)
-        {
-            if (_custRepo.SaveRent(info.CorTerm.Id, info.CustomerCredCard.Cust.Id))
+            [HttpPost]
+            [RoleAuthorize(Roles.Customer)]
+            public ActionResult ReserveCourse(int courseTermId)
             {
-                _custRepo.SaveRentItems(info.CorTerm.Id, info.CustomerCredCard.Cust.Id, equipIds);
-                _custRepo.SendEmail();
+                Session["PickedCourseTermId"] = courseTermId;
+                int dayNum = Convert.ToInt32(Session["DayNum"]);
+                return RedirectToAction("HomeEquipment", "Home", courseTermId);
             }
-            return View();
+
+            [HttpGet]
+            public ActionResult PickTerm(DateTime ctDay)
+            {
+
+                return View();
+            }
+
+            [HttpPost]
+            public ActionResult SelectedItem(int[] selItems)
+            {
+                int customerId = Convert.ToInt32(Session["LoginId"]);
+                int courseTermId = Convert.ToInt32(Session["PickedCourseTermId"]);
+                CustomerCreditCardViewModel custCC = _custRepo.GetCustomerCC(customerId);
+                CourseTermBO Cterm = _custRepo.SelectTermById(courseTermId);
+                GolfCourseBO gc = Cterm.GolfCourse;
+                List<EquipmentBO> selection = _custRepo.GetSelEquipmentById(selItems);
+                RentInfoConfirmViewModel info = new RentInfoConfirmViewModel();
+                info.CustomerCredCard = custCC;
+                info.Equipment = selection;
+                info.Course = gc;
+                info.CorTerm = Cterm;
+                return View(info);
+            }
+            [HttpGet]
+            public ActionResult Rent()
+            {
+                return View();
+            }
+            [HttpPost]
+            public ActionResult Rent(RentInfoConfirmViewModel info, int[] equipIds)
+            {
+                DateTime rentDate = DateTime.Parse(Session["selRentDate"].ToString());
+                if (_custRepo.SaveRent(info.CorTerm.Id, info.CustomerCredCard.Cust.Id, rentDate))
+                {
+                    _custRepo.SaveRentItems(info.CorTerm.Id, info.CustomerCredCard.Cust.Id, equipIds);
+                    _custRepo.SendEmail();
+                }
+                return View();
+            }
         }
     }
-}
