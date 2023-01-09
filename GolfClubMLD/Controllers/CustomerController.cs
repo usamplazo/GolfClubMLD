@@ -88,11 +88,12 @@ namespace GolfClubMLD.Controllers
                 CourseTermBO Cterm = _custRepo.SelectTermById(courseTermId);
                 GolfCourseBO gc = Cterm.GolfCourse;
                 List<EquipmentBO> selection = _custRepo.GetSelEquipmentById(selItems);
-                RentInfoConfirmViewModel info = new RentInfoConfirmViewModel();
-                info.CustomerCredCard = custCC;
-                info.Equipment = selection;
-                info.Course = gc;
-                info.CorTerm = Cterm;
+                RentInfoConfirmViewModel info = new RentInfoConfirmViewModel() { 
+                    CustomerCredCard = custCC,
+                    Equipment = selection,
+                    Course = gc,
+                    CorTerm = Cterm
+                };
                 return View(info);
             }
             [HttpGet]

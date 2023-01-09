@@ -2,13 +2,13 @@
 using AutoMapper.QueryableExtensions;
 using GolfClubMLD.Models.Interfaces;
 using GolfClubMLD.Models.ViewModel;
-using MailKit.Net.Smtp;
-using MimeKit;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Net;
+using System.Net.Mail;
 
 namespace GolfClubMLD.Models.EFRepository
 {
@@ -20,14 +20,14 @@ namespace GolfClubMLD.Models.EFRepository
         private List<CourseTermBO> m_avlCourseTerms;
         public async Task<List<CourseTermBO>> GetTermsForSelCourse(int courseId)
         {
-            Task<List<CourseTermBO>> terms = _custEntities.CourseTerm.Select(ct=>ct)
-                                                .Where(ct=>ct.courseId == courseId)
+            Task<List<CourseTermBO>> terms = _custEntities.CourseTerm.Select(ct => ct)
+                                                .Where(ct => ct.courseId == courseId)
                                                 .Include(ct => ct.GolfCourse)
-                                                .Include(ct=>ct.Term)
+                                                .Include(ct => ct.Term)
                                                 .ProjectTo<CourseTermBO>()
                                                 .ToListAsync();
             return await CheckForRentCourses(await terms, courseId);
-                                           
+
         }
         public async Task<List<CourseTermBO>> CheckForRentCourses(List<CourseTermBO> courseTerms, int courseId)
         {
@@ -51,50 +51,50 @@ namespace GolfClubMLD.Models.EFRepository
             }
             m_avlCourseTerms = corTrm;
             return corTrm;
-            
+
         }
         public void CalculateDateFromDayNumber(int dayNum)
         {
             var tod = DateTime.Now;
             var d = (int)tod.DayOfWeek;
-            DateTime test = tod.AddDays(dayNum-d);
+            DateTime test = tod.AddDays(dayNum - d);
         }
 
         public List<EquipmentBO> GetSelEquipmentById(int[] sel)
         {
             List<EquipmentBO> selectedEquip = new List<EquipmentBO>();
             EquipmentBO equip;
-            for(int i = 0; i < sel.Length; i++)
+            for (int i = 0; i < sel.Length; i++)
             {
-                equip =  SearchEquipment(sel[i]);
+                equip = SearchEquipment(sel[i]);
                 selectedEquip.Add(equip);
             }
             return selectedEquip;
         }
         private EquipmentBO SearchEquipment(int id)
         {
-            Equipment eq =  _custEntities.Equipment.FirstOrDefault(e => e.id == id);
+            Equipment eq = _custEntities.Equipment.FirstOrDefault(e => e.id == id);
             EquipmentBO equip = Mapper.Map<EquipmentBO>(eq);
             return equip;
         }
 
         public GolfCourseBO SelectCourseById(int id)
         {
-            GolfCourse golfCour = _custEntities.GolfCourse.FirstOrDefault(gc=>gc.id == id);
+            GolfCourse golfCour = _custEntities.GolfCourse.FirstOrDefault(gc => gc.id == id);
             GolfCourseBO selCourse = Mapper.Map<GolfCourseBO>(golfCour);
-            return  selCourse;
+            return selCourse;
         }
 
         public CourseTermBO SelectTermById(int id)
-        { 
-            CourseTerm cTerm = _custEntities.CourseTerm.FirstOrDefault(t=>t.id == id);
+        {
+            CourseTerm cTerm = _custEntities.CourseTerm.FirstOrDefault(t => t.id == id);
             CourseTermBO selCTerm = Mapper.Map<CourseTermBO>(cTerm);
-            return selCTerm; 
+            return selCTerm;
         }
         public CustomerCreditCardViewModel GetCustomerCC(int id)
         {
             CustomerCreditCardViewModel custCC = new CustomerCreditCardViewModel();
-            Users cust = _custEntities.Users.FirstOrDefault(u=>u.id == id);
+            Users cust = _custEntities.Users.FirstOrDefault(u => u.id == id);
             UsersBO logedCust = Mapper.Map<UsersBO>(cust);
             CreditCardBO cc = logedCust.CreditCard;
             custCC.Cust = logedCust;
@@ -119,10 +119,10 @@ namespace GolfClubMLD.Models.EFRepository
                 _custEntities.Rent.Add(rentInfo);
                 _custEntities.SaveChanges();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
 
-            }    
+            }
             return true;
         }
 
@@ -138,7 +138,7 @@ namespace GolfClubMLD.Models.EFRepository
         {
             try
             {
-                Rent rent = _custEntities.Rent.FirstOrDefault(r => r.custId == custId 
+                Rent rent = _custEntities.Rent.FirstOrDefault(r => r.custId == custId
                                                                 && r.courTrmId == ctId
                                                                 && r.billDate == m_rentConf);
                 List<EquipmentBO> equip = GetSelEquipmentById(equipIds);
@@ -153,7 +153,7 @@ namespace GolfClubMLD.Models.EFRepository
                     _custEntities.SaveChanges();
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
 
             }
@@ -169,22 +169,47 @@ namespace GolfClubMLD.Models.EFRepository
         }
         public void SendEmail()
         {
-            var mailMessage = new MimeMessage();
-            mailMessage.From.Add(new MailboxAddress("GolfClubMLD", "uzumakis880@gmail.com"));
-            mailMessage.To.Add(new MailboxAddress("test user", "uzumakis880@gmail.com"));
-            mailMessage.Subject = "Test mail";
-            mailMessage.Body = new TextPart()
+            MailAddress ma_from = new MailAddress("golfClubMLDTest@gmail.com", "fromSomeone");
+            MailAddress ma_to = new MailAddress("golfClubMLDTest@gmail.com", "ToSomeone");
+            string s_password = "dqkoughastqgvqji";
+            string s_subject = "Test";
+            string s_body = "This is a Test";
+
+            SmtpClient smtp = new SmtpClient
             {
-                Text = "Test mail"
+                Host = "smtp.gmail.com",
+                //change the port to prt 587. This seems to be the standard for Google smtp transmissions.
+                Port = 587,
+                //enable SSL to be true, otherwise it will get kicked back by the Google server.
+                EnableSsl = true,
+                //The following properties need set as well
+                DeliveryMethod = SmtpDeliveryMethod.Network,
+                UseDefaultCredentials = false,
+                Credentials = new NetworkCredential(ma_from.Address, s_password)
             };
 
-            using (var smtpClient = new SmtpClient())
+
+            using (MailMessage mail = new MailMessage(ma_from, ma_to)
             {
-                smtpClient.Connect("smtp.gmail.com", 587, false);
-                //smtpClient.Authenticate("user", "password");
-                smtpClient.Send(mailMessage);
-                smtpClient.Disconnect(true);
-            }
+                Subject = s_subject,
+                Body = s_body
+
+            })
+
+                try
+                {
+                    Console.WriteLine("Sending Mail");
+                    smtp.Send(mail);
+                    Console.WriteLine("Mail Sent");
+                    Console.ReadLine();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Exception caught in CreateTestMessage2(): {0}",
+                                ex.ToString());
+                    Console.ReadLine();
+                }
+
         }
     }
 }

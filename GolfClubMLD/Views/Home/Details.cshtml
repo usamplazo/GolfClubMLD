@@ -69,13 +69,14 @@
         <dd>
                 @{
                     DateTime today = DateTime.Now;
-                    int delta = Math.Abs((DayOfWeek.Monday- today.DayOfWeek - 7) % 7);
+                    //int delta = Math.Abs((DayOfWeek.Monday- today.DayOfWeek - 7) % 7);
+                    int delta = ((int) today.DayOfWeek + 6) % 7;
                     DateTime dt = today.AddDays(delta);
                     List<string> allDates = new List<string>();
                     int j = 0;
-                    for(int i = (int)today.DayOfWeek; i < 7; i++)
+                    for(int i = delta; i < 7; i++)
                     {
-                        
+
                         allDates.Add(today.AddDays(j).ToShortDateString());
                         j++;
                     }
