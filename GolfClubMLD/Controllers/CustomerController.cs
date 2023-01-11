@@ -112,5 +112,21 @@ namespace GolfClubMLD.Controllers
                 }
                 return View();
             }
+        [HttpGet]
+        public ActionResult Edit(string custId)
+        {
+            if (int.TryParse(custId, out int id))
+            {
+                CustomerCreditCardViewModel custCC = _custRepo.GetCustomerCC(id);
+                return View(custCC);
+            }
+            return View();
+        }
+        [HttpPost]
+        public ActionResult Edit()
+        {
+            
+            return View();
+        }
         }
     }

@@ -186,6 +186,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Classes\RentBillEmailBody.cs" />
     <Compile Include="Models\Classes\RoleAuthorizeAttribute .cs" />
     <Compile Include="Models\Classes\MyExpirePage.cs" />
     <Compile Include="Models\CourseTermBO.cs" />
@@ -331,6 +332,7 @@
     <Content Include="Views\Customer\ReserveCourse.cshtml" />
     <Content Include="Views\Customer\SelectedItem.cshtml" />
     <Content Include="Views\Customer\Rent.cshtml" />
+    <Content Include="Views\Customer\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

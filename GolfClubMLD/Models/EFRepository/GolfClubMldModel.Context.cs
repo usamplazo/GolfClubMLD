@@ -142,5 +142,11 @@ namespace GolfClubMLD.Models.EFRepository
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("sp_upgraddiagrams");
         }
+
+        public System.Data.Entity.DbSet<GolfClubMLD.Models.UsersBO> UsersBOes { get; set; }
+
+        public System.Data.Entity.DbSet<GolfClubMLD.Models.RoleBO> RoleBOes { get; set; }
+
+        public System.Data.Entity.DbSet<GolfClubMLD.Models.CreditCardBO> CreditCardBOes { get; set; }
     }
 }
