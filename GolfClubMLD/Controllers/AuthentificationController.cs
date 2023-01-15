@@ -13,6 +13,7 @@ using System.Web.Security;
 
 namespace GolfClubMLD.Controllers
 {
+    [HandleError(View = "Error", ExceptionType = typeof(Exception))]
     public class AuthentificationController : Controller
     {
 

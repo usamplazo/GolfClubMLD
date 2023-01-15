@@ -12,21 +12,13 @@ using System.Web.Mvc;
 
 namespace GolfClubMLD.Controllers
 {
+    [HandleError(View = "Error", ExceptionType = typeof(Exception))]
     public class CustomerController : Controller
     {
         private ICustomerRepository _custRepo;
-        private Dictionary<int, string> m_daysOfWeek = new Dictionary<int, string>();
         public CustomerController()
         {
             _custRepo = new CustomerRepository();
-            m_daysOfWeek.Add(1, "Monday");
-            m_daysOfWeek.Add(2, "Tuesday");
-            m_daysOfWeek.Add(3, "Wednesday");
-            m_daysOfWeek.Add(4, "Thursday");
-            m_daysOfWeek.Add(5, "Friday");
-            m_daysOfWeek.Add(6, "Saturday");
-            m_daysOfWeek.Add(7, "Sunday");
-
         }
         [HttpGet]
         [RoleAuthorize(Roles.Customer)]

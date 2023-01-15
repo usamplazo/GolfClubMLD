@@ -182,6 +182,7 @@
     <Compile Include="Controllers\AuthentificationController.cs" />
     <Compile Include="Controllers\CourseRentController.cs" />
     <Compile Include="Controllers\CustomerController.cs" />
+    <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -333,6 +334,8 @@
     <Content Include="Views\Customer\SelectedItem.cshtml" />
     <Content Include="Views\Customer\Rent.cshtml" />
     <Content Include="Views\Customer\Edit.cshtml" />
+    <Content Include="Views\Error\PageNotFound.cshtml" />
+    <Content Include="Views\Error\ServerError.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

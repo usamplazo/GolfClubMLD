@@ -13,6 +13,7 @@ using GolfClubMLD.Models.ViewModel;
 
 namespace GolfClubMLD.Controllers
 {
+    [HandleError(View = "Error", ExceptionType = typeof(Exception))]
     public class HomeController : Controller
     {
         private IHomeRepository _homeRepo;
