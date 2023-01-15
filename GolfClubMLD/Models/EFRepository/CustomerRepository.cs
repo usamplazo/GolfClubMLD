@@ -9,6 +9,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Net;
 using System.Net.Mail;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace GolfClubMLD.Models.EFRepository
 {
@@ -210,6 +212,55 @@ namespace GolfClubMLD.Models.EFRepository
                     Console.ReadLine();
                 }
 
+        }
+        public async Task<string> HashPassword(string pass)
+        {
+            MD5CryptoServiceProvider encryptor = new MD5CryptoServiceProvider();
+            UTF8Encoding encoder = new UTF8Encoding();
+
+            byte[] encryptedValueBytes = encryptor.ComputeHash(encoder.GetBytes(pass));
+            StringBuilder encryptedValueBuilder = new StringBuilder();
+            for (int i = 0; i < encryptedValueBytes.Length; i++)
+            {
+                encryptedValueBuilder.Append(encryptedValueBytes[i].ToString("x2"));
+
+            }
+            string encryptedValue = encryptedValueBuilder.ToString();
+
+            return encryptedValue;
+        }
+        public async Task<bool> EditCustomerData(CustomerCreditCardViewModel ccvm)
+        {
+            try
+            {
+                Users custForEdit = _custEntities.Users.FirstOrDefault(c=>c.id == ccvm.Cust.Id);
+                CreditCard custCredCard = _custEntities.CreditCard.FirstOrDefault(c => c.id == ccvm.CredCard.Id);
+                if (custForEdit == null || custCredCard == null)
+                    return false;
+
+                custForEdit.username = ccvm.Cust.Username;
+                custForEdit.pass = await HashPassword(ccvm.Cust.Pass);
+                custForEdit.fname = ccvm.Cust.Fname;
+                custForEdit.lname = ccvm.Cust.Lname;
+                custForEdit.phone = ccvm.Cust.Phone;
+                custForEdit.profPic = ccvm.Cust.ProfPic;
+
+                custCredCard.carNum = ccvm.CredCard.CarNum;
+                custCredCard.own = ccvm.CredCard.Own;
+                custCredCard.expiry = ccvm.CredCard.Expiry;
+                custCredCard.cvv = ccvm.CredCard.CVV;
+
+                _custEntities.Entry(custForEdit).State = EntityState.Modified;
+                _custEntities.Entry(custCredCard).State = EntityState.Modified;
+                _custEntities.SaveChanges();
+
+            }
+            catch(Exception ex)
+            {
+
+            }
+
+            return true;
         }
     }
 }

@@ -123,10 +123,19 @@ namespace GolfClubMLD.Controllers
             return View();
         }
         [HttpPost]
-        public ActionResult Edit()
+        public ActionResult Edit(CustomerCreditCardViewModel ccvm)
         {
-            
+            if (ccvm == null)
+                throw new Exception("Greska");
+                //error handeling
+            if (ccvm.Cust.Pass == null)
+                throw new Exception("Greska prazna sifra");
+            //error handeling
+
+            _custRepo.EditCustomerData(ccvm);
+
             return View();
         }
+
         }
     }

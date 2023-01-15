@@ -21,5 +21,7 @@ namespace GolfClubMLD.Models.Interfaces
         bool SaveRentItems(int ctId, int custId, int[] equipIds);
         DateTime CalculateDate(DateTime now);
         void SendEmail();
+        Task<bool> EditCustomerData(CustomerCreditCardViewModel ccvm);
+        Task<string> HashPassword(string pass);
     }
 }
