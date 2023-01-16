@@ -259,7 +259,6 @@ namespace GolfClubMLD.Models.EFRepository
             {
 
             }
-
             return true;
         }
     }

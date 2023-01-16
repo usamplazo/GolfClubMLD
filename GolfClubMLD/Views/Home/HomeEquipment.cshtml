@@ -21,16 +21,20 @@ Layout = "~/Views/Shared/_Layout.cshtml";
         </div>
     </div>
     <div class="col-md-8">
-        @using (Html.BeginForm("SelectedItem", "Customer", FormMethod.Post)) {
+        @using (Html.BeginForm("SelectedItem", "Customer", FormMethod.Post))
+        {
             <table class="table">
                 @foreach (var item in Model)
                 {
                     <tr>
+                        @if (User.IsInRole("Customer"))
+                        {
+                            <td>
+                                <input type="checkbox" id="selItems" name="selItems" value="@item.Id" />
+                            </td>
+                        }
                         <td>
-                            <input type="checkbox" id="selItems" name="selItems" value="@item.Id"/>
-                        </td>
-                        <td>
-                            <input type="hidden" value="@item.Id" name="item"/>
+                            <input type="hidden" value="@item.Id" name="item" />
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.Name)
@@ -53,29 +57,11 @@ Layout = "~/Views/Shared/_Layout.cshtml";
                     </tr>
                 }
             </table>
-            <input id="Submit" type="submit" value="submit" />
-        }
-    </div>
+            if(User.IsInRole("Customer"))
+            {
+                <input id="Submit" type="submit" value="submit" />
+            }
+     }
+        </div>
    
 </div>
-Selektovano
-<div id="selEquip">
-    @*<form asp-controller="Customer" asp-action="" method="post">
-        <input type="submit"/>
-    </form>*@
-</div>
-<script type="text/javascript">
-    function GetDynamicListItem(value) {
-        return '<div><input type="text" value="'+value+'"/><input type="button" onclick="RemoveEquip(this)" value="X"/></div>';
-    }
-    function Add(item) {
-        var div = document.createElement('DIV');
-        div.innerHTML = GetDynamicListItem(item);
-        document.getElementById("selEquip").appendChild(div);
-        document.querySelector("#equipInput").disabled = true;
-    }
-    function RemoveEquip(div) {
-        document.getElementById("selEquip").removeChild(div.parentNode.parentNode);
-        document.querySelector("#equipInput").disabled = false;
-    }
-</script>

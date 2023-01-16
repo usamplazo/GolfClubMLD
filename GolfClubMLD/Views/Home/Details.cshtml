@@ -67,22 +67,31 @@
             @Html.DisplayFor(model => model.CourseType.NumOfHoles)
         </dd>
         <dd>
-                @{
-                    DateTime today = DateTime.Now;
-                    //int delta = Math.Abs((DayOfWeek.Monday- today.DayOfWeek - 7) % 7);
-                    int delta = ((int) today.DayOfWeek + 6) % 7;
-                    DateTime dt = today.AddDays(delta);
-                    List<string> allDates = new List<string>();
-                    int j = 0;
-                    for(int i = delta; i < 7; i++)
-                    {
+            @{
+                DateTime today = DateTime.Now;
+                //int delta = Math.Abs((DayOfWeek.Monday- today.DayOfWeek - 7) % 7);
+                int delta = ((int)today.DayOfWeek + 6) % 7;
+                DateTime dt = today.AddDays(delta);
+                List<string> allDates = new List<string>();
+                int j = 0;
+                for (int i = delta; i < 7; i++)
+                {
 
-                        allDates.Add(today.AddDays(j).ToShortDateString());
-                        j++;
-                    }
-                    Session["allDates"] = Json.Encode(allDates);
+                    allDates.Add(today.AddDays(j).ToShortDateString());
+                    j++;
                 }
-                @Html.ActionLink("Rezervisi", "ReserveCourse", "Customer", routeValues: new {courseId = Model.Id}, htmlAttributes: new { @class = "btn btn-success" })
+                Session["allDates"] = Json.Encode(allDates);
+
+
+            }
+            @if (User.IsInRole("Customer"))
+            {
+                @Html.ActionLink("Rezervisi", "ReserveCourse", "Customer", routeValues: new { courseId = Model.Id }, htmlAttributes: new { @class = "btn btn-success" })
+            }
+            else
+            {
+                @Html.ActionLink("Rezervisi", "Login", "Authentification", routeValues: new { }, htmlAttributes: new { @class = "btn btn-success" })
+            }
         </dd>
     </dl>
 </div>

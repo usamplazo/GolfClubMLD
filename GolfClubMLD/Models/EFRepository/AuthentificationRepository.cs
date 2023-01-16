@@ -6,7 +6,6 @@ using System.Data.Entity;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
-using System.Web;
 using System.Text;
 using AutoMapper;
 using GolfClubMLD.Models.ViewModel;

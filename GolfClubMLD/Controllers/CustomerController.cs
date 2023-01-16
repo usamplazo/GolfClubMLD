@@ -115,7 +115,7 @@ namespace GolfClubMLD.Controllers
             return View();
         }
         [HttpPost]
-        public ActionResult Edit(CustomerCreditCardViewModel ccvm)
+        public async Task<ActionResult> Edit(CustomerCreditCardViewModel ccvm)
         {
             if (ccvm == null)
                 throw new Exception("Greska");
@@ -124,8 +124,10 @@ namespace GolfClubMLD.Controllers
                 throw new Exception("Greska prazna sifra");
             //error handeling
 
-            _custRepo.EditCustomerData(ccvm);
-
+            if (await _custRepo.EditCustomerData(ccvm))
+            {
+                ViewBag.EditProfileMessage = "Profile updated";
+            }
             return View();
         }
 
