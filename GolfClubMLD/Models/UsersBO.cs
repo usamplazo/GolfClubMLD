@@ -11,7 +11,7 @@ namespace GolfClubMLD.Models
         [RegularExpression("^[a-zA-Z0-9_\\.-]+@([a-zA-Z0-9]+\\.)+[a-zA-Z]{2,6}$", ErrorMessage = "Neispravan format mail-a")]
         public string Email { get; set; }
 
-        [Required(ErrorMessage = "Morate uneti lozinku")]
+        [Required(ErrorMessage = "Morate uneti korisnicko ime")]
         [Display(Name = "Korisnicko ime")]
         //[StringLength(10, ErrorMessage = "Korisnicko ime \"{0}\" mora imati {2} karaktera"), MinLength(5, ErrorMessage = "Korisnicko ime mora imati minimum 5 karaktera")]
         public string Username { get; set; }

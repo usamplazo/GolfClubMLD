@@ -267,6 +267,7 @@
     <Compile Include="Models\TermBO.cs" />
     <Compile Include="Models\ViewModel\CustomerCreditCardViewModel.cs" />
     <Compile Include="Models\ViewModel\RentInfoConfirmViewModel.cs" />
+    <Compile Include="Models\ViewModel\UserLoginViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

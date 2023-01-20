@@ -30,36 +30,26 @@ namespace GolfClubMLD.Controllers
         [AllowAnonymous]
         [MyExpirePage]
         [HttpPost]
-        public async Task<ActionResult> Login(string email, string pass)
+        //public async Task<ActionResult> Login(string email, string pass)
+        public async Task<ActionResult> Login(UserLoginViewModel loginUser)
         {
             if (ModelState.IsValid)
             {
-                if (string.IsNullOrEmpty(email))
-                {
-                    ModelState.AddModelError("email", "Morate uneti email");
-
-                    return View();
-                }
-                if (string.IsNullOrEmpty(pass))
-                {
-                    ModelState.AddModelError("pass", "Morate uneti lozniku");
-                }
-                UsersBO customer = await _accRepo.LoginCustomer(email, pass);
+                UsersBO customer = await _accRepo.LoginCustomer(loginUser.Email, loginUser.Pass);
                 if (customer != null)
                 {
                     FormsAuthentication.SetAuthCookie(customer.Username, true);
                     Session["LoginId"] = customer.Id.ToString();
                     Session["LoginEmail"] = customer.Email.ToString();
                     Session["LogCustCC"] = _accRepo.GetCredCardById(customer.CredCardId);
-                    return RedirectToAction("Index","Home");
-                    
-                }
-                ModelState.AddModelError("cust", "Ne posotji korisnik sa unetim podacima");
+                    return RedirectToAction("Index", "Home");
 
-                return View(customer);
+                }
+                ViewBag.ErrorMessage = "Ne posotji korisnik sa unetim podacima";
+                return View();
             }
-            ModelState.AddModelError("cust", "Greska prilikom unosa");
             return View();
+           
         }
         [AllowAnonymous]
         [HttpGet]
@@ -74,10 +64,12 @@ namespace GolfClubMLD.Controllers
             if (ModelState.IsValid)
             {
                 bool areSaved = await _accRepo.RegisterCustomer(custCredCard);
-                //return RedirectToActio);
+                if (areSaved)
+                    return RedirectToAction("Index", "Home");
+                else
+                    ViewBag.ErrorMessage = "Registracija nije uspela !";
             }
-            //thow new Exception()
-            return RedirectToAction("Index","Home");
+            return View();
         }
         [MyExpirePage]
         public ActionResult Logout()

@@ -1,4 +1,4 @@
-﻿@model GolfClubMLD.Models.UsersBO
+﻿@model GolfClubMLD.Models.ViewModel.UserLoginViewModel
 
 @{
     ViewBag.Title = "Login";
@@ -6,11 +6,16 @@
 }
 
 <h2>Login</h2>
-
+@if (ViewBag.ErrorMessage != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @ViewBag.ErrorMessage
+    </div>
+}
 @using (Html.BeginForm("Login", "Authentification", FormMethod.Post))
 {
     @Html.AntiForgeryToken()
-    
+
     <div class="form-horizontal">
         <h4>AdminBO</h4>
         <hr />
@@ -32,7 +37,7 @@
             </div>
         </div>
 
-       
+
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
                 <input type="submit" value="Save" class="btn btn-default" />
