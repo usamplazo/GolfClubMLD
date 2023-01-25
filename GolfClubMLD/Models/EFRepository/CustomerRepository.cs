@@ -11,15 +11,25 @@ using System.Net;
 using System.Net.Mail;
 using System.Security.Cryptography;
 using System.Text;
+using GolfClubMLD.Controllers;
+using Microsoft.Extensions.Logging;
+using System.Data.Entity.Validation;
 
 namespace GolfClubMLD.Models.EFRepository
 {
     public class CustomerRepository : ICustomerRepository
     {
         private GolfClubMldDBEntities _custEntities = new GolfClubMldDBEntities();
+        private readonly ILogger<CustomerController> _logger;
         private DateTime m_rentConf;
-        private DateTime m_rentDate;
-        private List<CourseTermBO> m_avlCourseTerms;
+        public CustomerRepository(ILogger<CustomerController> logger)
+        {
+            _logger = logger;
+        }
+        public CustomerRepository()
+        {
+
+        }
         public async Task<List<CourseTermBO>> GetTermsForSelCourse(int courseId)
         {
             Task<List<CourseTermBO>> terms = _custEntities.CourseTerm.Select(ct => ct)
@@ -33,27 +43,39 @@ namespace GolfClubMLD.Models.EFRepository
         }
         public async Task<List<CourseTermBO>> CheckForRentCourses(List<CourseTermBO> courseTerms, int courseId)
         {
-            DateTime start = DateTime.Now;
-            DateTime end = start.AddDays(7 - (int)start.DayOfWeek);
-            var currentWeekRents = await _custEntities.Rent.Select(r => r)
-                                                            .Where(r => r.CourseTerm.courseId == courseId && (r.rentDate >= start.Date && r.rentDate < end.Date))
-                                                            .ToListAsync();
-
-            List<CourseTermBO> corTrm = new List<CourseTermBO>(courseTerms);
-            if (currentWeekRents != null)
+            try
             {
-                foreach (CourseTermBO ct in courseTerms)
+                DateTime start = DateTime.Now;
+                DateTime end = start.AddDays(7 - (int)start.DayOfWeek);
+                var currentWeekRents = await _custEntities.Rent.Select(r => r)
+                                                                .Where(r => r.CourseTerm.courseId == courseId
+                                                                        && (r.rentDate >= start.Date 
+                                                                        && r.rentDate < end.Date))
+                                                                .ToListAsync();
+
+                List<CourseTermBO> corTrm = new List<CourseTermBO>(courseTerms);
+                if (currentWeekRents != null)
                 {
-                    foreach (Rent r in currentWeekRents)
+                    foreach (CourseTermBO ct in courseTerms)
                     {
-                        if (r.courTrmId == ct.Id)
-                            corTrm.Remove(ct);
+                        foreach (Rent r in currentWeekRents)
+                        {
+                            if (r.courTrmId == ct.Id)
+                                corTrm.Remove(ct);
+                        }
                     }
                 }
+                return corTrm;
             }
-            m_avlCourseTerms = corTrm;
-            return corTrm;
-
+            catch (ArgumentException ex)
+            {
+                _logger.LogError(ex, " Error: CustomerRepository/CheckForRentCourses => currentWeekRents ");
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex, " Error: CustomerRepository/CheckForRentCourses ");
+            }
+            return null;
         }
         public void CalculateDateFromDayNumber(int dayNum)
         {
@@ -121,9 +143,23 @@ namespace GolfClubMLD.Models.EFRepository
                 _custEntities.Rent.Add(rentInfo);
                 _custEntities.SaveChanges();
             }
+            catch (DbEntityValidationException e)
+            {
+                foreach (var eve in e.EntityValidationErrors)
+                {
+                    _logger.LogError("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
+                        eve.Entry.Entity.GetType().Name, eve.Entry.State);
+                    foreach (var ve in eve.ValidationErrors)
+                    {
+                        _logger.LogError("- Property: \"{0}\", Error: \"{1}\"",
+                            ve.PropertyName, ve.ErrorMessage);
+                    }
+                }
+                throw;
+            }
             catch (Exception ex)
             {
-
+                _logger.LogError("Error: Customer => SaveRent "+ex);
             }
             return true;
         }
@@ -155,9 +191,23 @@ namespace GolfClubMLD.Models.EFRepository
                     _custEntities.SaveChanges();
                 }
             }
+            catch (DbEntityValidationException e)
+            {
+                foreach (var eve in e.EntityValidationErrors)
+                {
+                    _logger.LogError("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
+                        eve.Entry.Entity.GetType().Name, eve.Entry.State);
+                    foreach (var ve in eve.ValidationErrors)
+                    {
+                        _logger.LogError("- Property: \"{0}\", Error: \"{1}\"",
+                            ve.PropertyName, ve.ErrorMessage);
+                    }
+                }
+                throw;
+            }
             catch (Exception ex)
             {
-
+                _logger.LogError("Error: Customer => SaveRentItems " + ex);
             }
             return true;
         }
@@ -200,18 +250,27 @@ namespace GolfClubMLD.Models.EFRepository
 
                 try
                 {
-                    Console.WriteLine("Sending Mail");
                     smtp.Send(mail);
-                    Console.WriteLine("Mail Sent");
-                    Console.ReadLine();
                 }
-                catch (Exception ex)
+                catch (SmtpFailedRecipientsException ex)
                 {
-                    Console.WriteLine("Exception caught in CreateTestMessage2(): {0}",
-                                ex.ToString());
-                    Console.ReadLine();
+                    for (int i = 0; i < ex.InnerExceptions.Length; i++)
+                    {
+                        SmtpStatusCode status = ex.InnerExceptions[i].StatusCode;
+                        if (status == SmtpStatusCode.MailboxBusy ||
+                            status == SmtpStatusCode.MailboxUnavailable)
+                        {
+                            _logger.LogError("Delivery failed - retrying in 5 seconds.");
+                            System.Threading.Thread.Sleep(5000);
+                            smtp.Send(mail);
+                        }
+                        else
+                        {
+                            _logger.LogError("Failed to deliver message to {0}",
+                            ex.InnerExceptions[i].FailedRecipient);
+                        }
+                    }
                 }
-
         }
         public async Task<string> HashPassword(string pass)
         {
@@ -255,9 +314,63 @@ namespace GolfClubMLD.Models.EFRepository
                 _custEntities.SaveChanges();
 
             }
-            catch(Exception ex)
+            catch (DbEntityValidationException e)
             {
+                foreach (var eve in e.EntityValidationErrors)
+                {
+                    _logger.LogError("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
+                        eve.Entry.Entity.GetType().Name, eve.Entry.State);
+                    foreach (var ve in eve.ValidationErrors)
+                    {
+                        _logger.LogError("- Property: \"{0}\", Error: \"{1}\"",
+                            ve.PropertyName, ve.ErrorMessage);
+                    }
+                }
+                throw;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error: Customer => EditCustomerData " + ex);
+            }
+            return true;
+        }
+        public UsersBO GetCustomerById(int custId)
+        {
+            Users customer = _custEntities.Users.FirstOrDefault(c=>c.id == custId);
+            if (customer == null)
+                return null;
+            UsersBO custBO = Mapper.Map<UsersBO>(customer);
 
+            return custBO;
+        }
+        public bool DeactCustomer(int custId)
+        {
+            Users custToDeactivate = _custEntities.Users.FirstOrDefault(c => c.id == custId);
+            if (custToDeactivate == null)
+                return false;
+            try
+            {
+                custToDeactivate.isActv = false;
+                _custEntities.Entry(custToDeactivate).State = EntityState.Modified;
+                _custEntities.SaveChanges();
+            }
+            catch (DbEntityValidationException e)
+            {
+                foreach (var eve in e.EntityValidationErrors)
+                {
+                    _logger.LogError("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
+                        eve.Entry.Entity.GetType().Name, eve.Entry.State);
+                    foreach (var ve in eve.ValidationErrors)
+                    {
+                        _logger.LogError("- Property: \"{0}\", Error: \"{1}\"",
+                            ve.PropertyName, ve.ErrorMessage);
+                    }
+                }
+                throw;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error: Customer => DeactCustomer " + ex);
             }
             return true;
         }

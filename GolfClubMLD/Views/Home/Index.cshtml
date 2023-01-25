@@ -4,7 +4,12 @@
 @{
     ViewBag.Title = "Home Page";
 }
-
+@if (ViewBag.ErrorMessage != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @ViewBag.Message
+    </div>
+}
 <div class="jumbotron">
     <div class="col-md-6">
         <h2>Svi tereni</h2>

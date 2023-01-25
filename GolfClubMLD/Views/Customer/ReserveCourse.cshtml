@@ -6,7 +6,7 @@
 }
 
 <h2>ReserveCourse</h2>
-@{ 
+@{
     DateTime dt = DateTime.Now;
     if (Session["selRentDate"] != null)
     {
@@ -14,7 +14,10 @@
     }
 
 }
-<form asp-controller="Customer" asp-action="ReserveCourse" method="get">
+
+@if (Model != null)
+{
+    <form asp-controller="Customer" asp-action="ReserveCourse" method="get">
         <input type="hidden" name="courseId" value="@Session["selCourse"]" />
         <select name="ctDay" onchange="this.form.submit();">
             @foreach (string dateT in Model.Keys)
@@ -33,29 +36,30 @@
         </select>
         @*<input type="submit" id="day" name="Odaberi" onclick="myFunction()" />*@
     </form>
-<form asp-controller="Customer" asp-action="ReserveCourse" method="post">
-    <input type="hidden" name="courseId" value="@Session["selCourse"]" />
-    <div id="myDIV">
-        <select name="courseTermId" id="dateSel">
-            @{
-                string strDt = dt.ToShortDateString();
-                List<CourseTermBO> selCt = Model[strDt];
-                foreach (var tr in selCt)
-                {
-                    <option value="@tr.Id">@tr.Term.StartTime - @tr.Term.EndTime</option>
+    <form asp-controller="Customer" asp-action="ReserveCourse" method="post">
+        <input type="hidden" name="courseId" value="@Session["selCourse"]" />
+        <div id="myDIV">
+            <select name="courseTermId" id="dateSel">
+                @{
+                    string strDt = dt.ToShortDateString();
+                    List<CourseTermBO> selCt = Model[strDt];
+                    foreach (var tr in selCt)
+                    {
+                        <option value="@tr.Id">@tr.Term.StartTime - @tr.Term.EndTime</option>
+                    }
+
+
                 }
-            }
-        </select>
-    <input type="submit" value="Potvrdi" id="buttonConf"/>
+            </select>
+            <input type="submit" value="Potvrdi" id="buttonConf" />
+        </div>
+    </form>
+}
+else
+{
+    <div class="alert alert-danger" role="alert">
+        @ViewBag.Message
     </div>
-</form>
-<script>
-    function myFunction() {
-        var x = document.getElementById("buttonConf");
-        x.disabled = false;
-        x = document.getElementById("dateSel");
-        x.disabled = false;
-        this.form.submit();
-    }
-</script>
+}
+
 

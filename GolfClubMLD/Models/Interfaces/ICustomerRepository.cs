@@ -23,5 +23,7 @@ namespace GolfClubMLD.Models.Interfaces
         void SendEmail();
         Task<bool> EditCustomerData(CustomerCreditCardViewModel ccvm);
         Task<string> HashPassword(string pass);
+        UsersBO GetCustomerById(int custId);
+        bool DeactCustomer(int custId);
     }
 }

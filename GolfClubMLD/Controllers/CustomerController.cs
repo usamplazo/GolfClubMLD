@@ -1,13 +1,13 @@
 ﻿using GolfClubMLD.Models;
+using GolfClubMLD.Models.ActionFilters;
 using GolfClubMLD.Models.Classes;
 using GolfClubMLD.Models.EFRepository;
 using GolfClubMLD.Models.Interfaces;
 using GolfClubMLD.Models.ViewModel;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Mvc;
 
 namespace GolfClubMLD.Controllers
@@ -26,9 +26,12 @@ namespace GolfClubMLD.Controllers
         {
             List<CourseTermBO> allCourseTerms;
             allCourseTerms = await _custRepo.GetTermsForSelCourse(courseId);
+
             if (string.IsNullOrWhiteSpace(ctDay))
                 ctDay = DateTime.Now.Date.ToString();
+
             Session["selRentDate"] = ctDay;
+
             if (allCourseTerms != null)
             {
                 List<string> avalDates = System.Web.Helpers.Json.Decode<List<string>>(Session["allDates"].ToString());
@@ -52,8 +55,8 @@ namespace GolfClubMLD.Controllers
                 }
                 return View(terms);
             }
-                //Error handeling (nemamo termina za teren)
-                return View();
+            ViewBag.Message = "Nemamo termina za selektovani teren ";
+            return View();
         }
             [HttpPost]
             [RoleAuthorize(Roles.Customer)]
@@ -77,14 +80,19 @@ namespace GolfClubMLD.Controllers
                 int customerId = Convert.ToInt32(Session["LoginId"]);
                 int courseTermId = Convert.ToInt32(Session["PickedCourseTermId"]);
                 CustomerCreditCardViewModel custCC = _custRepo.GetCustomerCC(customerId);
-                CourseTermBO Cterm = _custRepo.SelectTermById(courseTermId);
-                GolfCourseBO gc = Cterm.GolfCourse;
+                CourseTermBO cTerm = _custRepo.SelectTermById(courseTermId);
+                GolfCourseBO gc = cTerm.GolfCourse;
                 List<EquipmentBO> selection = _custRepo.GetSelEquipmentById(selItems);
+                if (custCC == null || cTerm == null || gc == null || selection == null)
+                {
+                     ViewBag.ErrorMessage = "Iznajmljivanje trenutno nije moguce";
+                     return RedirectToAction("Index", "Error");
+                }
                 RentInfoConfirmViewModel info = new RentInfoConfirmViewModel() { 
                     CustomerCredCard = custCC,
                     Equipment = selection,
                     Course = gc,
-                    CorTerm = Cterm
+                    CorTerm = cTerm
                 };
                 return View(info);
             }
@@ -118,17 +126,26 @@ namespace GolfClubMLD.Controllers
         public async Task<ActionResult> Edit(CustomerCreditCardViewModel ccvm)
         {
             if (ccvm == null)
-                throw new Exception("Greska");
-                //error handeling
+                ViewBag.EditProfileErrorMessage = "Neispravno uneti podaci";
+
             if (ccvm.Cust.Pass == null)
-                throw new Exception("Greska prazna sifra");
-            //error handeling
+                ViewBag.EditProfileErrorMessage = "Morate uneti i sifru za potvrdu";
 
             if (await _custRepo.EditCustomerData(ccvm))
             {
                 ViewBag.EditProfileMessage = "Profile updated";
             }
             return View();
+        }
+        [HttpPost]
+        [RoleAuthorize(Roles.Customer)]
+        [MyExpirePage]
+        public ActionResult DeactivateProfile(int custId)
+        {
+            if (!_custRepo.DeactCustomer(custId))
+                return View();
+            ViewBag.Message = "Nalog deaktiviran";
+            return RedirectToAction("Index", "Home");
         }
 
         }

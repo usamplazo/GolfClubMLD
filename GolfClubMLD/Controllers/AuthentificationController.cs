@@ -49,7 +49,6 @@ namespace GolfClubMLD.Controllers
                 return View();
             }
             return View();
-           
         }
         [AllowAnonymous]
         [HttpGet]

@@ -9,13 +9,13 @@ using System.Threading.Tasks;
 using System.Text;
 using AutoMapper;
 using GolfClubMLD.Models.ViewModel;
+using System.Data.Entity.Validation;
 
 namespace GolfClubMLD.Models.EFRepository
 {
     public class AuthentificationRepository : IAuthentificationRepository
     {
         private GolfClubMldDBEntities _gcEntities = new GolfClubMldDBEntities();
-      
         public async Task<CreditCardBO> GetCredCardById(int credCardId)
         {
             CreditCard credCard = await _gcEntities.CreditCard.FirstOrDefaultAsync(cc => cc.id == credCardId);
@@ -43,7 +43,8 @@ namespace GolfClubMLD.Models.EFRepository
             string genMD5pass = await HashPassword(pass);
                 Task<UsersBO> selCust = _gcEntities.Users
                     .Select(c => c)
-                    .Where(c => (c.email == credential || c.username == credential) && (c.pass == genMD5pass) && (c.isActv == true))
+                    //.Where(c => (c.email == credential || c.username == credential) && (c.pass == genMD5pass) && (c.isActv == true))
+                    .Where(c => (c.email == credential) && (c.pass == genMD5pass) && (c.isActv == true))
                     .Include(cd => cd.CreditCard)
                     .ProjectTo<UsersBO>()
                     .FirstOrDefaultAsync();
@@ -76,6 +77,7 @@ namespace GolfClubMLD.Models.EFRepository
                 Users cust = new Users
                 {
                     email = custCredCard.Cust.Email,
+                    username = custCredCard.Cust.Username,
                     pass = hashPass,
                     fname = custCredCard.Cust.Fname,
                     lname = custCredCard.Cust.Lname,
@@ -125,17 +127,28 @@ namespace GolfClubMLD.Models.EFRepository
         {
             try
             {
-                CreditCard cc = _gcEntities.CreditCard.Select(cr => cr).OrderByDescending(cr => cr.id).FirstOrDefault(); ;
+                CreditCard cc = _gcEntities.CreditCard.Select(cr => cr).OrderByDescending(cr => cr.id).FirstOrDefault();
                 if (cust is null || cc is null)
                     return false;
+                cust.credCardId = cc.id;
+                cust.roleId = 1;
                 cust.credCardId = cc.id;
                 _gcEntities.Users.Add(cust);
                 _gcEntities.SaveChanges();
             }
-            catch(Exception ex)
+            catch (DbEntityValidationException e)
             {
-                //error handeling
-                return false;
+                foreach (var eve in e.EntityValidationErrors)
+                {
+                    Console.WriteLine("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
+                        eve.Entry.Entity.GetType().Name, eve.Entry.State);
+                    foreach (var ve in eve.ValidationErrors)
+                    {
+                        Console.WriteLine("- Property: \"{0}\", Error: \"{1}\"",
+                            ve.PropertyName, ve.ErrorMessage);
+                    }
+                }
+                throw;
             }
             return true;
         }
