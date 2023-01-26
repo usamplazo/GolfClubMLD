@@ -69,11 +69,11 @@ namespace GolfClubMLD.Models.EFRepository
             }
             catch (ArgumentException ex)
             {
-                _logger.LogError(ex, " Error: CustomerRepository/CheckForRentCourses => currentWeekRents ");
+                _logger.LogError(ex, " Error: CustomerRepository / CheckForRentCourses => currentWeekRents ");
             }
             catch(Exception ex)
             {
-                _logger.LogError(ex, " Error: CustomerRepository/CheckForRentCourses ");
+                _logger.LogError(ex, " Error: CustomerRepository => CheckForRentCourses ");
             }
             return null;
         }

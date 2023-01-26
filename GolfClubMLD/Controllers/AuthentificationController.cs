@@ -43,7 +43,6 @@ namespace GolfClubMLD.Controllers
                     Session["LoginEmail"] = customer.Email.ToString();
                     Session["LogCustCC"] = _accRepo.GetCredCardById(customer.CredCardId);
                     return RedirectToAction("Index", "Home");
-
                 }
                 ViewBag.ErrorMessage = "Ne posotji korisnik sa unetim podacima";
                 return View();

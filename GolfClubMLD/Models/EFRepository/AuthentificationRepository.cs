@@ -10,19 +10,28 @@ using System.Text;
 using AutoMapper;
 using GolfClubMLD.Models.ViewModel;
 using System.Data.Entity.Validation;
+using GolfClubMLD.Controllers;
+using Microsoft.Extensions.Logging;
 
 namespace GolfClubMLD.Models.EFRepository
 {
     public class AuthentificationRepository : IAuthentificationRepository
     {
         private GolfClubMldDBEntities _gcEntities = new GolfClubMldDBEntities();
+        private readonly ILogger<CustomerController> _logger;
+
+        public AuthentificationRepository() { }
+        public AuthentificationRepository(ILogger<CustomerController> logger)
+        {
+            _logger = logger;
+        }
         public async Task<CreditCardBO> GetCredCardById(int credCardId)
         {
             CreditCard credCard = await _gcEntities.CreditCard.FirstOrDefaultAsync(cc => cc.id == credCardId);
             CreditCardBO crCd = Mapper.Map<CreditCardBO>(credCard);
             return crCd;
         }
-        public async Task<string> HashPassword(string pass)
+        public string HashPassword(string pass)
         {
             MD5CryptoServiceProvider encryptor = new MD5CryptoServiceProvider();
             UTF8Encoding encoder = new UTF8Encoding();
@@ -40,7 +49,7 @@ namespace GolfClubMLD.Models.EFRepository
         }
         public async Task<UsersBO> LoginCustomer(string credential, string pass)
         {
-            string genMD5pass = await HashPassword(pass);
+            string genMD5pass = HashPassword(pass);
                 Task<UsersBO> selCust = _gcEntities.Users
                     .Select(c => c)
                     //.Where(c => (c.email == credential || c.username == credential) && (c.pass == genMD5pass) && (c.isActv == true))
@@ -72,7 +81,7 @@ namespace GolfClubMLD.Models.EFRepository
             }
             try
             {
-                var hashPass = await HashPassword(custCredCard.Cust.Pass);
+                string hashPass = HashPassword(custCredCard.Cust.Pass);
 
                 Users cust = new Users
                 {
@@ -101,10 +110,23 @@ namespace GolfClubMLD.Models.EFRepository
                     return true;
 
             }
+            catch (DbEntityValidationException e)
+            {
+                foreach (var eve in e.EntityValidationErrors)
+                {
+                    _logger.LogError("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
+                        eve.Entry.Entity.GetType().Name, eve.Entry.State);
+                    foreach (var ve in eve.ValidationErrors)
+                    {
+                        _logger.LogError("- Property: \"{0}\", Error: \"{1}\"",
+                            ve.PropertyName, ve.ErrorMessage);
+                    }
+                }
+                throw;
+            }
             catch (Exception ex)
             {
-                //exception handeling
-                return false;
+                _logger.LogError("Error: Authentification => RegisterCustomer " + ex);
             }
 
             return false;
@@ -140,19 +162,23 @@ namespace GolfClubMLD.Models.EFRepository
             {
                 foreach (var eve in e.EntityValidationErrors)
                 {
-                    Console.WriteLine("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
+                    _logger.LogError("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
                         eve.Entry.Entity.GetType().Name, eve.Entry.State);
                     foreach (var ve in eve.ValidationErrors)
                     {
-                        Console.WriteLine("- Property: \"{0}\", Error: \"{1}\"",
+                        _logger.LogError("- Property: \"{0}\", Error: \"{1}\"",
                             ve.PropertyName, ve.ErrorMessage);
                     }
                 }
                 throw;
             }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error: Authentification => UpdateCustomerCredCard " + ex);
+            }
             return true;
         }
-        public async Task RemoveAcc(int custId)
+        public void RemoveAcc(int custId)
         {
             Users cust = _gcEntities.Users.FirstOrDefault(c => c.id == custId);
             if (cust != null)
@@ -163,15 +189,28 @@ namespace GolfClubMLD.Models.EFRepository
                     _gcEntities.SaveChanges();
 
                 }
+                catch (DbEntityValidationException e)
+                {
+                    foreach (var eve in e.EntityValidationErrors)
+                    {
+                        _logger.LogError("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
+                            eve.Entry.Entity.GetType().Name, eve.Entry.State);
+                        foreach (var ve in eve.ValidationErrors)
+                        {
+                            _logger.LogError("- Property: \"{0}\", Error: \"{1}\"",
+                                ve.PropertyName, ve.ErrorMessage);
+                        }
+                    }
+                    throw;
+                }
                 catch (Exception ex)
                 {
-                    //ISPRAVITI ERROR HANDELING
-                    throw new Exception(ex.Message);
+                    _logger.LogError("Error: Authentification => RemoveAcc " + ex);
                 }
             }
         }
 
-        public async Task UpdateAcc(int custId)
+        public void UpdateAcc(int custId)
         {
             Users cust = _gcEntities.Users.FirstOrDefault(c => c.id == custId);
             if (cust != null)
@@ -180,12 +219,25 @@ namespace GolfClubMLD.Models.EFRepository
                 try
                 {
                     _gcEntities.SaveChanges();
-                 
+
+                }
+                catch (DbEntityValidationException e)
+                {
+                    foreach (var eve in e.EntityValidationErrors)
+                    {
+                        _logger.LogError("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
+                            eve.Entry.Entity.GetType().Name, eve.Entry.State);
+                        foreach (var ve in eve.ValidationErrors)
+                        {
+                            _logger.LogError("- Property: \"{0}\", Error: \"{1}\"",
+                                ve.PropertyName, ve.ErrorMessage);
+                        }
+                    }
+                    throw;
                 }
                 catch (Exception ex)
                 {
-                    //ISPRAVITI ERROR HANDELING
-                    throw new Exception(ex.Message);
+                    _logger.LogError("Error: Authentification => UpdateAcc " + ex);
                 }
             }
         }

@@ -23,7 +23,7 @@ namespace GolfClubMLD.Controllers
         }
         [HttpGet]
         [MyExpirePage]
-        public async Task<ViewResult> Index(string searchString, int? page, string order = null)
+        public async Task<ActionResult> Index(string searchString, int? page, string order = null)
         {
             List<GolfCourseBO> allCourses = await _homeRepo.GetAllCourses();
             List<CourseTypeBO> allTypes = await _homeRepo.GetAllCourseTypes();
@@ -31,6 +31,11 @@ namespace GolfClubMLD.Controllers
             ViewData["searchString"] = searchString;
             ViewData["order"] = order;
             if (allCourses == null)
+            {
+                ViewBag.Message = "Trenutno nema terena za iznajmljivanje";
+                return View();
+            }
+            if (allTypes == null)
                 return View();
 
             if (searchString != null && Int32.TryParse(searchString, out int typeSearchId))
@@ -85,6 +90,8 @@ namespace GolfClubMLD.Controllers
         public async Task<ActionResult> Details(int id)
         {
             GolfCourseBO gc = await _homeRepo.GetCourseById(id);
+            if (gc == null)
+                return View();
             Session["selCourse"] = id;
             return View(gc);
         }
