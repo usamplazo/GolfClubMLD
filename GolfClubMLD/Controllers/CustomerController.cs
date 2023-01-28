@@ -13,6 +13,7 @@ using System.Web.Mvc;
 namespace GolfClubMLD.Controllers
 {
     [HandleError(View = "Error", ExceptionType = typeof(Exception))]
+    [NoCache]
     public class CustomerController : Controller
     {
         private ICustomerRepository _custRepo;
@@ -139,7 +140,6 @@ namespace GolfClubMLD.Controllers
         }
         [HttpPost]
         [RoleAuthorize(Roles.Customer)]
-        [MyExpirePage]
         public ActionResult DeactivateProfile(int custId)
         {
             if (!_custRepo.DeactCustomer(custId))

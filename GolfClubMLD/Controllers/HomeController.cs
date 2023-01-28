@@ -14,6 +14,7 @@ using GolfClubMLD.Models.ViewModel;
 namespace GolfClubMLD.Controllers
 {
     [HandleError(View = "Error", ExceptionType = typeof(Exception))]
+    [NoCache]
     public class HomeController : Controller
     {
         private IHomeRepository _homeRepo;
@@ -22,7 +23,6 @@ namespace GolfClubMLD.Controllers
             _homeRepo = new HomeRepository();
         }
         [HttpGet]
-        [MyExpirePage]
         public async Task<ActionResult> Index(string searchString, int? page, string order = null)
         {
             List<GolfCourseBO> allCourses = await _homeRepo.GetAllCourses();

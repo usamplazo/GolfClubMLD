@@ -4,16 +4,14 @@ using GolfClubMLD.Models.EFRepository;
 using GolfClubMLD.Models.Interfaces;
 using GolfClubMLD.Models.ViewModel;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
 
 namespace GolfClubMLD.Controllers
 {
     [HandleError(View = "Error", ExceptionType = typeof(Exception))]
+    [NoCache]
     public class AuthentificationController : Controller
     {
 
@@ -28,7 +26,6 @@ namespace GolfClubMLD.Controllers
             return View();
         }
         [AllowAnonymous]
-        [MyExpirePage]
         [HttpPost]
         //public async Task<ActionResult> Login(string email, string pass)
         public async Task<ActionResult> Login(UserLoginViewModel loginUser)
@@ -69,7 +66,6 @@ namespace GolfClubMLD.Controllers
             }
             return View();
         }
-        [MyExpirePage]
         public ActionResult Logout()
         {
             FormsAuthentication.SignOut();

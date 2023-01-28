@@ -195,7 +195,7 @@
     </Compile>
     <Compile Include="Models\Classes\RentBillEmailBody.cs" />
     <Compile Include="Models\Classes\RoleAuthorizeAttribute .cs" />
-    <Compile Include="Models\Classes\MyExpirePage.cs" />
+    <Compile Include="Models\Classes\NoCache.cs" />
     <Compile Include="Models\CourseTermBO.cs" />
     <Compile Include="Models\CourseTypeBO.cs" />
     <Compile Include="Models\CreditCardBO.cs" />
