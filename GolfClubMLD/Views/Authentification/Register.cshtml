@@ -4,15 +4,21 @@
     ViewBag.Title = "Register";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
+@if (Session["LoginEmail"] != null)
+{
+    <h2>Vec ste prijavljeni : @Session["LoginEmail"]</h2>
+    @Html.ActionLink("Nazad na pocetak", "Index", "Home")
+}
+else
+{
 <h2>Register</h2>
-@if (ViewBag.ErrorMessage != null)
+if (ViewBag.ErrorMessage != null)
 {
     <div class="alert alert-danger" role="alert">
         @ViewBag.ErrorMessage
     </div>
 }
-@using (Html.BeginForm("Register", "Authentification", FormMethod.Post))
+using (Html.BeginForm("Register", "Authentification", FormMethod.Post))
 {
     @Html.AntiForgeryToken()
     <div class="form-horizontal">
@@ -111,7 +117,7 @@
 <div>
     @Html.ActionLink("Back to List", "Index")
 </div>
-
+}
 
 
 <script>
