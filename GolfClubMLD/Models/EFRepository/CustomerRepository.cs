@@ -17,7 +17,7 @@ using System.Data.Entity.Validation;
 
 namespace GolfClubMLD.Models.EFRepository
 {
-    public class CustomerRepository : ICustomerRepository
+    public class CustomerRepository : BaseRepository, ICustomerRepository
     {
         private GolfClubMldDBEntities _custEntities = new GolfClubMldDBEntities();
         private readonly ILogger<CustomerController> _logger;
@@ -30,187 +30,7 @@ namespace GolfClubMLD.Models.EFRepository
         {
 
         }
-        public async Task<List<CourseTermBO>> GetTermsForSelCourse(int courseId)
-        {
-            Task<List<CourseTermBO>> terms = _custEntities.CourseTerm.Select(ct => ct)
-                                                .Where(ct => ct.courseId == courseId)
-                                                .Include(ct => ct.GolfCourse)
-                                                .Include(ct => ct.Term)
-                                                .ProjectTo<CourseTermBO>()
-                                                .ToListAsync();
-            return await CheckForRentCourses(await terms, courseId);
 
-        }
-        public async Task<List<CourseTermBO>> CheckForRentCourses(List<CourseTermBO> courseTerms, int courseId)
-        {
-            try
-            {
-                DateTime start = DateTime.Now;
-                DateTime end = start.AddDays(7 - (int)start.DayOfWeek);
-                var currentWeekRents = await _custEntities.Rent.Select(r => r)
-                                                                .Where(r => r.CourseTerm.courseId == courseId
-                                                                        && (r.rentDate >= start.Date 
-                                                                        && r.rentDate < end.Date))
-                                                                .ToListAsync();
-
-                List<CourseTermBO> corTrm = new List<CourseTermBO>(courseTerms);
-                if (currentWeekRents != null)
-                {
-                    foreach (CourseTermBO ct in courseTerms)
-                    {
-                        foreach (Rent r in currentWeekRents)
-                        {
-                            if (r.courTrmId == ct.Id)
-                                corTrm.Remove(ct);
-                        }
-                    }
-                }
-                return corTrm;
-            }
-            catch (ArgumentException ex)
-            {
-                _logger.LogError(ex, " Error: CustomerRepository / CheckForRentCourses => currentWeekRents ");
-            }
-            catch(Exception ex)
-            {
-                _logger.LogError(ex, " Error: CustomerRepository => CheckForRentCourses ");
-            }
-            return null;
-        }
-        public void CalculateDateFromDayNumber(int dayNum)
-        {
-            var tod = DateTime.Now;
-            var d = (int)tod.DayOfWeek;
-            DateTime test = tod.AddDays(dayNum - d);
-        }
-
-        public List<EquipmentBO> GetSelEquipmentById(int[] sel)
-        {
-            List<EquipmentBO> selectedEquip = new List<EquipmentBO>();
-            EquipmentBO equip;
-            for (int i = 0; i < sel.Length; i++)
-            {
-                equip = SearchEquipment(sel[i]);
-                selectedEquip.Add(equip);
-            }
-            return selectedEquip;
-        }
-        private EquipmentBO SearchEquipment(int id)
-        {
-            Equipment eq = _custEntities.Equipment.FirstOrDefault(e => e.id == id);
-            EquipmentBO equip = Mapper.Map<EquipmentBO>(eq);
-            return equip;
-        }
-
-        public GolfCourseBO SelectCourseById(int id)
-        {
-            GolfCourse golfCour = _custEntities.GolfCourse.FirstOrDefault(gc => gc.id == id);
-            GolfCourseBO selCourse = Mapper.Map<GolfCourseBO>(golfCour);
-            return selCourse;
-        }
-
-        public CourseTermBO SelectTermById(int id)
-        {
-            CourseTerm cTerm = _custEntities.CourseTerm.FirstOrDefault(t => t.id == id);
-            CourseTermBO selCTerm = Mapper.Map<CourseTermBO>(cTerm);
-            return selCTerm;
-        }
-        public CustomerCreditCardViewModel GetCustomerCC(int id)
-        {
-            CustomerCreditCardViewModel custCC = new CustomerCreditCardViewModel();
-            Users cust = _custEntities.Users.FirstOrDefault(u => u.id == id);
-            UsersBO logedCust = Mapper.Map<UsersBO>(cust);
-            CreditCardBO cc = logedCust.CreditCard;
-            custCC.Cust = logedCust;
-            custCC.CredCard = cc;
-
-            return custCC;
-        }
-        public bool SaveRent(int ctId, int custId, DateTime rentDte)
-        {
-            try
-            {
-                m_rentConf = DateTime.Now;
-                CourseTermBO selCt = SelectCourseTermById(ctId);
-                Rent rentInfo = new Rent()
-                {
-                    billDate = m_rentConf,
-                    totPrice = 1000,
-                    courTrmId = ctId,
-                    custId = custId,
-                    rentDate = rentDte
-                };
-                _custEntities.Rent.Add(rentInfo);
-                _custEntities.SaveChanges();
-            }
-            catch (DbEntityValidationException e)
-            {
-                foreach (var eve in e.EntityValidationErrors)
-                {
-                    _logger.LogError("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
-                        eve.Entry.Entity.GetType().Name, eve.Entry.State);
-                    foreach (var ve in eve.ValidationErrors)
-                    {
-                        _logger.LogError("- Property: \"{0}\", Error: \"{1}\"",
-                            ve.PropertyName, ve.ErrorMessage);
-                    }
-                }
-                throw;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error: Customer => SaveRent "+ex);
-            }
-            return true;
-        }
-
-        public CourseTermBO SelectCourseTermById(int ctId)
-        {
-            CourseTerm ct = _custEntities.CourseTerm.FirstOrDefault(c => c.id == ctId);
-            CourseTermBO courTerm = Mapper.Map<CourseTermBO>(ct);
-
-            return courTerm;
-        }
-
-        public bool SaveRentItems(int ctId, int custId, int[] equipIds)
-        {
-            try
-            {
-                Rent rent = _custEntities.Rent.FirstOrDefault(r => r.custId == custId
-                                                                && r.courTrmId == ctId
-                                                                && r.billDate == m_rentConf);
-                List<EquipmentBO> equip = GetSelEquipmentById(equipIds);
-                if (rent != null) {
-                    RentItems re = new RentItems();
-                    foreach (var eq in equip)
-                    {
-                        re.equipId = eq.Id;
-                        re.price = eq.Price;
-                    }
-                    _custEntities.RentItems.Add(re);
-                    _custEntities.SaveChanges();
-                }
-            }
-            catch (DbEntityValidationException e)
-            {
-                foreach (var eve in e.EntityValidationErrors)
-                {
-                    _logger.LogError("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
-                        eve.Entry.Entity.GetType().Name, eve.Entry.State);
-                    foreach (var ve in eve.ValidationErrors)
-                    {
-                        _logger.LogError("- Property: \"{0}\", Error: \"{1}\"",
-                            ve.PropertyName, ve.ErrorMessage);
-                    }
-                }
-                throw;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error: Customer => SaveRentItems " + ex);
-            }
-            return true;
-        }
         public DateTime CalculateDate(DateTime now)
         {
             string[] st = new string[] { "one", "two" };
@@ -272,7 +92,7 @@ namespace GolfClubMLD.Models.EFRepository
                     }
                 }
         }
-        public async Task<string> HashPassword(string pass)
+        public string HashPassword(string pass)
         {
             MD5CryptoServiceProvider encryptor = new MD5CryptoServiceProvider();
             UTF8Encoding encoder = new UTF8Encoding();
@@ -298,7 +118,7 @@ namespace GolfClubMLD.Models.EFRepository
                     return false;
 
                 custForEdit.username = ccvm.Cust.Username;
-                custForEdit.pass = await HashPassword(ccvm.Cust.Pass);
+                custForEdit.pass =  HashPassword(ccvm.Cust.Pass);
                 custForEdit.fname = ccvm.Cust.Fname;
                 custForEdit.lname = ccvm.Cust.Lname;
                 custForEdit.phone = ccvm.Cust.Phone;
@@ -334,15 +154,7 @@ namespace GolfClubMLD.Models.EFRepository
             }
             return true;
         }
-        public UsersBO GetCustomerById(int custId)
-        {
-            Users customer = _custEntities.Users.FirstOrDefault(c=>c.id == custId);
-            if (customer == null)
-                return null;
-            UsersBO custBO = Mapper.Map<UsersBO>(customer);
-
-            return custBO;
-        }
+    
         public bool DeactCustomer(int custId)
         {
             Users custToDeactivate = _custEntities.Users.FirstOrDefault(c => c.id == custId);
