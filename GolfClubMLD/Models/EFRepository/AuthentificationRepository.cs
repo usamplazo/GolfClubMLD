@@ -15,7 +15,7 @@ using Microsoft.Extensions.Logging;
 
 namespace GolfClubMLD.Models.EFRepository
 {
-    public class AuthentificationRepository : IAuthentificationRepository
+    public class AuthentificationRepository : BaseRepository, IAuthentificationRepository
     {
         private GolfClubMldDBEntities _gcEntities = new GolfClubMldDBEntities();
         private readonly ILogger<CustomerController> _logger;
@@ -24,12 +24,6 @@ namespace GolfClubMLD.Models.EFRepository
         public AuthentificationRepository(ILogger<CustomerController> logger)
         {
             _logger = logger;
-        }
-        public async Task<CreditCardBO> GetCredCardById(int credCardId)
-        {
-            CreditCard credCard = await _gcEntities.CreditCard.FirstOrDefaultAsync(cc => cc.id == credCardId);
-            CreditCardBO crCd = Mapper.Map<CreditCardBO>(credCard);
-            return crCd;
         }
         public string HashPassword(string pass)
         {

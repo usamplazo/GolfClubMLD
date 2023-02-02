@@ -10,18 +10,15 @@ namespace GolfClubMLD.Models.Interfaces
 {
     internal interface IAuthentificationRepository
     {
-        #region Customer
         string HashPassword(string pass);
         Task<UsersBO> LoginCustomer(string email, string pass);
         bool CheckExistingCustomer(string email, string username);
         Task<bool> RegisterCustomer(CustomerCreditCardViewModel custCredCard);
         void RemoveAcc(int custId);
         void UpdateAcc(int custId);
-
         bool CheckExistingCreditCard(long creditCardNum);
-        Task<CreditCardBO> GetCredCardById(int credCardId);
         bool UpdateCustomerCredCard(Users cust);
         List<string> GetRoles(string eml);
-            #endregion
-        }
+
+    }
 }

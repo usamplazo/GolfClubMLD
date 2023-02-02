@@ -10,7 +10,6 @@ using System.Data.Entity;
 using System.Data.Entity.Validation;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 
 namespace GolfClubMLD.Models.EFRepository
 {
@@ -27,6 +26,21 @@ namespace GolfClubMLD.Models.EFRepository
         {
 
         }
+        public UsersBO GetCustomerById(int custId)
+        {
+            Users customer = _baseEntities.Users.FirstOrDefault(c => c.id == custId);
+            if (customer == null)
+                return null;
+            UsersBO custBO = Mapper.Map<UsersBO>(customer);
+
+            return custBO;
+        }
+        public async Task<CreditCardBO> GetCredCardById(int credCardId)
+        {
+            CreditCard credCard = await _baseEntities.CreditCard.FirstOrDefaultAsync(cc => cc.id == credCardId);
+            CreditCardBO crCd = Mapper.Map<CreditCardBO>(credCard);
+            return crCd;
+        }
         public CustomerCreditCardViewModel GetCustomerCCById(int id)
         {
             CustomerCreditCardViewModel custCC = new CustomerCreditCardViewModel();
@@ -37,15 +51,6 @@ namespace GolfClubMLD.Models.EFRepository
             custCC.CredCard = cc;
 
             return custCC;
-        }
-        public UsersBO GetCustomerById(int custId)
-        {
-            Users customer = _baseEntities.Users.FirstOrDefault(c => c.id == custId);
-            if (customer == null)
-                return null;
-            UsersBO custBO = Mapper.Map<UsersBO>(customer);
-
-            return custBO;
         }
         public async Task<List<CourseTermBO>> CheckForRentCourses(List<CourseTermBO> courseTerms, int courseId)
         {

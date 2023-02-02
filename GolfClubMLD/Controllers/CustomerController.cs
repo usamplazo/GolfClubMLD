@@ -4,7 +4,6 @@ using GolfClubMLD.Models.Classes;
 using GolfClubMLD.Models.EFRepository;
 using GolfClubMLD.Models.Interfaces;
 using GolfClubMLD.Models.ViewModel;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -16,7 +15,7 @@ namespace GolfClubMLD.Controllers
     [NoCache]
     public class CustomerController : Controller
     {
-        private ICustomerRepository _custRepo;
+        private CustomerRepository _custRepo;
         public CustomerController()
         {
             _custRepo = new CustomerRepository();
@@ -80,7 +79,7 @@ namespace GolfClubMLD.Controllers
             {
                 int customerId = Convert.ToInt32(Session["LoginId"]);
                 int courseTermId = Convert.ToInt32(Session["PickedCourseTermId"]);
-                CustomerCreditCardViewModel custCC = _custRepo.GetCustomerCC(customerId);
+                CustomerCreditCardViewModel custCC = _custRepo.GetCustomerCCById(customerId);
                 CourseTermBO cTerm = _custRepo.SelectTermById(courseTermId);
                 GolfCourseBO gc = cTerm.GolfCourse;
                 List<EquipmentBO> selection = _custRepo.GetSelEquipmentById(selItems);
@@ -118,7 +117,7 @@ namespace GolfClubMLD.Controllers
         {
             if (int.TryParse(custId, out int id))
             {
-                CustomerCreditCardViewModel custCC = _custRepo.GetCustomerCC(id);
+                CustomerCreditCardViewModel custCC = _custRepo.GetCustomerCCById(id);
                 return View(custCC);
             }
             return View();
