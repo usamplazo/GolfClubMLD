@@ -23,23 +23,16 @@
                     <li>@Html.ActionLink("Oprema", "HomeEquipment", "Home")</li>
                     <li>@Html.ActionLink("About", "About", "Home")</li>
                     <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
-                    @try
+                    @if (Session["LoginId"] != null && Session["LoginEmail"] != null)
                     {
-
-                        if (Session["LoginId"] != null && Session["LoginEmail"] != null)
-                        {
                         <li>@Html.ActionLink(Session["LoginEmail"].ToString(), "Edit", "Customer", new { custId = Session["LoginId"].ToString() }, new { @class = "btn btn-primary" })</li>
                         <li>@Html.ActionLink("Odjavi se", "Logout", "Authentification", new { option = "reg" }, new { @class = "btn btn-secondary" })</li>
-                        }
-                        else
-                        {
+                    }
+                    else
+                    {
                         <li>@Html.ActionLink("Log in", "Login", "Authentification", new { option = "logIn" }, new { @class = "btn btn-primary" })</li>
                         <li>@Html.ActionLink("Register", "Register", "Authentification", new { option = "reg" }, new { @class = "btn btn-secondary" })</li>
-                        }
                     }
-                    catch
-                    {
-
                     }
                 </ul>
             </div>

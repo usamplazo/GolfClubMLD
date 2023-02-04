@@ -1,0 +1,17 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@if (Session["LoginEmail"] != null)
+{
+    <h2>Manager</h2>
+    <div>
+        @Html.ActionLink("Iznajmljivanje", "", "")<br />
+        @Html.ActionLink("Pregled iznajmljivanja", "", "")<br />
+        @Html.ActionLink("Izmena opreme", "EditEquipment", "Manager")<br />
+    </div>
+}
+else
+{
+    Html.Partial("SomethingWentWrong");
+}

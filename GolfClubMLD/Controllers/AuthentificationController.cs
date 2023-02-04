@@ -15,7 +15,7 @@ namespace GolfClubMLD.Controllers
     public class AuthentificationController : Controller
     {
 
-        private IAuthentificationRepository _accRepo;
+        private AuthentificationRepository _accRepo;
         public AuthentificationController()
         {
             _accRepo = new AuthentificationRepository();
@@ -32,14 +32,17 @@ namespace GolfClubMLD.Controllers
         {
             if (ModelState.IsValid)
             {
-                UsersBO customer = await _accRepo.LoginCustomer(loginUser.Email, loginUser.Pass);
-                if (customer != null)
+                UsersBO user = await _accRepo.LoginUser(loginUser.Email, loginUser.Pass);
+                if (user != null)
                 {
-                    FormsAuthentication.SetAuthCookie(customer.Username, true);
-                    Session["LoginId"] = customer.Id.ToString();
-                    Session["LoginEmail"] = customer.Email.ToString();
-                    Session["LogCustCC"] = _accRepo.GetCredCardById(customer.CredCardId);
-                    return RedirectToAction("Index", "Home");
+                    FormsAuthentication.SetAuthCookie(user.Username, true);
+                    Session["LoginId"] = user.Id.ToString();
+                    Session["LoginEmail"] = user.Email.ToString();
+                    Session["LogCustCC"] = _accRepo.GetCredCardById(user.CredCardId);
+                    string controllerName = user.Role.Name;
+                    return RedirectToAction("Index", controllerName);
+
+                       
                 }
                 ViewBag.ErrorMessage = "Ne posotji korisnik sa unetim podacima";
                 return View();

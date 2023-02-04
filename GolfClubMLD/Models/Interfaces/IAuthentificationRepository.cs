@@ -11,7 +11,7 @@ namespace GolfClubMLD.Models.Interfaces
     internal interface IAuthentificationRepository
     {
         string HashPassword(string pass);
-        Task<UsersBO> LoginCustomer(string email, string pass);
+        Task<UsersBO> LoginUser(string email, string pass);
         bool CheckExistingCustomer(string email, string username);
         Task<bool> RegisterCustomer(CustomerCreditCardViewModel custCredCard);
         void RemoveAcc(int custId);

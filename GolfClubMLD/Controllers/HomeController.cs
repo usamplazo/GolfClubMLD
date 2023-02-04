@@ -17,7 +17,7 @@ namespace GolfClubMLD.Controllers
     [NoCache]
     public class HomeController : Controller
     {
-        private IHomeRepository _homeRepo;
+        private HomeRepository _homeRepo;
         public HomeController()
         {
             _homeRepo = new HomeRepository();

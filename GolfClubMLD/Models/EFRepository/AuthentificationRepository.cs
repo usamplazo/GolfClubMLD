@@ -41,7 +41,7 @@ namespace GolfClubMLD.Models.EFRepository
 
             return encryptedValue;
         }
-        public async Task<UsersBO> LoginCustomer(string credential, string pass)
+        public async Task<UsersBO> LoginUser(string credential, string pass)
         {
             string genMD5pass = HashPassword(pass);
                 Task<UsersBO> selCust = _gcEntities.Users

@@ -10,7 +10,7 @@ using System.Web;
 
 namespace GolfClubMLD.Models.EFRepository
 {
-    public class HomeRepository : IHomeRepository
+    public class HomeRepository : BaseRepository, IHomeRepository
     {
         private GolfClubMldDBEntities _gcEntities = new GolfClubMldDBEntities();
         public async Task<List<GolfCourseBO>> GetAllCourses()
@@ -79,18 +79,6 @@ namespace GolfClubMLD.Models.EFRepository
 
             return await courseTerms;
         }
-
-        public async Task<List<EquipmentBO>> GetAllEquipment()
-        {
-            Task<List<EquipmentBO>> allEquip = _gcEntities.Equipment
-                 .Select(e => e)
-                 .Include(et => et.EquipmentTypes)
-                 .ProjectTo<EquipmentBO>()
-                 .ToListAsync();
-
-            return await allEquip;
-        }
-
 
         public async Task<EquipmentBO> GetEquipmentById(int id)
         {

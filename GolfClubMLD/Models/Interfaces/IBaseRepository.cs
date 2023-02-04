@@ -22,9 +22,13 @@ namespace GolfClubMLD.Models.Interfaces
         Task<List<CourseTermBO>> CheckForRentCourses(List<CourseTermBO> courseTerms, int courseId);
         CourseTermBO SelectCourseTermById(int ctId);
         Task<List<CourseTermBO>> GetTermsForSelCourse(int courseId);
-        List<EquipmentBO> GetSelEquipmentById(int[] selEqip);
         GolfCourseBO SelectCourseById(int id);
         CourseTermBO SelectTermById(int id);
+
+        #endregion
+        #region Equipment
+        List<EquipmentBO> GetSelEquipmentById(int[] selEqip);
+        Task<List<EquipmentBO>> GetAllEquipment();
 
         #endregion
 

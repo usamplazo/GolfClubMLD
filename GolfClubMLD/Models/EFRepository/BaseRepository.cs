@@ -106,6 +106,16 @@ namespace GolfClubMLD.Models.EFRepository
             return await CheckForRentCourses(await terms, courseId);
 
         }
+        public async Task<List<EquipmentBO>> GetAllEquipment()
+        {
+            Task<List<EquipmentBO>> allEquip = _baseEntities.Equipment
+                 .Select(e => e)
+                 .Include(et => et.EquipmentTypes)
+                 .ProjectTo<EquipmentBO>()
+                 .ToListAsync();
+
+            return await allEquip;
+        }
         public List<EquipmentBO> GetSelEquipmentById(int[] sel)
         {
             List<EquipmentBO> selectedEquip = new List<EquipmentBO>();

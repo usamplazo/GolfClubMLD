@@ -9,7 +9,7 @@ namespace GolfClubMLD.Models.Classes
 	public enum Roles
 	{
 		Customer,
-		Menager,
+		Manager,
 		Admin
 	}
 

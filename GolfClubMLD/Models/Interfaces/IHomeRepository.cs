@@ -16,7 +16,6 @@ namespace GolfClubMLD.Models.Interfaces
         Task<List<CourseTermBO>> GetAllCourseTerm();
 
         // CourseTermBO GetCourseTermById(int id);
-        Task<List<EquipmentBO>> GetAllEquipment();
         Task<List<EquipmentTypesBO>> GetAllEquipmentTypes();
         Task<EquipmentBO> GetEquipmentById(int id);
         Task<List<EquipmentBO>> GetEquipmentByType(int typeId);
