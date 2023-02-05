@@ -116,6 +116,15 @@ namespace GolfClubMLD.Models.EFRepository
 
             return await allEquip;
         }
+        public async Task<List<EquipmentTypesBO>> GetAllEquipmentTypes()
+        {
+            Task<List<EquipmentTypesBO>> allTypes = _baseEntities.EquipmentTypes
+          .Select(et => et)
+          .ProjectTo<EquipmentTypesBO>()
+          .ToListAsync();
+
+            return await allTypes;
+        }
         public List<EquipmentBO> GetSelEquipmentById(int[] sel)
         {
             List<EquipmentBO> selectedEquip = new List<EquipmentBO>();
@@ -127,11 +136,16 @@ namespace GolfClubMLD.Models.EFRepository
             }
             return selectedEquip;
         }
-        private EquipmentBO SearchEquipment(int id)
+        public EquipmentBO SearchEquipment(int id)
         {
-            Equipment eq = _baseEntities.Equipment.FirstOrDefault(e => e.id == id);
-            EquipmentBO equip = Mapper.Map<EquipmentBO>(eq);
-            return equip;
+            EquipmentBO eq = _baseEntities.Equipment
+                .Where(e => e.id == id)
+                .Select(e => e)
+                .Include(et => et.EquipmentTypes)
+                .ProjectTo<EquipmentBO>()
+                .FirstOrDefault();
+            
+            return eq;
         }
         public GolfCourseBO SelectCourseById(int id)
         {
@@ -139,6 +153,9 @@ namespace GolfClubMLD.Models.EFRepository
             GolfCourseBO selCourse = Mapper.Map<GolfCourseBO>(golfCour);
             return selCourse;
         }
+
+
+
         public CourseTermBO SelectTermById(int id)
         {
             CourseTerm cTerm = _baseEntities.CourseTerm.FirstOrDefault(t => t.id == id);

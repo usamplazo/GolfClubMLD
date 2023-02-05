@@ -1,7 +1,8 @@
-﻿@model IEnumerable<GolfClubMLD.Models.EquipmentBO>
+﻿@model GolfClubMLD.Models.EquipmentBO
+    @using GolfClubMLD.Models
 
 @{
-    ViewBag.Title = "EditEquipment";
+    ViewBag.Title = "EquipmentList";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -10,49 +11,55 @@
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.EquipmentType.Name)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Name)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.PicUrl)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Descr)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Price)
-        </th>
-        <th></th>
-    </tr>
+@using (Html.BeginForm("EditEquipment", "Manager", FormMethod.Post, new { @enctype = "multipart/form-data" }))
+{
+        @Html.AntiForgeryToken()
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.EquipmentType.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.PicUrl)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Descr)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Price)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
-        </td>
-    </tr>
+        <table class="table">
+            <tr>
+                <th>
+                    Equipment Type
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.PicUrl)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Descr)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Price)
+                </th>
+                <th></th>
+            </tr>
+
+            <tr>
+                <td>
+                    <select name="eqTypId">
+                        @foreach (EquipmentTypesBO eq in ViewBag.AllEquipTypes)
+                        {
+                            <option value="@eq.Id">@eq.Name</option>
+                        }
+                    </select>
+                </td>
+                <td>
+                    @Html.EditorFor(model => model.Name)
+                </td>
+                <td>
+                    Current:
+                    <img src="@Model.PicUrl" />
+                    @Html.TextBox("file", "", new { type = "file" })
+                </td>
+                <td>
+                    @Html.EditorFor(model => model.Descr)
+                </td>
+                <td>
+                    @Html.EditorFor(model => model.Price)
+                </td>
+            </tr>
+    
+        </table>
+        <input type="submit" />
 }
-
-</table>

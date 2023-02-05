@@ -27,9 +27,10 @@ namespace GolfClubMLD.Models.Interfaces
 
         #endregion
         #region Equipment
-        List<EquipmentBO> GetSelEquipmentById(int[] selEqip);
         Task<List<EquipmentBO>> GetAllEquipment();
-
+        Task<List<EquipmentTypesBO>> GetAllEquipmentTypes();
+        List<EquipmentBO> GetSelEquipmentById(int[] selEqip);
+        EquipmentBO SearchEquipment(int id);
         #endregion
 
         #region Rent
