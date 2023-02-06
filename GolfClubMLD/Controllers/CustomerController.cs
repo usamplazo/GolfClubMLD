@@ -6,7 +6,9 @@ using GolfClubMLD.Models.Interfaces;
 using GolfClubMLD.Models.ViewModel;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Mvc;
 
 namespace GolfClubMLD.Controllers
@@ -123,7 +125,7 @@ namespace GolfClubMLD.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<ActionResult> Edit(CustomerCreditCardViewModel ccvm)
+        public ActionResult Edit(CustomerCreditCardViewModel ccvm)
         {
             if (ccvm == null)
                 ViewBag.EditProfileErrorMessage = "Neispravno uneti podaci";
@@ -131,11 +133,19 @@ namespace GolfClubMLD.Controllers
             if (ccvm.Cust.Pass == null)
                 ViewBag.EditProfileErrorMessage = "Morate uneti i sifru za potvrdu";
 
-            if (await _custRepo.EditCustomerData(ccvm))
+            HttpPostedFileBase file = Request.Files["file"];
+            if (file != null && file.ContentLength > 0)
+            {
+                // Save the file to a location on the server.
+                string path = Path.Combine(Server.MapPath("~/Images/ProfileImages/"), Path.GetFileName(file.FileName));
+                file.SaveAs(path);
+                ccvm.Cust.ProfPic = "/Images/ProfileImages/" + file.FileName;
+            }
+            if (_custRepo.EditCustomerData(ccvm))
             {
                 ViewBag.EditProfileMessage = "Profile updated";
             }
-            return View();
+            return View(_custRepo.GetCustomerCCById(Convert.ToInt32(Session["LoginId"])));
         }
         [HttpPost]
         [RoleAuthorize(Roles.Customer)]

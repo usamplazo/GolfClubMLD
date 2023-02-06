@@ -45,7 +45,6 @@ namespace GolfClubMLD.Models.EFRepository
             return await specCourse;
         }
 
-
         public async Task<List<GolfCourseBO>> GetCoursesBySearch(string search)
         {
             Task<List<GolfCourseBO>> coursesBySeacrh = _gcEntities.GolfCourse
@@ -91,17 +90,6 @@ namespace GolfClubMLD.Models.EFRepository
 
             return await equip;
         }
-
-        public async Task<List<EquipmentTypesBO>> GetAllEquipmentTypes()
-        {
-            Task<List<EquipmentTypesBO>> allTypes = _gcEntities.EquipmentTypes
-          .Select(et=>et)
-          .ProjectTo<EquipmentTypesBO>()
-          .ToListAsync();
-
-            return await allTypes;
-        }
-
 
         public async Task<List<EquipmentBO>> GetEquipmentByType(int typeId)
         {

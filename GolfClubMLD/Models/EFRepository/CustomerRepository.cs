@@ -108,7 +108,7 @@ namespace GolfClubMLD.Models.EFRepository
 
             return encryptedValue;
         }
-        public async Task<bool> EditCustomerData(CustomerCreditCardViewModel ccvm)
+        public bool EditCustomerData(CustomerCreditCardViewModel ccvm)
         {
             try
             {

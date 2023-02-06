@@ -40,6 +40,8 @@ namespace GolfClubMLD.Controllers
                     Session["LoginEmail"] = user.Email.ToString();
                     Session["LogCustCC"] = _accRepo.GetCredCardById(user.CredCardId);
                     string controllerName = user.Role.Name;
+                    if (controllerName.Equals("Customer"))
+                        return RedirectToAction("Index", "Home");
                     return RedirectToAction("Index", controllerName);
 
                        
