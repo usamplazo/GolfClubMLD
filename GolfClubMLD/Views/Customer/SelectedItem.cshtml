@@ -49,7 +49,7 @@
         {
             EquipmentBO e = allEqiup[i];
             <input type="hidden" name="equipIds" value="@e.Id" />
-            @Html.DisplayFor(model => allEqiup[i].EquipmentType.Name); @Html.DisplayFor(model => allEqiup[i].Name);
+            @Html.DisplayFor(model => allEqiup[i].EquipmentTypes.Name); @Html.DisplayFor(model => allEqiup[i].Name);
             <br/>
         }
     </p>

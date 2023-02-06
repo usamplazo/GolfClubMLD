@@ -162,6 +162,31 @@ namespace GolfClubMLD.Models.EFRepository
             CourseTermBO selCTerm = Mapper.Map<CourseTermBO>(cTerm);
             return selCTerm;
         }
+        public List<RentBO> GetAllActiveRents()
+        {
+            DateTime today = DateTime.Now;
+            int delta = ((int)today.DayOfWeek + 6) % 7;
+            if (delta == 0)
+                delta = 7;
+            DateTime endOfWeek = today.AddDays(delta);
+            List<RentBO> rents = new List<RentBO>();
+            try
+            {
+               rents = _baseEntities.Rent.Select(r => r)
+                                        .Where(r => r.rentDate >= today && r.rentDate < endOfWeek)
+                                        .Include(rt=>rt.CourseTerm)
+                                        .Include(rt=>rt.Users)
+                                        .Include(rt=>rt.RentItems)
+                                        .ProjectTo<RentBO>()
+                                        .ToList();
+                
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError("Error: Base => GetAllActiveRents " + ex);
+            }
+            return rents;
+        }
         public bool SaveRent(int ctId, int custId, DateTime rentDte)
         {
             try

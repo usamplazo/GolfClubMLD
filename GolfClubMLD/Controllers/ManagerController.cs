@@ -76,7 +76,12 @@ namespace GolfClubMLD.Controllers
             ViewBag.Message = "Oprema uspesno izmenjena";
             return RedirectToAction("EquipmentList", "Manager");
         }
-
+        [HttpGet]
+        public ActionResult RentList()
+        {
+            List<RentBO> activeRents = _manrepo.GetAllActiveRents();
+            return View(activeRents);
+        }
 
     }
 }

@@ -1,0 +1,56 @@
+﻿@model IEnumerable<GolfClubMLD.Models.RentBO>
+
+@{
+    ViewBag.Title = "RentList";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>RentList</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.CourTrm.dayOfW)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.BillDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TotPrice)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CustId)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.RentDate)
+        </th>
+        <th>@Html.DisplayNameFor(model => model.Customer.Email)</th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.CourTrm.dayOfW)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.BillDate)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.TotPrice)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CustId)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.RentDate)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Customer.Email)
+        </td>
+    </tr>
+}
+
+</table>

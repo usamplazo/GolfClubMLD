@@ -34,7 +34,7 @@ namespace GolfClubMLD.Models.Interfaces
         #endregion
 
         #region Rent
-
+        List<RentBO> GetAllActiveRents();
         bool SaveRent(int ctId, int custId, DateTime rentDte);
         bool SaveRentItems(int ctId, int custId, int[] equipIds);
 
