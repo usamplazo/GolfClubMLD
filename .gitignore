@@ -4,17 +4,17 @@
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
 # User-specific files
-GolfClubMLD/Scripts/*.js
 *.rsuser
 *.suo
 *.user
 *.userosscache
 *.sln.docstates
+*.sln
+*.js
 obj
 bin
 appsettings.json
 *.db
-
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
