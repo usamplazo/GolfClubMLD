@@ -19,7 +19,7 @@
 {
     <form asp-controller="Customer" asp-action="ReserveCourse" method="get">
         <input type="hidden" name="courseId" value="@Session["selCourse"]" />
-        <select name="ctDay" onchange="this.form.submit();">
+        <select name="ctDay" onchange="this.form.submit();" onclick="checkIfEmpty()">
             @foreach (string dateT in Model.Keys)
             {
                 DateTime dd = DateTime.Parse(dateT);
@@ -62,4 +62,27 @@ else
     </div>
 }
 
+<script>
+    function checkIfEmpty() {
+        var select = document.getElementById("dateSel");
+        var button = document.getElementById("buttonConf");
+        if (select.options.length === 0) {
+            button.disabled = true;
+        } else {
+            button.disabled = true;
+        }
+    }
 
+    window.onload = function () {
+        var select = document.getElementById("dateSel");
+        var button = document.getElementById("buttonConf");
+        if (select.options.length === 0) {
+            console.log("The select is empty");
+            button.disabled = true;
+        } else {
+            console.log("The select is not empty");
+            button.disabled = false;
+        }
+    }
+
+</script>
