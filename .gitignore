@@ -15,7 +15,6 @@ obj
 bin
 appsettings.json
 *.db
-GolfClubMLD/GolfClubMLD/Scripts
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
