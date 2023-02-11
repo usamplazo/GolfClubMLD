@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Validation;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace GolfClubMLD.Models.EFRepository
@@ -153,9 +154,6 @@ namespace GolfClubMLD.Models.EFRepository
             GolfCourseBO selCourse = Mapper.Map<GolfCourseBO>(golfCour);
             return selCourse;
         }
-
-
-
         public CourseTermBO SelectTermById(int id)
         {
             CourseTerm cTerm = _baseEntities.CourseTerm.FirstOrDefault(t => t.id == id);
@@ -179,7 +177,8 @@ namespace GolfClubMLD.Models.EFRepository
                                         .Include(rt=>rt.RentItems)
                                         .ProjectTo<RentBO>()
                                         .ToList();
-                
+
+               rents = GetRentItems(rents);
             }
             catch(Exception ex)
             {
@@ -187,6 +186,18 @@ namespace GolfClubMLD.Models.EFRepository
             }
             return rents;
         }
+        
+        public List<RentBO> GetRentItems(List<RentBO> rents)
+        {
+            List<RentItemsBO> rentItems = _baseEntities.RentItems.Select(ri => ri).ProjectTo<RentItemsBO>().ToList();
+
+            foreach (var r in rents)
+            {
+                r.RentItems.AddRange(rentItems.Where(ri => ri.RentId == r.Id));
+            }
+            return rents;
+        }
+
         public bool SaveRent(int ctId, int custId, DateTime rentDte)
         {
             try
@@ -228,11 +239,14 @@ namespace GolfClubMLD.Models.EFRepository
         {
             try
             {
-                Rent rent = _baseEntities.Rent.FirstOrDefault(r => r.custId == custId
-                                                                && r.courTrmId == ctId
-                                                                && r.billDate == m_rentConf);
+
+                List<Rent> activeRents = _baseEntities.Rent.Select(p => p).Where(r => DbFunctions.TruncateTime(r.billDate) >= DbFunctions.TruncateTime(DateTime.Now)).ToList();
+                Rent rt = activeRents.SingleOrDefault(r => r.billDate == m_rentConf
+                                        && r.courTrmId == ctId
+                                        && r.custId == custId);
+
                 List<EquipmentBO> equip = GetSelEquipmentById(equipIds);
-                if (rent != null)
+                if (rt != null)
                 {
                     RentItems re = new RentItems();
                     foreach (var eq in equip)
@@ -240,6 +254,7 @@ namespace GolfClubMLD.Models.EFRepository
                         re.equipId = eq.Id;
                         re.price = eq.Price;
                     }
+                    re.rentId = rt.id;
                     _baseEntities.RentItems.Add(re);
                     _baseEntities.SaveChanges();
                 }

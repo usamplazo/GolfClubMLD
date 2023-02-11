@@ -15,6 +15,6 @@ namespace GolfClubMLD.Models
         public int CustId { get; set; }
         public UsersBO Users { get; set; }
         public DateTime RentDate { get; set; }
-        public IList<RentItemsBO> RentItems { get; set; }
+        public List<RentItemsBO> RentItems { get; set; }
     }
 }

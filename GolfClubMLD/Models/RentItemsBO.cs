@@ -10,9 +10,8 @@ namespace GolfClubMLD.Models
         public int Id { get; set; }
         public int EquipId { get; set; }
         public EquipmentBO Eqipment { get; set; }
-        public float Price { get; set; }
+        public double Price { get; set; }
         public int RentId { get; set; }
-        public RentBO Rent { get; set; }
 
     }
 }
