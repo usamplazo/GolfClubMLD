@@ -4,12 +4,17 @@
     ViewBag.Title = "SelectedItem";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
+@if (ViewBag.ErrorMessage != null)
+{
+<div class="alert alert-danger" role="alert">
+    @ViewBag.ErrorMessage
+</div>
+}
 <h2>Podaci o iznajmljivanju</h2>
 @using (Html.BeginForm("Rent", "Customer", FormMethod.Post))
 {
-    @Html.HiddenFor(model=>model.CustomerCredCard.Cust.Id)
-    @Html.HiddenFor(model=>model.CorTerm.Id)
+    @Html.HiddenFor(model => model.CustomerCredCard.Cust.Id)
+    @Html.HiddenFor(model => model.CorTerm.Id)
     <p>
         *Ime:@Html.DisplayFor(model => model.CustomerCredCard.Cust.Fname)
     </p>
@@ -45,12 +50,12 @@
             List<EquipmentBO> allEqiup = Model.Equipment;
         }
         Oprema:
-        @for(int i=0;i<allEqiup.Count;i++)
+        @for (int i = 0; i < allEqiup.Count; i++)
         {
             EquipmentBO e = allEqiup[i];
             <input type="hidden" name="equipIds" value="@e.Id" />
             @Html.DisplayFor(model => allEqiup[i].EquipmentTypes.Name); @Html.DisplayFor(model => allEqiup[i].Name);
-            <br/>
+            <br />
         }
     </p>
     <p>

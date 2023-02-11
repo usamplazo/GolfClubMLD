@@ -85,7 +85,12 @@ namespace GolfClubMLD.Controllers
                 CourseTermBO cTerm = _custRepo.SelectTermById(courseTermId);
                 GolfCourseBO gc = cTerm.GolfCourse;
                 List<EquipmentBO> selection = _custRepo.GetSelEquipmentById(selItems);
-                if (custCC == null || cTerm == null || gc == null || selection == null)
+                if(selection is null)
+                {
+                    ViewBag.ErrorMessage = "Oprema nije selektovana";
+                    return RedirectToAction("HomeEquipment","Home");
+                }
+                if (custCC == null || cTerm == null || gc == null)
                 {
                      ViewBag.ErrorMessage = "Iznajmljivanje trenutno nije moguce";
                      return RedirectToAction("Index", "Error");

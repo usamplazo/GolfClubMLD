@@ -18,6 +18,8 @@ namespace GolfClubMLD.App_Start
             CreateMap<CourseTerm, CourseTermBO>();
             CreateMap<CourseType, CourseTypeBO>();
             CreateMap<CreditCard, CreditCardBO>();
+            CreateMap<Rent, RentBO>();
+            CreateMap<RentItems, RentItemsBO>();
             CreateMap<Users, UsersBO>().ReverseMap().ForMember(c=>c.id, opt=>opt.Ignore());
         }
     }

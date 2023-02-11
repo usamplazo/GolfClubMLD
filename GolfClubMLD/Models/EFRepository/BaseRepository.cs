@@ -128,6 +128,8 @@ namespace GolfClubMLD.Models.EFRepository
         }
         public List<EquipmentBO> GetSelEquipmentById(int[] sel)
         {
+            if (sel is null)
+                return null;
             List<EquipmentBO> selectedEquip = new List<EquipmentBO>();
             EquipmentBO equip;
             for (int i = 0; i < sel.Length; i++)
