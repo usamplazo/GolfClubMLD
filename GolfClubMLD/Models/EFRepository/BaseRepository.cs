@@ -173,29 +173,18 @@ namespace GolfClubMLD.Models.EFRepository
             try
             {
                rents = _baseEntities.Rent.Select(r => r)
-                                        .Where(r => r.rentDate >= today && r.rentDate < endOfWeek)
+                                        .Where(r => DbFunctions.TruncateTime(r.rentDate) >= DbFunctions.TruncateTime(today.Date) 
+                                                      && DbFunctions.TruncateTime(r.rentDate) < DbFunctions.TruncateTime(endOfWeek))
                                         .Include(rt=>rt.CourseTerm)
                                         .Include(rt=>rt.Users)
                                         .Include(rt=>rt.RentItems)
                                         .ProjectTo<RentBO>()
                                         .ToList();
 
-               rents = GetRentItems(rents);
             }
             catch(Exception ex)
             {
                 _logger.LogError("Error: Base => GetAllActiveRents " + ex);
-            }
-            return rents;
-        }
-        
-        public List<RentBO> GetRentItems(List<RentBO> rents)
-        {
-            List<RentItemsBO> rentItems = _baseEntities.RentItems.Select(ri => ri).ProjectTo<RentItemsBO>().ToList();
-
-            foreach (var r in rents)
-            {
-                r.RentItems.AddRange(rentItems.Where(ri => ri.RentId == r.Id));
             }
             return rents;
         }

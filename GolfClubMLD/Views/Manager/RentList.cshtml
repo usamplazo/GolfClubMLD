@@ -10,10 +10,26 @@
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
-<table class="table">
+<table class="table" align="center">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.CourTrm.dayOfW)
+            Customer Name & @Html.DisplayNameFor(model => model.Users.Email)
+        </th>
+
+        <th>
+            @Html.DisplayNameFor(model => model.RentDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CourseTerm.dayOfW)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CourseTerm.Term.StartTime) - @Html.DisplayNameFor(model => model.CourseTerm.Term.EndTime)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CourseTerm.GolfCourse.Name)
+        </th>
+        <th>
+            Rent Equipment
         </th>
         <th>
             @Html.DisplayNameFor(model => model.BillDate)
@@ -21,36 +37,45 @@
         <th>
             @Html.DisplayNameFor(model => model.TotPrice)
         </th>
-        <th>
-            @Html.DisplayNameFor(model => model.CustId)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.RentDate)
-        </th>
-        <th>@Html.DisplayNameFor(model => model.Customer.Email)</th>
+
+
     </tr>
 
 @foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.CourTrm.dayOfW)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.BillDate)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.TotPrice)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.CustId)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.RentDate)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Customer.Email)
-        </td>
-    </tr>
+<tr>
+    <td>
+        @Html.DisplayFor(modelItem => item.Users.Fname) @Html.DisplayFor(modelItem => item.Users.Lname) |  @Html.DisplayFor(modelItem => item.Users.Email)
+    </td>
+
+    <td>
+        @Html.DisplayFor(modelItem => item.RentDate)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.CourseTerm.dayOfW)
+    </td>
+    <td>
+        @Html.DisplayFor(model => item.CourseTerm.Term.StartTime) - @Html.DisplayFor(model => item.CourseTerm.Term.EndTime)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.CourseTerm.GolfCourse.Name)
+    </td>
+    <td>
+        <select>
+            @foreach (var eq in item.RentItems)
+            {
+                <option>@eq.Equipment.EquipmentTypes.Name: @eq.Equipment.Name</option>
+            }
+        </select>
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.BillDate)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.TotPrice)
+    </td>
+
+
+</tr>
 }
 
 </table>

@@ -77,7 +77,7 @@ namespace GolfClubMLD.Controllers
             return RedirectToAction("EquipmentList", "Manager");
         }
         [HttpGet]
-        public ActionResult RentList()
+        public async Task<ActionResult> RentList()
         {
             List<RentBO> activeRents = _manrepo.GetAllActiveRents();
             return View(activeRents);
