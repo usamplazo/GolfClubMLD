@@ -87,6 +87,7 @@ namespace GolfClubMLD.Controllers
             }
             return View(allEquip);
         }
+        [HttpGet]
         public async Task<ActionResult> Details(int id)
         {
             GolfCourseBO gc = await _homeRepo.GetCourseById(id);

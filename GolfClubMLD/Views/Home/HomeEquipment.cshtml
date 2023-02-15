@@ -15,7 +15,7 @@
 <div class="row">
     <div class="col-md-4">
         <div class="row">
-            @if (!User.IsInRole("Customer"))
+            @if (!User.IsInRole("Customer") || !User.IsInRole("Manager"))
             {
                 var equipTypes = (List<EquipmentTypesBO>)ViewData["equipTypes"];
                 int numOfTypes = equipTypes.Count;
@@ -33,7 +33,7 @@
                 @foreach (var item in Model)
                 {
                     <tr>
-                        @if (User.IsInRole("Customer"))
+                        @if (User.IsInRole("Customer") || User.IsInRole("Manager"))
                         {
                             <td>
                                 <input type="checkbox" id="selItems" name="selItems" value="@item.Id" />
@@ -60,11 +60,14 @@
                     </tr>
                 }
             </table>
-            if (User.IsInRole("Customer"))
+            if (User.IsInRole("Customer") || User.IsInRole("Manager"))
             {
+                <div>
+                    Mejl obavestenja klijentu:
+                    <input type="text" placeholder="primer@gmail.com" name="usrEmail" />
+                </div>
                 <input id="Submit" type="submit" value="submit" />
             }
         }
     </div>
-
 </div>

@@ -39,32 +39,31 @@ namespace GolfClubMLD.Models.EFRepository
             DateTime dt = now.AddDays(delta);
             return dt;
         }
-        public void SendEmail()
+        public void SendEmail(string emailTo, string name)
         {
-            MailAddress ma_from = new MailAddress("golfClubMLDTest@gmail.com", "fromSomeone");
-            MailAddress ma_to = new MailAddress("golfClubMLDTest@gmail.com", "ToSomeone");
-            string s_password = "dqkoughastqgvqji";
-            string s_subject = "Test";
-            string s_body = "This is a Test";
+            MailAddress maFrom = new MailAddress("golfClubMLDTest@gmail.com", "fromSomeone");
+            MailAddress maTo = new MailAddress("golfClubMLDTest@gmail.com", "ToSomeone");
+            //MailAddress maTo = new MailAddress(emailTo, name);
+
+            string sPassword = "dqkoughastqgvqji";
+            string sSubject = "Test";
+            string Sbody = "This is a Test";
 
             SmtpClient smtp = new SmtpClient
             {
                 Host = "smtp.gmail.com",
-                //change the port to prt 587. This seems to be the standard for Google smtp transmissions.
                 Port = 587,
-                //enable SSL to be true, otherwise it will get kicked back by the Google server.
                 EnableSsl = true,
-                //The following properties need set as well
                 DeliveryMethod = SmtpDeliveryMethod.Network,
                 UseDefaultCredentials = false,
-                Credentials = new NetworkCredential(ma_from.Address, s_password)
+                Credentials = new NetworkCredential(maFrom.Address, sPassword)
             };
 
 
-            using (MailMessage mail = new MailMessage(ma_from, ma_to)
+            using (MailMessage mail = new MailMessage(maFrom, maTo)
             {
-                Subject = s_subject,
-                Body = s_body
+                Subject = sSubject,
+                Body = Sbody
 
             })
 
@@ -108,7 +107,7 @@ namespace GolfClubMLD.Models.EFRepository
 
             return encryptedValue;
         }
-        public bool EditCustomerData(CustomerCreditCardViewModel ccvm)
+        public bool EditCustomerData(UserAndCreditCardViewModel ccvm)
         {
             try
             {

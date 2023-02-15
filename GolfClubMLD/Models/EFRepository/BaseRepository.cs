@@ -27,14 +27,23 @@ namespace GolfClubMLD.Models.EFRepository
         {
 
         }
-        public UsersBO GetCustomerById(int custId)
+        public UsersBO GetUserById(int custId)
         {
             Users customer = _baseEntities.Users.FirstOrDefault(c => c.id == custId);
-            if (customer == null)
-                return null;
-            UsersBO custBO = Mapper.Map<UsersBO>(customer);
 
-            return custBO;
+            if (customer != null)
+                return Mapper.Map<UsersBO>(customer);
+
+            return null;
+        }
+        public UsersBO GetUserByEmail(string email)
+        {
+            Users user = _baseEntities.Users.FirstOrDefault(u=>u.email.Equals(email));
+
+            if (user != null)
+                return Mapper.Map<UsersBO>(user);
+
+            return null;
         }
         public async Task<CreditCardBO> GetCredCardById(int credCardId)
         {
@@ -42,16 +51,11 @@ namespace GolfClubMLD.Models.EFRepository
             CreditCardBO crCd = Mapper.Map<CreditCardBO>(credCard);
             return crCd;
         }
-        public CustomerCreditCardViewModel GetCustomerCCById(int id)
+        public CreditCardBO GetCustomerCCById(int id)
         {
-            CustomerCreditCardViewModel custCC = new CustomerCreditCardViewModel();
             Users cust = _baseEntities.Users.FirstOrDefault(u => u.id == id);
             UsersBO logedCust = Mapper.Map<UsersBO>(cust);
-            CreditCardBO cc = logedCust.CreditCard;
-            custCC.Cust = logedCust;
-            custCC.CredCard = cc;
-
-            return custCC;
+            return logedCust.CreditCard;;
         }
         public async Task<List<CourseTermBO>> CheckForRentCourses(List<CourseTermBO> courseTerms, int courseId)
         {
@@ -128,8 +132,6 @@ namespace GolfClubMLD.Models.EFRepository
         }
         public List<EquipmentBO> GetSelEquipmentById(int[] sel)
         {
-            if (sel is null)
-                return null;
             List<EquipmentBO> selectedEquip = new List<EquipmentBO>();
             EquipmentBO equip;
             for (int i = 0; i < sel.Length; i++)

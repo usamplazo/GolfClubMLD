@@ -6,30 +6,38 @@
 }
 @if (ViewBag.ErrorMessage != null)
 {
-<div class="alert alert-danger" role="alert">
-    @ViewBag.ErrorMessage
-</div>
+    <div class="alert alert-danger" role="alert">
+        @ViewBag.ErrorMessage
+    </div>
 }
 <h2>Podaci o iznajmljivanju</h2>
 @using (Html.BeginForm("Rent", "Customer", FormMethod.Post))
 {
-    @Html.HiddenFor(model => model.CustomerCredCard.Cust.Id)
+    @Html.HiddenFor(model => model.UserAndCredCard.Cust.Id)
     @Html.HiddenFor(model => model.CorTerm.Id)
     <p>
-        *Ime:@Html.DisplayFor(model => model.CustomerCredCard.Cust.Fname)
+        *Email: @Html.DisplayFor(model => model.UserAndCredCard.Cust.Email)
     </p>
-    <p>
-        *Prezime: @Html.DisplayFor(model => model.CustomerCredCard.Cust.Lname)
-    </p>
-
-    <p>
-        *Email: @Html.DisplayFor(model => model.CustomerCredCard.Cust.Email)
-    </p>
-
-    <p>
-        *Broj kartice: @Html.DisplayFor(model => model.CustomerCredCard.CredCard.CarNum)
-    </p>
-
+    if (User.IsInRole("Manager") 
+                && Session["RentNotificationEmail"] != null 
+                && !string.IsNullOrWhiteSpace(Session["RentNotificationEmail"].ToString()))
+    {
+        <p>
+            *Rent notification email: @Session["RentNotificationEmail"]
+        </p>
+    }
+    if (User.IsInRole("Customer"))
+    {
+        <p>
+            *Ime:@Html.DisplayFor(model => model.UserAndCredCard.Cust.Fname)
+        </p>
+        <p>
+            *Prezime: @Html.DisplayFor(model => model.UserAndCredCard.Cust.Lname)
+        </p>
+        <p>
+            *Broj kartice: @Html.DisplayFor(model => model.UserAndCredCard.CredCard.CarNum)
+        </p>
+    }
     <p>
         *Teren: @Html.DisplayFor(model => model.Course.Name)
     </p>

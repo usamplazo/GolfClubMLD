@@ -13,7 +13,7 @@ namespace GolfClubMLD.Models.Interfaces
         string HashPassword(string pass);
         Task<UsersBO> LoginUser(string email, string pass);
         bool CheckExistingCustomer(string email, string username);
-        Task<bool> RegisterCustomer(CustomerCreditCardViewModel custCredCard);
+        Task<bool> RegisterCustomer(UserAndCreditCardViewModel custCredCard);
         void RemoveAcc(int custId);
         void UpdateAcc(int custId);
         bool CheckExistingCreditCard(long creditCardNum);

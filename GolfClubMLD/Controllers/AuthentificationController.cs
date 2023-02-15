@@ -59,7 +59,7 @@ namespace GolfClubMLD.Controllers
         }
         [AllowAnonymous]
         [HttpPost]
-        public async Task<ActionResult> Register(CustomerCreditCardViewModel custCredCard)
+        public async Task<ActionResult> Register(UserAndCreditCardViewModel custCredCard)
         {
             if (ModelState.IsValid)
             {

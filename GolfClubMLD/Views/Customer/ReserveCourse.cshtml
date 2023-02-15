@@ -62,27 +62,3 @@ else
     </div>
 }
 
-<script>
-    function checkIfEmpty() {
-        var select = document.getElementById("dateSel");
-        var button = document.getElementById("buttonConf");
-        if (select.options.length === 0) {
-            button.disabled = true;
-        } else {
-            button.disabled = true;
-        }
-    }
-
-    window.onload = function () {
-        var select = document.getElementById("dateSel");
-        var button = document.getElementById("buttonConf");
-        if (select.options.length === 0) {
-            console.log("The select is empty");
-            button.disabled = true;
-        } else {
-            console.log("The select is not empty");
-            button.disabled = false;
-        }
-    }
-
-</script>

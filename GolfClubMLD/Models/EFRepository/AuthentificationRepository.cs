@@ -67,7 +67,7 @@ namespace GolfClubMLD.Models.EFRepository
                 return false;
             return true;
         }
-        public async Task<bool> RegisterCustomer(CustomerCreditCardViewModel custCredCard)
+        public async Task<bool> RegisterCustomer(UserAndCreditCardViewModel custCredCard)
         {
             if (CheckExistingCustomer(custCredCard.Cust.Email, custCredCard.Cust.Username) || CheckExistingCreditCard(custCredCard.CredCard.CarNum))
             {

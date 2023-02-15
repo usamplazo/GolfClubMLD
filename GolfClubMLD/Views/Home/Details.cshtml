@@ -84,7 +84,7 @@
 
 
             }
-            @if (User.IsInRole("Customer"))
+            @if (User.IsInRole("Customer") || User.IsInRole("Manager"))
             {
                 @Html.ActionLink("Rezervisi", "ReserveCourse", "Customer", routeValues: new { courseId = Model.Id }, htmlAttributes: new { @class = "btn btn-success" })
             }

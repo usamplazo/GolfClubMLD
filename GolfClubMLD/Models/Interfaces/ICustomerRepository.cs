@@ -8,8 +8,8 @@ namespace GolfClubMLD.Models.Interfaces
     internal interface ICustomerRepository
     {
         DateTime CalculateDate(DateTime now);
-        void SendEmail();
-        bool EditCustomerData(CustomerCreditCardViewModel ccvm);
+        void SendEmail(string emailTo, string name);
+        bool EditCustomerData(UserAndCreditCardViewModel ccvm);
         string HashPassword(string pass);
         bool DeactCustomer(int custId);
     }

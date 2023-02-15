@@ -6,6 +6,7 @@ using GolfClubMLD.Models.Interfaces;
 using GolfClubMLD.Models.ViewModel;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using System.Web;
@@ -23,7 +24,7 @@ namespace GolfClubMLD.Controllers
             _custRepo = new CustomerRepository();
         }
         [HttpGet]
-        [RoleAuthorize(Roles.Customer)]
+        [RoleAuthorize(Roles.Customer,Roles.Manager)]
         public async Task<ActionResult> ReserveCourse(int courseId, string ctDay = null)
         {
             List<CourseTermBO> allCourseTerms;
@@ -60,77 +61,121 @@ namespace GolfClubMLD.Controllers
             ViewBag.Message = "Nemamo termina za selektovani teren ";
             return View();
         }
-            [HttpPost]
-            [RoleAuthorize(Roles.Customer)]
-            public ActionResult ReserveCourse(int courseTermId)
+        [HttpPost]
+        [RoleAuthorize(Roles.Customer, Roles.Manager)]
+        public ActionResult ReserveCourse(int courseTermId)
             {
                 Session["PickedCourseTermId"] = courseTermId;
                 int dayNum = Convert.ToInt32(Session["DayNum"]);
                 return RedirectToAction("HomeEquipment", "Home", courseTermId);
             }
 
-            [HttpGet]
-            public ActionResult PickTerm(DateTime ctDay)
-            {
-
-                return View();
-            }
-
-            [HttpPost]
-            public ActionResult SelectedItem(int[] selItems)
-            {
-                int customerId = Convert.ToInt32(Session["LoginId"]);
-                int courseTermId = Convert.ToInt32(Session["PickedCourseTermId"]);
-                CustomerCreditCardViewModel custCC = _custRepo.GetCustomerCCById(customerId);
-                CourseTermBO cTerm = _custRepo.SelectTermById(courseTermId);
-                GolfCourseBO gc = cTerm.GolfCourse;
-                List<EquipmentBO> selection = _custRepo.GetSelEquipmentById(selItems);
-                if(selection is null)
-                {
-                    ViewBag.ErrorMessage = "Oprema nije selektovana";
-                    return RedirectToAction("HomeEquipment","Home");
-                }
-                if (custCC == null || cTerm == null || gc == null)
-                {
-                     ViewBag.ErrorMessage = "Iznajmljivanje trenutno nije moguce";
-                     return RedirectToAction("Index", "Error");
-                }
-                RentInfoConfirmViewModel info = new RentInfoConfirmViewModel() { 
-                    CustomerCredCard = custCC,
-                    Equipment = selection,
-                    Course = gc,
-                    CorTerm = cTerm
-                };
-                return View(info);
-            }
-            [HttpGet]
-            public ActionResult Rent()
-            {
-                return View();
-            }
-            [HttpPost]
-            public ActionResult Rent(RentInfoConfirmViewModel info, int[] equipIds)
-            {
-                DateTime rentDate = DateTime.Parse(Session["selRentDate"].ToString());
-                if (_custRepo.SaveRent(info.CorTerm.Id, info.CustomerCredCard.Cust.Id, rentDate))
-                {
-                    _custRepo.SaveRentItems(info.CorTerm.Id, info.CustomerCredCard.Cust.Id, equipIds);
-                    _custRepo.SendEmail();
-                }
-                return View();
-            }
         [HttpGet]
+        public ActionResult PickTerm(DateTime ctDay)
+        {
+
+            return View();
+        }
+
+        [HttpPost]
+        [RoleAuthorize(Roles.Customer,Roles.Manager)]
+        public ActionResult SelectedItem(int[] selItems, string notifyEmail)
+        {
+            if (selItems.Length == 0)
+            {
+                ViewBag.ErrorMessage = "Oprema nije selektovana";
+                return RedirectToAction("HomeEquipment", "Home");
+            } 
+            if (User.IsInRole("Manager")) 
+            {
+                if (!string.IsNullOrWhiteSpace(notifyEmail))
+                    Session["RentNotificationEmail"] = notifyEmail;   
+            }
+            int userId = Convert.ToInt32(Session["LoginId"]);
+            UserAndCreditCardViewModel usrAndCC = new UserAndCreditCardViewModel
+            {
+                Cust = _custRepo.GetUserById(userId)
+            };
+            if (usrAndCC.Cust == null)
+            {
+                ViewBag.ErrorMessage = "Korisnik ne moze da obavi iznajmljivanje \\n UserID: "+ userId +"ne postoji";
+                return RedirectToAction("Index", "Error");
+            }
+
+            if (User.IsInRole("Customer"))
+            {
+                usrAndCC.CredCard = _custRepo.GetCustomerCCById(userId);
+            }
+
+            int courseTermId = Convert.ToInt32(Session["PickedCourseTermId"]);
+            CourseTermBO cTerm = _custRepo.SelectTermById(courseTermId);
+            GolfCourseBO gc = cTerm.GolfCourse;
+            if (cTerm == null || gc == null)
+            {
+                ViewBag.ErrorMessage = "Iznajmljivanje trenutno nije moguce";
+                return RedirectToAction("Index", "Error");
+            }
+
+            List<EquipmentBO> selection = _custRepo.GetSelEquipmentById(selItems);
+            if(selection is null || selection.Count == 0)
+            {
+                ViewBag.ErrorMessage = "Oprema nije selektovana";
+                return RedirectToAction("HomeEquipment","Home");
+            }
+            
+            RentInfoConfirmViewModel info = new RentInfoConfirmViewModel() { 
+                UserAndCredCard = usrAndCC,
+                Equipment = selection,
+                Course = gc,
+                CorTerm = cTerm
+            };
+            return View(info);
+        }
+        [HttpGet]
+        [RoleAuthorize(Roles.Customer,Roles.Manager)]
+        public ActionResult Rent()
+        {
+            return View();
+         }
+        [HttpPost]
+        [RoleAuthorize(Roles.Customer,Roles.Manager)]
+        public ActionResult Rent(RentInfoConfirmViewModel info, int[] equipIds)
+        {
+            DateTime rentDate = DateTime.Parse(Session["selRentDate"].ToString());
+            if (_custRepo.SaveRent(info.CorTerm.Id, info.UserAndCredCard.Cust.Id, rentDate))
+            {
+                _custRepo.SaveRentItems(info.CorTerm.Id, info.UserAndCredCard.Cust.Id, equipIds);
+                if (User.IsInRole("Customer"))
+                {
+                    _custRepo.SendEmail(info.UserAndCredCard.Cust.Email, info.UserAndCredCard.Cust.Fname);
+                }
+                else if (User.IsInRole("Manager")
+                                && Session["RentNotificationEmail"] != null
+                                && !string.IsNullOrWhiteSpace(Session["RentNotificationEmail"].ToString()))
+                {
+                    _custRepo.SendEmail(info.UserAndCredCard.Cust.Email, string.Empty);
+                }
+            }
+            return View();
+        }
+        [HttpGet]
+        [RoleAuthorize(Roles.Customer,Roles.Manager)]
         public ActionResult Edit(string custId)
         {
             if (int.TryParse(custId, out int id))
             {
-                CustomerCreditCardViewModel custCC = _custRepo.GetCustomerCCById(id);
+                UserAndCreditCardViewModel custCC = new UserAndCreditCardViewModel()
+                {
+                    Cust = _custRepo.GetUserById(id),
+                    CredCard = _custRepo.GetCustomerCCById(id)
+                }; 
                 return View(custCC);
             }
             return View();
         }
         [HttpPost]
-        public ActionResult Edit(CustomerCreditCardViewModel ccvm)
+        [RoleAuthorize(Roles.Customer,Roles.Manager)]
+        public ActionResult Edit(UserAndCreditCardViewModel ccvm)
         {
             if (ccvm == null)
                 ViewBag.EditProfileErrorMessage = "Neispravno uneti podaci";
@@ -153,7 +198,7 @@ namespace GolfClubMLD.Controllers
             return View(_custRepo.GetCustomerCCById(Convert.ToInt32(Session["LoginId"])));
         }
         [HttpPost]
-        [RoleAuthorize(Roles.Customer)]
+        [RoleAuthorize(Roles.Customer,Roles.Manager)]
         public ActionResult DeactivateProfile(int custId)
         {
             if (!_custRepo.DeactCustomer(custId))
