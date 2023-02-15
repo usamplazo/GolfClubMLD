@@ -1,15 +1,12 @@
 ﻿using GolfClubMLD.Models;
 using GolfClubMLD.Models.ActionFilters;
 using GolfClubMLD.Models.EFRepository;
-using GolfClubMLD.Models.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using PagedList;
 using System.Web.Mvc;
-using GolfClubMLD.Models.Classes;
-using GolfClubMLD.Models.ViewModel;
 
 namespace GolfClubMLD.Controllers
 {
@@ -22,12 +19,13 @@ namespace GolfClubMLD.Controllers
         {
             _homeRepo = new HomeRepository();
         }
+
         [HttpGet]
         public async Task<ActionResult> Index(string searchString, int? page, string order = null)
         {
             List<GolfCourseBO> allCourses = await _homeRepo.GetAllCourses();
-            List<CourseTypeBO> allTypes = await _homeRepo.GetAllCourseTypes();
-            ViewData["types"] = allTypes.Select(t => t).ToList<CourseTypeBO>();
+            List<CourseTypeBO> allTypes   = await _homeRepo.GetAllCourseTypes();
+            ViewData["types"] = allTypes.Select(t => t).ToList();
             ViewData["searchString"] = searchString;
             ViewData["order"] = order;
             if (allCourses == null)
@@ -68,12 +66,25 @@ namespace GolfClubMLD.Controllers
             int pageNumber = (page ?? 1);
             return View(allCourses.ToPagedList(pageNumber, pageSize));
         }
+
+        [HttpGet]
+        public async Task<ActionResult> Details(int id)
+        {
+            GolfCourseBO gc = await _homeRepo.GetCourseById(id);
+            if (gc == null)
+                return View();
+
+            Session["selCourse"] = id;
+
+            return View(gc);
+        }
+
         [HttpGet]
         public async Task<ActionResult> HomeEquipment(int typeId = 0)
         {
-            List<EquipmentBO> allEquip = await _homeRepo.GetAllEquipment();
+            List<EquipmentBO> allEquip      = await _homeRepo.GetAllEquipment();
             List<EquipmentTypesBO> allTypes = await _homeRepo.GetAllEquipmentTypes();
-            ViewData["equipTypes"] = allTypes.Select(et => et).ToList<EquipmentTypesBO>();
+            ViewData["equipTypes"] = allTypes.Select(et => et).ToList();
 
             if (allEquip == null)
                 return View();
@@ -83,18 +94,11 @@ namespace GolfClubMLD.Controllers
                 allEquip = await _homeRepo.GetEquipmentByType(typeId);
                 if (allEquip.Count == 0)
                     return View();
+
                 return View(allEquip);
             }
             return View(allEquip);
         }
-        [HttpGet]
-        public async Task<ActionResult> Details(int id)
-        {
-            GolfCourseBO gc = await _homeRepo.GetCourseById(id);
-            if (gc == null)
-                return View();
-            Session["selCourse"] = id;
-            return View(gc);
-        }
+
     }
 }

@@ -5,8 +5,6 @@ using GolfClubMLD.Models.EFRepository;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -23,34 +21,41 @@ namespace GolfClubMLD.Controllers
         {
             _manrepo = new ManagerRepository();
         }
+
         [HttpGet]
         public ActionResult Index()
         {
             return View();
         }
+
         [HttpGet]
         public async Task<ActionResult> EquipmentList()
         {
             List<EquipmentBO> allEquip = await _manrepo.GetAllEquipment();
-            if (allEquip != null)
-                return View(allEquip);
-           
-            ViewBag.Message = "Nema dostupne opreme";
-            return View();
+            if (allEquip == null)
+            {
+                ViewBag.Message = "Nema dostupne opreme";
+                return View();
+            } 
+
+            return View(allEquip);
         }
+
         [HttpGet]
         public async Task<ActionResult> EditEquipment(int id)
         {
             EquipmentBO equip = _manrepo.SearchEquipment(id);
             IEnumerable<EquipmentTypesBO> allEquipTypes = await _manrepo.GetAllEquipmentTypes();
-            if (equip != null && allEquipTypes != null)
+            if (equip == null || allEquipTypes == null)
             {
-                ViewBag.AllEquipTypes = allEquipTypes;
-                return View(equip);
+               ViewBag.ErrorMessage = "Nema dostupne opreme";
+               return RedirectToAction("Index", "Error"); 
             }
-            ViewBag.ErrorMessage = "Nema dostupne opreme";
-            return RedirectToAction("Index", "Error");
+            
+            ViewBag.AllEquipTypes = allEquipTypes;
+            return View(equip);
         }
+
         [HttpPost]
         public ActionResult EditEquipment(EquipmentBO equipToEdit, int eqTypId = 0)
         {
@@ -76,10 +81,15 @@ namespace GolfClubMLD.Controllers
             ViewBag.Message = "Oprema uspesno izmenjena";
             return RedirectToAction("EquipmentList", "Manager");
         }
+
         [HttpGet]
-        public async Task<ActionResult> RentList()
+        public ActionResult RentList()
         {
             List<RentBO> activeRents = _manrepo.GetAllActiveRents();
+            if(activeRents == null)
+            {
+                ViewBag.RentListMessage = "Nema iznajmljenih terena ove nedelje!";
+            }
             return View(activeRents);
         }
 
