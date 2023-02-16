@@ -1,12 +1,8 @@
-﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
-using GolfClubMLD.Models.Interfaces;
+﻿using GolfClubMLD.Models.Interfaces;
 using GolfClubMLD.Models.ViewModel;
 using System;
-using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Net;
 using System.Net.Mail;
 using System.Security.Cryptography;
@@ -39,6 +35,7 @@ namespace GolfClubMLD.Models.EFRepository
             DateTime dt = now.AddDays(delta);
             return dt;
         }
+
         public void SendEmail(string emailTo, string name)
         {
             MailAddress maFrom = new MailAddress("golfClubMLDTest@gmail.com", "fromSomeone");
@@ -91,22 +88,7 @@ namespace GolfClubMLD.Models.EFRepository
                     }
                 }
         }
-        public string HashPassword(string pass)
-        {
-            MD5CryptoServiceProvider encryptor = new MD5CryptoServiceProvider();
-            UTF8Encoding encoder = new UTF8Encoding();
 
-            byte[] encryptedValueBytes = encryptor.ComputeHash(encoder.GetBytes(pass));
-            StringBuilder encryptedValueBuilder = new StringBuilder();
-            for (int i = 0; i < encryptedValueBytes.Length; i++)
-            {
-                encryptedValueBuilder.Append(encryptedValueBytes[i].ToString("x2"));
-
-            }
-            string encryptedValue = encryptedValueBuilder.ToString();
-
-            return encryptedValue;
-        }
         public bool EditCustomerData(UserAndCreditCardViewModel ccvm)
         {
             try
@@ -153,11 +135,28 @@ namespace GolfClubMLD.Models.EFRepository
             }
             return true;
         }
-    
+
+        public string HashPassword(string pass)
+        {
+            MD5CryptoServiceProvider encryptor = new MD5CryptoServiceProvider();
+            UTF8Encoding encoder = new UTF8Encoding();
+
+            byte[] encryptedValueBytes = encryptor.ComputeHash(encoder.GetBytes(pass));
+            StringBuilder encryptedValueBuilder = new StringBuilder();
+            for (int i = 0; i < encryptedValueBytes.Length; i++)
+            {
+                encryptedValueBuilder.Append(encryptedValueBytes[i].ToString("x2"));
+
+            }
+            string encryptedValue = encryptedValueBuilder.ToString();
+
+            return encryptedValue;
+        }
+
         public bool DeactCustomer(int custId)
         {
             Users custToDeactivate = _custEntities.Users.FirstOrDefault(c => c.id == custId);
-            if (custToDeactivate == null)
+            if (custToDeactivate is null)
                 return false;
             try
             {

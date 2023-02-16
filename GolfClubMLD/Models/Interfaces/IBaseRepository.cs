@@ -1,8 +1,5 @@
-﻿using GolfClubMLD.Models.ViewModel;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace GolfClubMLD.Models.Interfaces
@@ -27,11 +24,13 @@ namespace GolfClubMLD.Models.Interfaces
         CourseTermBO SelectTermById(int id);
 
         #endregion
+
         #region Equipment
         Task<List<EquipmentBO>> GetAllEquipment();
         Task<List<EquipmentTypesBO>> GetAllEquipmentTypes();
         List<EquipmentBO> GetSelEquipmentById(int[] selEqip);
         EquipmentBO SearchEquipment(int id);
+
         #endregion
 
         #region Rent

@@ -2,14 +2,12 @@
 using AutoMapper.QueryableExtensions;
 using GolfClubMLD.Controllers;
 using GolfClubMLD.Models.Interfaces;
-using GolfClubMLD.Models.ViewModel;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Validation;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace GolfClubMLD.Models.EFRepository
@@ -19,22 +17,24 @@ namespace GolfClubMLD.Models.EFRepository
         private GolfClubMldDBEntities _baseEntities = new GolfClubMldDBEntities();
         private readonly ILogger<CustomerController> _logger;
         private DateTime m_rentConf;
-        public BaseRepository(ILogger<CustomerController> logger)
-        {
-            _logger = logger;
-        }
         public BaseRepository()
         {
 
         }
+        public BaseRepository(ILogger<CustomerController> logger)
+        {
+            _logger = logger;
+        }
+
+        #region Customer
         public UsersBO GetUserById(int custId)
         {
             Users customer = _baseEntities.Users.FirstOrDefault(c => c.id == custId);
 
-            if (customer != null)
-                return Mapper.Map<UsersBO>(customer);
+            if (customer is null)
+                return null;
 
-            return null;
+            return Mapper.Map<UsersBO>(customer);
         }
         public UsersBO GetUserByEmail(string email)
         {
@@ -47,23 +47,34 @@ namespace GolfClubMLD.Models.EFRepository
         }
         public async Task<CreditCardBO> GetCredCardById(int credCardId)
         {
-            CreditCard credCard = await _baseEntities.CreditCard.FirstOrDefaultAsync(cc => cc.id == credCardId);
-            CreditCardBO crCd = Mapper.Map<CreditCardBO>(credCard);
-            return crCd;
+            CreditCard credCard = await _baseEntities.CreditCard
+                                                        .FirstOrDefaultAsync(cc => cc.id == credCardId);
+            if (credCard is null)
+                return null;
+
+            return Mapper.Map<CreditCardBO>(credCard);
         }
         public CreditCardBO GetCustomerCCById(int id)
         {
             Users cust = _baseEntities.Users.FirstOrDefault(u => u.id == id);
+
+            if (cust is null)
+                return null;
+
             UsersBO logedCust = Mapper.Map<UsersBO>(cust);
             return logedCust.CreditCard;;
         }
+
+        #endregion
+
+        #region CourseTerm
         public async Task<List<CourseTermBO>> CheckForRentCourses(List<CourseTermBO> courseTerms, int courseId)
         {
             try
             {
                 DateTime start = DateTime.Now;
                 DateTime end = start.AddDays(7 - (int)start.DayOfWeek);
-                var currentWeekRents = await _baseEntities.Rent.Select(r => r)
+                List<Rent> currentWeekRents = await _baseEntities.Rent.Select(r => r)
                                                                 .Where(r => r.CourseTerm.courseId == courseId
                                                                         && (r.rentDate >= start.Date
                                                                         && r.rentDate < end.Date))
@@ -96,37 +107,62 @@ namespace GolfClubMLD.Models.EFRepository
         public CourseTermBO SelectCourseTermById(int ctId)
         {
             CourseTerm ct = _baseEntities.CourseTerm.FirstOrDefault(c => c.id == ctId);
-            CourseTermBO courTerm = Mapper.Map<CourseTermBO>(ct);
 
-            return courTerm;
+            if (ct is null)
+                return null;
+
+            return Mapper.Map<CourseTermBO>(ct);
         }
         public async Task<List<CourseTermBO>> GetTermsForSelCourse(int courseId)
         {
-            Task<List<CourseTermBO>> terms = _baseEntities.CourseTerm.Select(ct => ct)
-                                                .Where(ct => ct.courseId == courseId)
-                                                .Include(ct => ct.GolfCourse)
-                                                .Include(ct => ct.Term)
-                                                .ProjectTo<CourseTermBO>()
-                                                .ToListAsync();
-            return await CheckForRentCourses(await terms, courseId);
+            Task<List<CourseTermBO>> terms = _baseEntities.CourseTerm
+                                                                .Select(ct => ct)
+                                                                .Where(ct => ct.courseId == courseId)
+                                                                .Include(ct => ct.GolfCourse)
+                                                                .Include(ct => ct.Term)
+                                                                .ProjectTo<CourseTermBO>()
+                                                                .ToListAsync();
 
+            return await CheckForRentCourses(await terms, courseId);
         }
+        public GolfCourseBO SelectCourseById(int id)
+        {
+            GolfCourse golfCour = _baseEntities.GolfCourse.FirstOrDefault(gc => gc.id == id);
+
+            if (golfCour is null)
+                return null;
+
+            return Mapper.Map<GolfCourseBO>(golfCour);
+        }
+        public CourseTermBO SelectTermById(int id)
+        {
+            CourseTerm cTerm = _baseEntities.CourseTerm.FirstOrDefault(t => t.id == id);
+
+            if (cTerm is null)
+                return null;
+
+            return Mapper.Map<CourseTermBO>(cTerm);
+        }
+
+        #endregion
+
+        #region Equipment
         public async Task<List<EquipmentBO>> GetAllEquipment()
         {
             Task<List<EquipmentBO>> allEquip = _baseEntities.Equipment
-                 .Select(e => e)
-                 .Include(et => et.EquipmentTypes)
-                 .ProjectTo<EquipmentBO>()
-                 .ToListAsync();
+                                                                 .Select(e => e)
+                                                                 .Include(et => et.EquipmentTypes)
+                                                                 .ProjectTo<EquipmentBO>()
+                                                                 .ToListAsync();
 
             return await allEquip;
         }
         public async Task<List<EquipmentTypesBO>> GetAllEquipmentTypes()
         {
             Task<List<EquipmentTypesBO>> allTypes = _baseEntities.EquipmentTypes
-          .Select(et => et)
-          .ProjectTo<EquipmentTypesBO>()
-          .ToListAsync();
+                                                                      .Select(et => et)
+                                                                      .ProjectTo<EquipmentTypesBO>()
+                                                                      .ToListAsync();
 
             return await allTypes;
         }
@@ -144,26 +180,18 @@ namespace GolfClubMLD.Models.EFRepository
         public EquipmentBO SearchEquipment(int id)
         {
             EquipmentBO eq = _baseEntities.Equipment
-                .Where(e => e.id == id)
-                .Select(e => e)
-                .Include(et => et.EquipmentTypes)
-                .ProjectTo<EquipmentBO>()
-                .FirstOrDefault();
+                                            .Where(e => e.id == id)
+                                            .Select(e => e)
+                                            .Include(et => et.EquipmentTypes)
+                                            .ProjectTo<EquipmentBO>()
+                                            .FirstOrDefault();
             
             return eq;
         }
-        public GolfCourseBO SelectCourseById(int id)
-        {
-            GolfCourse golfCour = _baseEntities.GolfCourse.FirstOrDefault(gc => gc.id == id);
-            GolfCourseBO selCourse = Mapper.Map<GolfCourseBO>(golfCour);
-            return selCourse;
-        }
-        public CourseTermBO SelectTermById(int id)
-        {
-            CourseTerm cTerm = _baseEntities.CourseTerm.FirstOrDefault(t => t.id == id);
-            CourseTermBO selCTerm = Mapper.Map<CourseTermBO>(cTerm);
-            return selCTerm;
-        }
+
+        #endregion
+
+        #region Rent
         public List<RentBO> GetAllActiveRents()
         {
             DateTime today = DateTime.Now;
@@ -171,12 +199,14 @@ namespace GolfClubMLD.Models.EFRepository
             if (delta == 0)
                 delta = 7;
             DateTime endOfWeek = today.AddDays(delta);
+
             List<RentBO> rents = new List<RentBO>();
             try
             {
-               rents = _baseEntities.Rent.Select(r => r)
+               rents = _baseEntities.Rent
+                                        .Select(r => r)
                                         .Where(r => DbFunctions.TruncateTime(r.rentDate) >= DbFunctions.TruncateTime(today.Date) 
-                                                      && DbFunctions.TruncateTime(r.rentDate) < DbFunctions.TruncateTime(endOfWeek))
+                                                        && DbFunctions.TruncateTime(r.rentDate) < DbFunctions.TruncateTime(endOfWeek))
                                         .Include(rt=>rt.CourseTerm)
                                         .Include(rt=>rt.Users)
                                         .Include(rt=>rt.RentItems)
@@ -190,7 +220,6 @@ namespace GolfClubMLD.Models.EFRepository
             }
             return rents;
         }
-
         public bool SaveRent(int ctId, int custId, DateTime rentDte)
         {
             try
@@ -272,6 +301,8 @@ namespace GolfClubMLD.Models.EFRepository
             }
             return true;
         }
+
+        #endregion
 
     }
 }

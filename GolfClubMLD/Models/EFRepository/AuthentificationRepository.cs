@@ -7,7 +7,6 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using System.Text;
-using AutoMapper;
 using GolfClubMLD.Models.ViewModel;
 using System.Data.Entity.Validation;
 using GolfClubMLD.Controllers;
@@ -19,34 +18,18 @@ namespace GolfClubMLD.Models.EFRepository
     {
         private GolfClubMldDBEntities _gcEntities = new GolfClubMldDBEntities();
         private readonly ILogger<CustomerController> _logger;
+        private readonly string _profileImagePath = "~/Images/ProfileImages/";
 
         public AuthentificationRepository() { }
         public AuthentificationRepository(ILogger<CustomerController> logger)
         {
             _logger = logger;
         }
-        public string HashPassword(string pass)
-        {
-            MD5CryptoServiceProvider encryptor = new MD5CryptoServiceProvider();
-            UTF8Encoding encoder = new UTF8Encoding();
-
-            byte[] encryptedValueBytes = encryptor.ComputeHash(encoder.GetBytes(pass));
-            StringBuilder encryptedValueBuilder = new StringBuilder();
-            for(int i = 0;i<encryptedValueBytes.Length; i++)
-            {
-                encryptedValueBuilder.Append(encryptedValueBytes[i].ToString("x2"));
-                
-            }
-            string encryptedValue = encryptedValueBuilder.ToString();
-
-            return encryptedValue;
-        }
         public async Task<UsersBO> LoginUser(string credential, string pass)
         {
-            string genMD5pass = HashPassword(pass);
+            string genMD5pass = HashPassword(pass.Trim());
                 Task<UsersBO> selCust = _gcEntities.Users
                     .Select(c => c)
-                    //.Where(c => (c.email == credential || c.username == credential) && (c.pass == genMD5pass) && (c.isActv == true))
                     .Where(c => (c.email == credential) && (c.pass == genMD5pass) && (c.isActv == true))
                     .Include(cd => cd.CreditCard)
                     .ProjectTo<UsersBO>()
@@ -55,27 +38,35 @@ namespace GolfClubMLD.Models.EFRepository
             return await selCust;
         }
 
-        public bool CheckExistingCustomer(string email, string username)
+        public string HashPassword(string pass)
         {
-            Task<UsersBO> findCust =  _gcEntities.Users
-                       .Select(c => c)
-                       .Where(c => c.email == email || c.username == username)
-                       .ProjectTo<UsersBO>()
-                       .FirstOrDefaultAsync();
+            MD5CryptoServiceProvider encryptor = new MD5CryptoServiceProvider();
+            UTF8Encoding encoder = new UTF8Encoding();
 
-            if (findCust.Result == null)
-                return false;
-            return true;
+            byte[] encryptedValueBytes = encryptor.ComputeHash(encoder.GetBytes(pass));
+            StringBuilder encryptedValueBuilder = new StringBuilder();
+            for (int i = 0; i < encryptedValueBytes.Length; i++)
+            {
+                encryptedValueBuilder.Append(encryptedValueBytes[i].ToString("x2"));
+
+            }
+            string encryptedValue = encryptedValueBuilder.ToString();
+
+            return encryptedValue;
         }
-        public async Task<bool> RegisterCustomer(UserAndCreditCardViewModel custCredCard)
+
+        public bool RegisterCustomer(UserAndCreditCardViewModel custCredCard)
         {
-            if (CheckExistingCustomer(custCredCard.Cust.Email, custCredCard.Cust.Username) || CheckExistingCreditCard(custCredCard.CredCard.CarNum))
+            if (CheckExistingCustomer(custCredCard.Cust.Email, custCredCard.Cust.Username) 
+                                    || CheckExistingCreditCard(custCredCard.CredCard.CarNum))
             {
                 return false;
             }
             try
             {
                 string hashPass = HashPassword(custCredCard.Cust.Pass);
+                if (string.IsNullOrWhiteSpace(hashPass))
+                    return false;
 
                 Users cust = new Users
                 {
@@ -85,7 +76,7 @@ namespace GolfClubMLD.Models.EFRepository
                     fname = custCredCard.Cust.Fname,
                     lname = custCredCard.Cust.Lname,
                     phone = custCredCard.Cust.Phone,
-                    profPic = "noPicture", //default picture location
+                    profPic = "", //default picture location
                     isActv = true,
                     roleId = 1
                 };
@@ -126,29 +117,53 @@ namespace GolfClubMLD.Models.EFRepository
             return false;
         }
 
+        public bool CheckExistingCustomer(string email, string username)
+        {
+            Task<UsersBO> findCust = _gcEntities.Users
+                                                .Select(c => c)
+                                                .Where(c => c.email == email || c.username == username)
+                                                .ProjectTo<UsersBO>()
+                                                .FirstOrDefaultAsync();
+
+            if (findCust.Result == null)
+                return false;
+
+            return true;
+        }
+
         public bool CheckExistingCreditCard(long creditCardNum)
         {
             Task<CreditCardBO> findCredCard = _gcEntities.CreditCard
-                    .Select(cc => cc)
-                    .Where(cc => cc.carNum == creditCardNum)
-                    .ProjectTo<CreditCardBO>()
-                    .FirstOrDefaultAsync();
+                                                            .Select(cc => cc)
+                                                            .Where(cc => cc.carNum == creditCardNum)
+                                                            .ProjectTo<CreditCardBO>()
+                                                            .FirstOrDefaultAsync();
+
             if (findCredCard.Result == null)
                 return false;
-            return true;
-            
+
+            return true;  
         }
 
         public bool UpdateCustomerCredCard(Users cust)
         {
             try
             {
-                CreditCard cc = _gcEntities.CreditCard.Select(cr => cr).OrderByDescending(cr => cr.id).FirstOrDefault();
-                if (cust is null || cc is null)
+                if (cust is null)
                     return false;
+
+                CreditCard cc = _gcEntities.CreditCard
+                                            .Select(cr => cr)
+                                            .OrderByDescending(cr => cr.id)
+                                            .FirstOrDefault();
+
+                if (cc is null)
+                    return false;
+
                 cust.credCardId = cc.id;
                 cust.roleId = 1;
                 cust.credCardId = cc.id;
+
                 _gcEntities.Users.Add(cust);
                 _gcEntities.SaveChanges();
             }
@@ -172,75 +187,52 @@ namespace GolfClubMLD.Models.EFRepository
             }
             return true;
         }
+
         public void RemoveAcc(int custId)
         {
             Users cust = _gcEntities.Users.FirstOrDefault(c => c.id == custId);
-            if (cust != null)
+            if (cust is null)
             {
-                cust.isActv = false;
-                try
-                {
-                    _gcEntities.SaveChanges();
+                return;
+            }
 
-                }
-                catch (DbEntityValidationException e)
+            cust.isActv = false;
+            try
+            {
+                _gcEntities.SaveChanges();
+
+            }
+            catch (DbEntityValidationException e)
+            {
+                foreach (var eve in e.EntityValidationErrors)
                 {
-                    foreach (var eve in e.EntityValidationErrors)
+                    _logger.LogError("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
+                        eve.Entry.Entity.GetType().Name, eve.Entry.State);
+                    foreach (var ve in eve.ValidationErrors)
                     {
-                        _logger.LogError("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
-                            eve.Entry.Entity.GetType().Name, eve.Entry.State);
-                        foreach (var ve in eve.ValidationErrors)
-                        {
-                            _logger.LogError("- Property: \"{0}\", Error: \"{1}\"",
-                                ve.PropertyName, ve.ErrorMessage);
-                        }
+                        _logger.LogError("- Property: \"{0}\", Error: \"{1}\"",
+                            ve.PropertyName, ve.ErrorMessage);
                     }
-                    throw;
                 }
-                catch (Exception ex)
-                {
-                    _logger.LogError("Error: Authentification => RemoveAcc " + ex);
-                }
+                throw;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error: Authentification => RemoveAcc " + ex);
             }
         }
 
-        public void UpdateAcc(int custId)
-        {
-            Users cust = _gcEntities.Users.FirstOrDefault(c => c.id == custId);
-            if (cust != null)
-            {
-                cust.isActv = false;
-                try
-                {
-                    _gcEntities.SaveChanges();
-
-                }
-                catch (DbEntityValidationException e)
-                {
-                    foreach (var eve in e.EntityValidationErrors)
-                    {
-                        _logger.LogError("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
-                            eve.Entry.Entity.GetType().Name, eve.Entry.State);
-                        foreach (var ve in eve.ValidationErrors)
-                        {
-                            _logger.LogError("- Property: \"{0}\", Error: \"{1}\"",
-                                ve.PropertyName, ve.ErrorMessage);
-                        }
-                    }
-                    throw;
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError("Error: Authentification => UpdateAcc " + ex);
-                }
-            }
-        }
         public List<string> GetRoles(string username)
         {
-            Users user = _gcEntities.Users.Select(u=>u)
-                                          .FirstOrDefault(u=>u.username == username);
-            List<string> result = new List<string>();
-            result.Add(user.Role.name);
+            Users user = _gcEntities.Users
+                                        .Select(u=>u)
+                                        .FirstOrDefault(u=>u.username == username);
+
+            List<string> result = new List<string>
+            {
+                user.Role.name
+            };
+
             return result;
         }
     }
