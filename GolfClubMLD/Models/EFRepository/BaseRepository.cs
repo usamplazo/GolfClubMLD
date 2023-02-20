@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Validation;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace GolfClubMLD.Models.EFRepository
@@ -36,6 +38,7 @@ namespace GolfClubMLD.Models.EFRepository
 
             return Mapper.Map<UsersBO>(customer);
         }
+
         public UsersBO GetUserByEmail(string email)
         {
             Users user = _baseEntities.Users.FirstOrDefault(u=>u.email.Equals(email));
@@ -45,6 +48,7 @@ namespace GolfClubMLD.Models.EFRepository
 
             return null;
         }
+
         public async Task<CreditCardBO> GetCredCardById(int credCardId)
         {
             CreditCard credCard = await _baseEntities.CreditCard
@@ -54,6 +58,7 @@ namespace GolfClubMLD.Models.EFRepository
 
             return Mapper.Map<CreditCardBO>(credCard);
         }
+
         public CreditCardBO GetCustomerCCById(int id)
         {
             Users cust = _baseEntities.Users.FirstOrDefault(u => u.id == id);
@@ -65,6 +70,23 @@ namespace GolfClubMLD.Models.EFRepository
             return logedCust.CreditCard;;
         }
 
+        public string HashPassword(string pass)
+        {
+            MD5CryptoServiceProvider encryptor = new MD5CryptoServiceProvider();
+            UTF8Encoding encoder = new UTF8Encoding();
+
+            byte[] encryptedValueBytes = encryptor.ComputeHash(encoder.GetBytes(pass));
+            StringBuilder encryptedValueBuilder = new StringBuilder();
+            for (int i = 0; i < encryptedValueBytes.Length; i++)
+            {
+                encryptedValueBuilder.Append(encryptedValueBytes[i].ToString("x2"));
+
+            }
+            string encryptedValue = encryptedValueBuilder.ToString();
+
+            return encryptedValue;
+        }
+
         #endregion
 
         #region CourseTerm
@@ -74,7 +96,7 @@ namespace GolfClubMLD.Models.EFRepository
             {
                 DateTime start = DateTime.Now;
                 DateTime end = start.AddDays(7 - (int)start.DayOfWeek);
-                List<Rent> currentWeekRents = await _baseEntities.Rent.Select(r => r)
+                List<Rent> currentWeekRents = await _baseEntities.Rent
                                                                 .Where(r => r.CourseTerm.courseId == courseId
                                                                         && (r.rentDate >= start.Date
                                                                         && r.rentDate < end.Date))
@@ -104,6 +126,7 @@ namespace GolfClubMLD.Models.EFRepository
             }
             return null;
         }
+
         public CourseTermBO SelectCourseTermById(int ctId)
         {
             CourseTerm ct = _baseEntities.CourseTerm.FirstOrDefault(c => c.id == ctId);
@@ -113,10 +136,10 @@ namespace GolfClubMLD.Models.EFRepository
 
             return Mapper.Map<CourseTermBO>(ct);
         }
+
         public async Task<List<CourseTermBO>> GetTermsForSelCourse(int courseId)
         {
             Task<List<CourseTermBO>> terms = _baseEntities.CourseTerm
-                                                                .Select(ct => ct)
                                                                 .Where(ct => ct.courseId == courseId)
                                                                 .Include(ct => ct.GolfCourse)
                                                                 .Include(ct => ct.Term)
@@ -125,6 +148,7 @@ namespace GolfClubMLD.Models.EFRepository
 
             return await CheckForRentCourses(await terms, courseId);
         }
+
         public GolfCourseBO SelectCourseById(int id)
         {
             GolfCourse golfCour = _baseEntities.GolfCourse.FirstOrDefault(gc => gc.id == id);
@@ -134,6 +158,7 @@ namespace GolfClubMLD.Models.EFRepository
 
             return Mapper.Map<GolfCourseBO>(golfCour);
         }
+
         public CourseTermBO SelectTermById(int id)
         {
             CourseTerm cTerm = _baseEntities.CourseTerm.FirstOrDefault(t => t.id == id);
@@ -150,13 +175,13 @@ namespace GolfClubMLD.Models.EFRepository
         public async Task<List<EquipmentBO>> GetAllEquipment()
         {
             Task<List<EquipmentBO>> allEquip = _baseEntities.Equipment
-                                                                 .Select(e => e)
                                                                  .Include(et => et.EquipmentTypes)
                                                                  .ProjectTo<EquipmentBO>()
                                                                  .ToListAsync();
 
             return await allEquip;
         }
+
         public async Task<List<EquipmentTypesBO>> GetAllEquipmentTypes()
         {
             Task<List<EquipmentTypesBO>> allTypes = _baseEntities.EquipmentTypes
@@ -166,6 +191,7 @@ namespace GolfClubMLD.Models.EFRepository
 
             return await allTypes;
         }
+
         public List<EquipmentBO> GetSelEquipmentById(int[] sel)
         {
             List<EquipmentBO> selectedEquip = new List<EquipmentBO>();
@@ -177,11 +203,11 @@ namespace GolfClubMLD.Models.EFRepository
             }
             return selectedEquip;
         }
+
         public EquipmentBO SearchEquipment(int id)
         {
             EquipmentBO eq = _baseEntities.Equipment
                                             .Where(e => e.id == id)
-                                            .Select(e => e)
                                             .Include(et => et.EquipmentTypes)
                                             .ProjectTo<EquipmentBO>()
                                             .FirstOrDefault();
@@ -204,7 +230,6 @@ namespace GolfClubMLD.Models.EFRepository
             try
             {
                rents = _baseEntities.Rent
-                                        .Select(r => r)
                                         .Where(r => DbFunctions.TruncateTime(r.rentDate) >= DbFunctions.TruncateTime(today.Date) 
                                                         && DbFunctions.TruncateTime(r.rentDate) < DbFunctions.TruncateTime(endOfWeek))
                                         .Include(rt=>rt.CourseTerm)
@@ -220,6 +245,7 @@ namespace GolfClubMLD.Models.EFRepository
             }
             return rents;
         }
+
         public bool SaveRent(int ctId, int custId, DateTime rentDte)
         {
             try
@@ -257,12 +283,15 @@ namespace GolfClubMLD.Models.EFRepository
             }
             return true;
         }
+
         public bool SaveRentItems(int ctId, int custId, int[] equipIds)
         {
             try
             {
 
-                List<Rent> activeRents = _baseEntities.Rent.Select(p => p).Where(r => DbFunctions.TruncateTime(r.billDate) >= DbFunctions.TruncateTime(DateTime.Now)).ToList();
+                List<Rent> activeRents = _baseEntities.Rent
+                                                        .Where(r => DbFunctions.TruncateTime(r.billDate) >= DbFunctions.TruncateTime(DateTime.Now))
+                                                        .ToList();
                 Rent rt = activeRents.SingleOrDefault(r => r.billDate == m_rentConf
                                         && r.courTrmId == ctId
                                         && r.custId == custId);

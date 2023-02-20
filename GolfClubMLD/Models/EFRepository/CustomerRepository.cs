@@ -5,8 +5,6 @@ using System.Data.Entity;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
-using System.Security.Cryptography;
-using System.Text;
 using GolfClubMLD.Controllers;
 using Microsoft.Extensions.Logging;
 using System.Data.Entity.Validation;
@@ -136,22 +134,6 @@ namespace GolfClubMLD.Models.EFRepository
             return true;
         }
 
-        public string HashPassword(string pass)
-        {
-            MD5CryptoServiceProvider encryptor = new MD5CryptoServiceProvider();
-            UTF8Encoding encoder = new UTF8Encoding();
-
-            byte[] encryptedValueBytes = encryptor.ComputeHash(encoder.GetBytes(pass));
-            StringBuilder encryptedValueBuilder = new StringBuilder();
-            for (int i = 0; i < encryptedValueBytes.Length; i++)
-            {
-                encryptedValueBuilder.Append(encryptedValueBytes[i].ToString("x2"));
-
-            }
-            string encryptedValue = encryptedValueBuilder.ToString();
-
-            return encryptedValue;
-        }
 
         public bool DeactCustomer(int custId)
         {

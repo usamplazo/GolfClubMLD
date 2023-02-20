@@ -12,6 +12,7 @@ namespace GolfClubMLD.Models.Interfaces
         UsersBO GetUserByEmail(string email);
         Task<CreditCardBO> GetCredCardById(int credCardId);
         CreditCardBO GetCustomerCCById(int id);
+        string HashPassword(string pass);
 
         #endregion
 

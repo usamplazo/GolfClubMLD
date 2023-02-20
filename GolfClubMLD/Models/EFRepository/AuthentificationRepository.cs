@@ -25,34 +25,17 @@ namespace GolfClubMLD.Models.EFRepository
         {
             _logger = logger;
         }
+
         public async Task<UsersBO> LoginUser(string credential, string pass)
         {
             string genMD5pass = HashPassword(pass.Trim());
                 Task<UsersBO> selCust = _gcEntities.Users
-                    .Select(c => c)
                     .Where(c => (c.email == credential) && (c.pass == genMD5pass) && (c.isActv == true))
                     .Include(cd => cd.CreditCard)
                     .ProjectTo<UsersBO>()
                     .FirstOrDefaultAsync();
 
             return await selCust;
-        }
-
-        public string HashPassword(string pass)
-        {
-            MD5CryptoServiceProvider encryptor = new MD5CryptoServiceProvider();
-            UTF8Encoding encoder = new UTF8Encoding();
-
-            byte[] encryptedValueBytes = encryptor.ComputeHash(encoder.GetBytes(pass));
-            StringBuilder encryptedValueBuilder = new StringBuilder();
-            for (int i = 0; i < encryptedValueBytes.Length; i++)
-            {
-                encryptedValueBuilder.Append(encryptedValueBytes[i].ToString("x2"));
-
-            }
-            string encryptedValue = encryptedValueBuilder.ToString();
-
-            return encryptedValue;
         }
 
         public bool RegisterCustomer(UserAndCreditCardViewModel custCredCard)
@@ -120,7 +103,6 @@ namespace GolfClubMLD.Models.EFRepository
         public bool CheckExistingCustomer(string email, string username)
         {
             Task<UsersBO> findCust = _gcEntities.Users
-                                                .Select(c => c)
                                                 .Where(c => c.email == email || c.username == username)
                                                 .ProjectTo<UsersBO>()
                                                 .FirstOrDefaultAsync();
@@ -134,7 +116,6 @@ namespace GolfClubMLD.Models.EFRepository
         public bool CheckExistingCreditCard(long creditCardNum)
         {
             Task<CreditCardBO> findCredCard = _gcEntities.CreditCard
-                                                            .Select(cc => cc)
                                                             .Where(cc => cc.carNum == creditCardNum)
                                                             .ProjectTo<CreditCardBO>()
                                                             .FirstOrDefaultAsync();
@@ -153,7 +134,6 @@ namespace GolfClubMLD.Models.EFRepository
                     return false;
 
                 CreditCard cc = _gcEntities.CreditCard
-                                            .Select(cr => cr)
                                             .OrderByDescending(cr => cr.id)
                                             .FirstOrDefault();
 
@@ -225,7 +205,6 @@ namespace GolfClubMLD.Models.EFRepository
         public List<string> GetRoles(string username)
         {
             Users user = _gcEntities.Users
-                                        .Select(u=>u)
                                         .FirstOrDefault(u=>u.username == username);
 
             List<string> result = new List<string>
