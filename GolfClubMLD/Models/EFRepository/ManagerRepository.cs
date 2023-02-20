@@ -2,11 +2,9 @@
 using GolfClubMLD.Models.Interfaces;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Validation;
 using System.Linq;
-using System.Web;
 
 namespace GolfClubMLD.Models.EFRepository
 {

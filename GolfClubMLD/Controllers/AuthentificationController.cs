@@ -63,13 +63,13 @@ namespace GolfClubMLD.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        public async Task<ActionResult> Register(UserAndCreditCardViewModel custCredCard)
+        public ActionResult Register(UserAndCreditCardViewModel custCredCard)
         {
             if (!ModelState.IsValid)
             {
                 return View();
             }
-            bool areSaved = await _accRepo.RegisterCustomer(custCredCard);
+            bool areSaved =  _accRepo.RegisterCustomer(custCredCard);
 
             if (areSaved)
                 return RedirectToAction("Index", "Home");

@@ -28,12 +28,12 @@ namespace GolfClubMLD.Controllers
             ViewData["types"] = allTypes.Select(t => t).ToList();
             ViewData["searchString"] = searchString;
             ViewData["order"] = order;
-            if (allCourses == null)
+            if (allCourses is null)
             {
                 ViewBag.Message = "Trenutno nema terena za iznajmljivanje";
                 return View();
             }
-            if (allTypes == null)
+            if (allTypes is null)
                 return View();
 
             if (searchString != null && Int32.TryParse(searchString, out int typeSearchId))
@@ -71,7 +71,7 @@ namespace GolfClubMLD.Controllers
         public async Task<ActionResult> Details(int id)
         {
             GolfCourseBO gc = await _homeRepo.GetCourseById(id);
-            if (gc == null)
+            if (gc is null)
                 return View();
 
             Session["selCourse"] = id;
@@ -82,11 +82,11 @@ namespace GolfClubMLD.Controllers
         [HttpGet]
         public async Task<ActionResult> HomeEquipment(int typeId = 0)
         {
-            List<EquipmentBO> allEquip      = await _homeRepo.GetAllEquipment();
+            List<EquipmentBO> allEquip = await _homeRepo.GetAllEquipment();
             List<EquipmentTypesBO> allTypes = await _homeRepo.GetAllEquipmentTypes();
             ViewData["equipTypes"] = allTypes.Select(et => et).ToList();
 
-            if (allEquip == null)
+            if (allEquip is null)
                 return View();
 
             if (typeId > 0)
@@ -94,8 +94,6 @@ namespace GolfClubMLD.Controllers
                 allEquip = await _homeRepo.GetEquipmentByType(typeId);
                 if (allEquip.Count == 0)
                     return View();
-
-                return View(allEquip);
             }
             return View(allEquip);
         }

@@ -1,0 +1,17 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@if (Session["LoginEmail"] != null && User.IsInRole("Admin"))
+{
+    <h2>Admin panel</h2>
+    <div>
+        @Html.ActionLink("Korisnici", "CustomerList", "Admin")<br />
+        @Html.ActionLink("Oprema", "EquipmentList", "Admin")<br />
+        @Html.ActionLink("Sva iznajmljivanja", "AllRents", "Admin")<br />
+    </div>
+}
+else
+{
+    Html.Partial("SomethingWentWrong");
+}
