@@ -46,7 +46,7 @@ namespace GolfClubMLD.Controllers
         {
             EquipmentBO equip = _manrepo.SearchEquipment(id);
             IEnumerable<EquipmentTypesBO> allEquipTypes = await _manrepo.GetAllEquipmentTypes();
-            if (equip == null || allEquipTypes == null)
+            if (equip is null || allEquipTypes is null)
             {
                ViewBag.ErrorMessage = "Nema dostupne opreme";
                return RedirectToAction("Index", "Error"); 
