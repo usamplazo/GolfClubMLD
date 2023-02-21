@@ -7,7 +7,6 @@ namespace GolfClubMLD.Models.Interfaces
     {
         DateTime CalculateDate(DateTime now);
         bool EditCustomerData(UserAndCreditCardViewModel ccvm);
-        bool DeactCustomer(int custId);
         void SendEmail(string emailTo, string name);
     }
 }

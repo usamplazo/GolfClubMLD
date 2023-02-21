@@ -135,36 +135,5 @@ namespace GolfClubMLD.Models.EFRepository
         }
 
 
-        public bool DeactCustomer(int custId)
-        {
-            Users custToDeactivate = _custEntities.Users.FirstOrDefault(c => c.id == custId);
-            if (custToDeactivate is null)
-                return false;
-            try
-            {
-                custToDeactivate.isActv = false;
-                _custEntities.Entry(custToDeactivate).State = EntityState.Modified;
-                _custEntities.SaveChanges();
-            }
-            catch (DbEntityValidationException e)
-            {
-                foreach (var eve in e.EntityValidationErrors)
-                {
-                    _logger.LogError("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
-                        eve.Entry.Entity.GetType().Name, eve.Entry.State);
-                    foreach (var ve in eve.ValidationErrors)
-                    {
-                        _logger.LogError("- Property: \"{0}\", Error: \"{1}\"",
-                            ve.PropertyName, ve.ErrorMessage);
-                    }
-                }
-                throw;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error: Customer => DeactCustomer " + ex);
-            }
-            return true;
-        }
     }
 }

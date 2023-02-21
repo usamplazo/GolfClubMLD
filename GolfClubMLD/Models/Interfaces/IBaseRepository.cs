@@ -14,6 +14,8 @@ namespace GolfClubMLD.Models.Interfaces
         CreditCardBO GetCustomerCCById(int id);
         string HashPassword(string pass);
 
+        bool DeactCustomer(int custId);
+
         #endregion
 
         #region CourseTerm
