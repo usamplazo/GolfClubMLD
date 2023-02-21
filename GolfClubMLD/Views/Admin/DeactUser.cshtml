@@ -1,0 +1,60 @@
+﻿@model GolfClubMLD.Models.UsersBO
+@{
+    ViewBag.Title = "DeactUser";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>DeactUser</h2>
+@using (Html.BeginForm("Deactivate", "Admin", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(item => item.Id)
+<table>
+    <tr>
+        <td>
+            @Html.DisplayFor(item => item.Fname) @Html.DisplayFor(item => item.Lname)
+        </td>
+    </tr>
+    <tr>
+        <td>
+            @Html.DisplayFor(item => item.Email)  @Html.DisplayFor(item => item.Id)
+        </td>
+    </tr>
+    <tr>
+        <td>
+            @Html.DisplayFor(item => item.Phone)
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <img src="@Model.ProfPic"   alt="profilna slika"/>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            @Html.DisplayFor(item => item.Role.Name)
+        </td>
+    </tr>
+    <tr>
+        <td>
+            @Html.DisplayFor(item => item.CreditCard.Own)
+        </td>
+    </tr>
+    <tr>
+        <td>
+            @Html.DisplayFor(item => item.CreditCard.CarNum)
+        </td>
+    </tr>
+    <tr>
+        <td>
+            @Html.DisplayFor(item => item.CreditCard.Expiry)
+        </td>
+    </tr>
+    <tr>
+        <td>
+            @Html.DisplayFor(item => item.CreditCard.CVV)
+        </td>
+    </tr>
+</table>
+    <input type="submit" name="Potvrdi"/>
+}

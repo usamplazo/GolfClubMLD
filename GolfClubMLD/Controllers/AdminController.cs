@@ -31,5 +31,26 @@ namespace GolfClubMLD.Controllers
             List<UsersBO> users = _adminRepo.GetAllUsers();
             return View(users);
         }
+
+        [HttpGet]
+        public ActionResult DeactUser(int id)
+        {
+            UsersBO userToDeactivate = _adminRepo.GetUserById(id);
+            return View(userToDeactivate);
+        }
+
+        [HttpPost]
+        public ActionResult Deactivate(int id)
+        {
+            if (_adminRepo.DeactCustomer(id))
+            {
+                ViewBag.AdminMessage = "Uspesno deaktiviran nalog korisnika sa id: " + id;
+
+                return View("UserList", _adminRepo.GetAllUsers());
+            }
+
+            ViewBag.AdminErrorMessage = "Greska prilikom deaktivacije korisnika";
+            return View();
+        }
     }
 }
