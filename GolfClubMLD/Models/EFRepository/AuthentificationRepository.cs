@@ -4,9 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Security.Cryptography;
 using System.Threading.Tasks;
-using System.Text;
 using GolfClubMLD.Models.ViewModel;
 using System.Data.Entity.Validation;
 using GolfClubMLD.Controllers;
@@ -59,7 +57,7 @@ namespace GolfClubMLD.Models.EFRepository
                     fname = custCredCard.Cust.Fname,
                     lname = custCredCard.Cust.Lname,
                     phone = custCredCard.Cust.Phone,
-                    profPic = "", //default picture location
+                    profPic = custCredCard.Cust.ProfPic,
                     isActv = true,
                     roleId = 1
                 };

@@ -2,8 +2,11 @@
 using GolfClubMLD.Models.ActionFilters;
 using GolfClubMLD.Models.Classes;
 using GolfClubMLD.Models.EFRepository;
+using GolfClubMLD.Models.ViewModel;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Web;
 using System.Web.Mvc;
 
 namespace GolfClubMLD.Controllers
@@ -14,9 +17,11 @@ namespace GolfClubMLD.Controllers
     public class AdminController : Controller
     {
         private AdminRepository _adminRepo;
+        private AuthentificationRepository _authRepo;
         public AdminController()
         {
             _adminRepo = new AdminRepository();
+            _authRepo  = new AuthentificationRepository();
         }
 
         [HttpGet]
@@ -30,6 +35,36 @@ namespace GolfClubMLD.Controllers
         {
             List<UsersBO> users = _adminRepo.GetAllUsers();
             return View(users);
+        }
+
+        [HttpGet]
+        public ActionResult CreateCustomer()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult CreateCustomer(UserAndCreditCardViewModel custCredCard)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View();
+            }
+            HttpPostedFileBase file = Request.Files["file"];
+            if (file != null && file.ContentLength > 0)
+            {
+                // Save the file to a location on the server.
+                string path = Path.Combine(Server.MapPath("~/Images/ProfileImages/"), Path.GetFileName(file.FileName));
+                file.SaveAs(path);
+                custCredCard.Cust.ProfPic = "/Images/ProfileImages/" + file.FileName;
+            }
+            bool createdCust = _authRepo.RegisterCustomer(custCredCard);
+
+            if (!createdCust)
+            {
+                ViewBag.ErrorMessage = "Registracija nije uspela !";
+            }
+            return View("UserList", _adminRepo.GetAllUsers());
         }
 
         [HttpGet]

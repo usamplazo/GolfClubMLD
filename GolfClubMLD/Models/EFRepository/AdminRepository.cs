@@ -2,10 +2,8 @@
 using GolfClubMLD.Controllers;
 using GolfClubMLD.Models.Interfaces;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 
 namespace GolfClubMLD.Models.EFRepository
 {
