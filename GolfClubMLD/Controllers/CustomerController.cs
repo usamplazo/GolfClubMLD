@@ -51,13 +51,11 @@ namespace GolfClubMLD.Controllers
                 ViewBag.EditProfileErrorMessage = "Morate uneti i sifru za potvrdu";
 
             HttpPostedFileBase file = Request.Files["file"];
-            if (file != null && file.ContentLength > 0)
-            {
-                // Save the file to a location on the server.
-                string path = Path.Combine(Server.MapPath("~/Images/ProfileImages/"), Path.GetFileName(file.FileName));
-                file.SaveAs(path);
-                ccvm.Cust.ProfPic = "/Images/ProfileImages/" + file.FileName;
-            }
+            if (file != null)
+                ccvm.Cust.ProfPic = _custRepo.GetImportedProfilePicture(file, Server.MapPath("~/Images/ProfileImages/"));
+            else
+                ccvm.Cust.ProfPic = string.Empty;
+
             if (_custRepo.EditCustomerData(ccvm))
             {
                 ViewBag.EditProfileMessage = "Profile updated";

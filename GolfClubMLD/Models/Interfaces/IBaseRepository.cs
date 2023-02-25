@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace GolfClubMLD.Models.Interfaces
 {
@@ -13,7 +14,7 @@ namespace GolfClubMLD.Models.Interfaces
         Task<CreditCardBO> GetCredCardById(int credCardId);
         CreditCardBO GetCustomerCCById(int id);
         string HashPassword(string pass);
-
+        string GetImportedProfilePicture(HttpPostedFileBase file, string defPath);
         bool DeactCustomer(int custId);
 
         #endregion

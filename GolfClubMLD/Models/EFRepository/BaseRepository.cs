@@ -7,10 +7,12 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Validation;
+using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace GolfClubMLD.Models.EFRepository
 {
@@ -18,6 +20,7 @@ namespace GolfClubMLD.Models.EFRepository
     {
         private GolfClubMldDBEntities _baseEntities = new GolfClubMldDBEntities();
         private readonly ILogger<CustomerController> _logger;
+        private readonly string _profPicImageLoc = "/Images/ProfileImages/";
         private DateTime m_rentConf;
         public BaseRepository()
         {
@@ -87,6 +90,16 @@ namespace GolfClubMLD.Models.EFRepository
             return encryptedValue;
         }
 
+        public string GetImportedProfilePicture(HttpPostedFileBase file, string defPath)
+        {
+            if (file != null && file.ContentLength > 0)
+            {
+                // Save the file to a location on the server.
+                string path = Path.Combine(defPath, Path.GetFileName(file.FileName));
+                file.SaveAs(path);
+            }
+            return _profPicImageLoc + file.FileName;
+        }
         public bool DeactCustomer(int custId)
         {
             Users custToDeactivate = _baseEntities.Users.FirstOrDefault(c => c.id == custId);

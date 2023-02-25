@@ -5,10 +5,10 @@
 }
 
 <h2>CreateCustomer</h2>
-@if (ViewBag.ErrorMessage != null)
+@if (ViewBag.AdminErrorMessage != null)
     {
 <div class="alert alert-danger" role="alert">
-    @ViewBag.ErrorMessage
+    @ViewBag.AdminErrorMessage
 </div>
     }
 @using (Html.BeginForm("CreateCustomer", "Admin", FormMethod.Post, new { @enctype = "multipart/form-data" }))

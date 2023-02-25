@@ -50,20 +50,62 @@ namespace GolfClubMLD.Controllers
             {
                 return View();
             }
+
             HttpPostedFileBase file = Request.Files["file"];
-            if (file != null && file.ContentLength > 0)
-            {
-                // Save the file to a location on the server.
-                string path = Path.Combine(Server.MapPath("~/Images/ProfileImages/"), Path.GetFileName(file.FileName));
-                file.SaveAs(path);
-                custCredCard.Cust.ProfPic = "/Images/ProfileImages/" + file.FileName;
-            }
+            if (file != null)
+                custCredCard.Cust.ProfPic = _adminRepo.GetImportedProfilePicture(file, Server.MapPath("~/Images/ProfileImages/"));
+            else
+                custCredCard.Cust.ProfPic = string.Empty;
+         
             bool createdCust = _authRepo.RegisterCustomer(custCredCard);
 
             if (!createdCust)
             {
-                ViewBag.ErrorMessage = "Registracija nije uspela !";
+                ViewBag.AdminErrorMessage = "Registracija korisnika nije uspela !";
             }
+            return View("UserList", _adminRepo.GetAllUsers());
+        }
+
+        [HttpGet]
+        public ActionResult CreateManager()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult CreateManager(UsersBO manag)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View();
+            }
+
+            string hashPass = _adminRepo.HashPassword(manag.Pass);
+            if(string.IsNullOrWhiteSpace(hashPass))
+            {
+                //
+                return View();
+            }
+            manag.Pass = hashPass;
+
+            //get profile pic
+            HttpPostedFileBase file = Request.Files["file"];
+            if (file != null)
+            {
+                manag.ProfPic = _adminRepo.GetImportedProfilePicture(file, Server.MapPath("~/Images/ProfileImages/"));
+            }
+            else
+            {
+                manag.ProfPic = string.Empty;
+            }
+
+            manag.RoleId = 2;
+            if (!_adminRepo.RegisterManager(manag))
+            {
+                ViewBag.AdminErrorMessage = "Registracija menadzera nije uspela !";
+                return View();
+            }
+
             return View("UserList", _adminRepo.GetAllUsers());
         }
 

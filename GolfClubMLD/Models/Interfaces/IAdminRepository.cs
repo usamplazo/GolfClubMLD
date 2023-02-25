@@ -10,5 +10,6 @@ namespace GolfClubMLD.Models.Interfaces
     {
         List<UsersBO> GetAllUsers();
 
+        bool RegisterManager(UsersBO manager);
     }
 }
