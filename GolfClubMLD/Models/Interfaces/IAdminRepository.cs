@@ -6,10 +6,12 @@ using System.Threading.Tasks;
 
 namespace GolfClubMLD.Models.Interfaces
 {
-    internal interface IAdminRepository
+    public interface IAdminRepository
     {
         List<UsersBO> GetAllUsers();
 
         bool RegisterManager(UsersBO manager);
+
+        bool EditManagerData(UsersBO manager);
     }
 }

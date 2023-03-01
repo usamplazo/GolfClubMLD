@@ -12,16 +12,7 @@ namespace GolfClubMLD.Models.EFRepository
         private GolfClubMldDBEntities _gcEntities = new GolfClubMldDBEntities();
 
         #region Courses
-        public async Task<List<GolfCourseBO>> GetAllCourses()
-        {
-            Task<List<GolfCourseBO>> allCourses = _gcEntities.GolfCourse
-                                                                .Include(t => t.CourseType)
-                                                                .ProjectTo<GolfCourseBO>()
-                                                                .ToListAsync();
-
-            return await allCourses;
-        }
-
+       
         public Task<List<CourseTypeBO>> GetAllCourseTypes()
         {
             Task<List<CourseTypeBO>> allTypes = _gcEntities.CourseType

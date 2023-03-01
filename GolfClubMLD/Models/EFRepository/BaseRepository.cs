@@ -100,6 +100,7 @@ namespace GolfClubMLD.Models.EFRepository
             }
             return _profPicImageLoc + file.FileName;
         }
+
         public bool DeactCustomer(int custId)
         {
             Users custToDeactivate = _baseEntities.Users.FirstOrDefault(c => c.id == custId);
@@ -135,6 +136,15 @@ namespace GolfClubMLD.Models.EFRepository
         #endregion
 
         #region CourseTerm
+        public async Task<List<GolfCourseBO>> GetAllCourses()
+        {
+            Task<List<GolfCourseBO>> allCourses = _baseEntities.GolfCourse
+                                                                .Include(t => t.CourseType)
+                                                                .ProjectTo<GolfCourseBO>()
+                                                                .ToListAsync();
+
+            return await allCourses;
+        }
         public async Task<List<CourseTermBO>> CheckForRentCourses(List<CourseTermBO> courseTerms, int courseId)
         {
             try

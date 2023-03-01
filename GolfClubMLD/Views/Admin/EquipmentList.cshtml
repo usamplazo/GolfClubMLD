@@ -1,0 +1,69 @@
+﻿@model IEnumerable<GolfClubMLD.Models.EquipmentBO>
+
+@{
+    ViewBag.Title = "EquipmentList";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>EquipmentList</h2>
+@if (ViewBag.AdminEquipmentUpdate != null)
+{
+    <div class="alert alert-success" role="alert">
+        @ViewBag.AdminEquipmentUpdate
+    </div>
+}
+@if (ViewBag.AdminEquipmentUpdateError != null)
+{
+    <div class="alert alert-warning" role="alert">
+        @ViewBag.AdminEquipmentUpdateError
+    </div>
+}
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PicUrl)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Descr)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Price)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.EquipmentTypId)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PicUrl)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Descr)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EquipmentTypId)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "EditEquipment", new { id = item.Id }) |
+                @Html.ActionLink("Delete", "DeleteEquipment", new { id = item.Id })
+            </td>
+        </tr>
+    }
+
+</table>

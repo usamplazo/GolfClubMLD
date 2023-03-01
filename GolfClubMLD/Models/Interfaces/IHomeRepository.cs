@@ -6,7 +6,6 @@ namespace GolfClubMLD.Models.Interfaces
     public interface IHomeRepository
     {
         #region Courses
-        Task<List<GolfCourseBO>> GetAllCourses();
         Task<GolfCourseBO> GetCourseById(int id);
         Task<List<CourseTypeBO>> GetAllCourseTypes();
         Task<List<GolfCourseBO>> GetCoursesBySearch(string search);
