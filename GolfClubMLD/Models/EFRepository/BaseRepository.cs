@@ -145,6 +145,26 @@ namespace GolfClubMLD.Models.EFRepository
 
             return await allCourses;
         }
+        public Task<List<CourseTypeBO>> GetAllCourseTypes()
+        {
+            Task<List<CourseTypeBO>> allTypes = _baseEntities.CourseType
+                                                                .ProjectTo<CourseTypeBO>()
+                                                                .ToListAsync();
+
+            return allTypes;
+        }
+
+        public async Task<GolfCourseBO> GetCourseById(int id)
+        {
+            Task<GolfCourseBO> specCourse = _baseEntities.GolfCourse
+                                                            .Where(c => c.id == id)
+                                                            .Include(t => t.CourseType)
+                                                            .ProjectTo<GolfCourseBO>()
+                                                            .FirstOrDefaultAsync();
+
+            return await specCourse;
+        }
+
         public async Task<List<CourseTermBO>> CheckForRentCourses(List<CourseTermBO> courseTerms, int courseId)
         {
             try

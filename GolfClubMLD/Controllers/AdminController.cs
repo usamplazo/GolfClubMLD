@@ -254,5 +254,49 @@ namespace GolfClubMLD.Controllers
             List<GolfCourseBO> courses = await _adminRepo.GetAllCourses();
             return View(courses);
         }
+
+        [HttpGet]
+        public async Task<ActionResult> EditCourse(int id)
+        {
+            GolfCourseBO course = await _adminRepo.GetCourseById(id);
+            List<CourseTypeBO> ct = await _adminRepo.GetAllCourseTypes();
+            ViewBag.CourseTypes = ct;
+            return View(course);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> EditCourse(GolfCourseBO course, int corTypId)
+        {
+            if (!ModelState.IsValid)
+            {
+                ViewBag.CourseTypes = await _adminRepo.GetAllCourseTypes();
+                return View(course);
+            }
+            //get course picture
+            HttpPostedFileBase file = Request.Files["file"];
+            if (file != null)
+            {
+                course.PicUrl = _adminRepo.GetImportedProfilePicture(file, Server.MapPath("~/Images/CourseImages/"));
+            }
+            if (corTypId > 0)
+            {
+                course.CorTypId = corTypId;
+            }
+            if(!_adminRepo.EditCourse(course))
+            {
+                ViewBag.AdminCourseUpdateError = "Greska prilikom izmene teren id: " + course.Id;
+                return View();
+            }
+            ViewBag.AdminCourseUpdate = "Uspesno izmenjen teren id: " + course.Id;
+            return View("GolfCoursesList", await _adminRepo.GetAllCourses());
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> DeleteCourse(int id)
+        {
+            GolfCourseBO gc = await _adminRepo.GetCourseById(id);
+
+            return View(gc);
+        }
     }
 }

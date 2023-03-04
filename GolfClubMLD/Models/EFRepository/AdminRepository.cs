@@ -153,5 +153,42 @@ namespace GolfClubMLD.Models.EFRepository
             return true;
 
         }
+
+        public bool EditCourse(GolfCourseBO course)
+        {
+            try
+            {
+                GolfCourse editedCourse = _adminEntities.GolfCourse.FirstOrDefault(c => c.id == course.Id);
+
+                if (editedCourse is null)
+                    return false;
+
+                AutoMapper.Mapper.Map(course, editedCourse);
+
+                _adminEntities.Entry(editedCourse).State = EntityState.Modified;
+                _adminEntities.SaveChanges();
+
+            }
+            catch (DbEntityValidationException e)
+            {
+                foreach (var eve in e.EntityValidationErrors)
+                {
+                    _logger.LogError("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
+                        eve.Entry.Entity.GetType().Name, eve.Entry.State);
+                    foreach (var ve in eve.ValidationErrors)
+                    {
+                        _logger.LogError("- Property: \"{0}\", Error: \"{1}\"",
+                            ve.PropertyName, ve.ErrorMessage);
+                    }
+                }
+                throw;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error: Admin => EditGolfCourse " + ex);
+            }
+            return true;
+        }
+        
     }
 }

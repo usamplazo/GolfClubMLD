@@ -13,26 +13,6 @@ namespace GolfClubMLD.Models.EFRepository
 
         #region Courses
        
-        public Task<List<CourseTypeBO>> GetAllCourseTypes()
-        {
-            Task<List<CourseTypeBO>> allTypes = _gcEntities.CourseType
-                                                                .ProjectTo<CourseTypeBO>()
-                                                                .ToListAsync();
-
-            return allTypes;
-        }
-
-        public async Task<GolfCourseBO> GetCourseById(int id)
-        {
-            Task<GolfCourseBO> specCourse = _gcEntities.GolfCourse
-                                                            .Where(c => c.id == id)
-                                                            .Include(t => t.CourseType)
-                                                            .ProjectTo<GolfCourseBO>()
-                                                            .FirstOrDefaultAsync();
-
-            return await specCourse;
-        }
-
         public async Task<List<GolfCourseBO>> GetCoursesBySearch(string search)
         {
             Task<List<GolfCourseBO>> coursesBySeacrh = _gcEntities.GolfCourse

@@ -1,0 +1,112 @@
+﻿@model GolfClubMLD.Models.ViewModel.UserAndCreditCardViewModel
+
+
+<div class="form-group">
+    @Html.LabelFor(model => model.Cust.Email, htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-10">
+        @Html.EditorFor(model => model.Cust.Email, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+    </div>
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(model => model.Cust.Username, htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-10">
+        @Html.EditorFor(model => model.Cust.Username, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.Cust.Username, "", new { @class = "text-danger" })
+    </div>
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(model => model.Cust.Pass, htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-10">
+        @Html.EditorFor(model => model.Cust.Pass, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.Cust.Pass, "", new { @class = "text-danger" })
+        <input type="checkbox" id="ckShowPass" onclick="myshowp()" />
+    </div>
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(model => model.Cust.Fname, htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-10">
+        @Html.EditorFor(model => model.Cust.Fname, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.Cust.Fname, "", new { @class = "text-danger" })
+    </div>
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(model => model.Cust.Lname, htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-10">
+        @Html.EditorFor(model => model.Cust.Lname, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.Cust.Lname, "", new { @class = "text-danger" })
+    </div>
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(model => model.Cust.Phone, htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-10">
+        @Html.EditorFor(model => model.Cust.Phone, new { htmlAttributes = new { @class = "form-control", @placeholder = "640000000" } })
+        @Html.ValidationMessageFor(model => model.Cust.Phone, "", new { @class = "text-danger" })
+    </div>
+</div>
+
+
+<div class="form-group">
+    Current:
+    <img src="@Model.Cust.ProfPic" width="50" height="50" />
+    <div class="col-md-10">
+        @Html.TextBox("file", "", new { type = "file" })
+        @Html.ValidationMessageFor(model => model.Cust.ProfPic, "", new { @class = "text-danger" })
+    </div>
+</div>
+
+@if (@Model.Cust.RoleId == 1)
+{
+<div class="form-group">
+    @Html.LabelFor(model => model.CredCard.CarNum, htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-10">
+        @Html.EditorFor(model => model.CredCard.CarNum, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.CredCard.CarNum, "", new { @class = "text-danger" })
+    </div>
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(model => model.CredCard.Own, htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-10">
+        @Html.EditorFor(model => model.CredCard.Own, new { htmlAttributes = new { @class = "form-control", @placeholder = "Ime Prezime" } })
+        @Html.ValidationMessageFor(model => model.CredCard.Own, "", new { @class = "text-danger" })
+    </div>
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(model => model.CredCard.Expiry, htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-10">
+        @Html.EditorFor(model => model.CredCard.Expiry, new { htmlAttributes = new { @class = "form-control", @placeholder = "_ _/_ _", @pattern = "(0[1-9]|1[0-2])\\/2[3-9]" } })
+        @Html.ValidationMessageFor(model => model.CredCard.Expiry, "", new { @class = "text-danger" })
+    </div>
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(model => model.CredCard.CVV, htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-10">
+        @Html.EditorFor(model => model.CredCard.CVV, new { htmlAttributes = new { @class = "form-control", @placeholder = "_ _ _", @pattern = "\\d{3}", @maxlength = "3" } })
+        @Html.ValidationMessageFor(model => model.CredCard.CVV, "", new { @class = "text-danger" })
+    </div>
+</div>
+}
+
+
+
+
+<script>
+    function myshowp() {
+        ckbox = $('#ckShowPass')
+        txtBox = $('#Pass')
+
+        if (ckbox.is(':checked')) {
+            txtBox.attr("Type", "Text");
+        }
+        else {
+            txtBox.attr("Type", "Password");
+        }
+    }
+</script>

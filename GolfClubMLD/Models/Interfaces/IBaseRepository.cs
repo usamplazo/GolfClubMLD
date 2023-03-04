@@ -21,6 +21,8 @@ namespace GolfClubMLD.Models.Interfaces
 
         #region CourseTerm
         Task<List<GolfCourseBO>> GetAllCourses();
+        Task<List<CourseTypeBO>> GetAllCourseTypes();
+        Task<GolfCourseBO> GetCourseById(int id);
         Task<List<CourseTermBO>> CheckForRentCourses(List<CourseTermBO> courseTerms, int courseId);
         CourseTermBO SelectCourseTermById(int ctId);
         Task<List<CourseTermBO>> GetTermsForSelCourse(int courseId);

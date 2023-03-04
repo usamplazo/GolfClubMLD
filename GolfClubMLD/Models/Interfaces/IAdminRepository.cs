@@ -13,5 +13,7 @@ namespace GolfClubMLD.Models.Interfaces
         bool RegisterManager(UsersBO manager);
 
         bool EditManagerData(UsersBO manager);
+
+        bool EditCourse(GolfCourseBO course);
     }
 }
