@@ -189,6 +189,38 @@ namespace GolfClubMLD.Models.EFRepository
             }
             return true;
         }
-        
+        public bool DelCourse(int courseId)
+        {
+            GolfCourse gc = _adminEntities.GolfCourse.FirstOrDefault(g => g.id == courseId);
+            if (gc is null)
+                return false;
+            try
+            {
+                _adminEntities.GolfCourse.Remove(gc);
+                _adminEntities.SaveChanges();
+            }
+            catch (DbEntityValidationException e)
+            {
+                foreach (var eve in e.EntityValidationErrors)
+                {
+                    _logger.LogError("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
+                        eve.Entry.Entity.GetType().Name, eve.Entry.State);
+                    foreach (var ve in eve.ValidationErrors)
+                    {
+                        _logger.LogError("- Property: \"{0}\", Error: \"{1}\"",
+                            ve.PropertyName, ve.ErrorMessage);
+                    }
+                }
+                throw;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error: Admin => EditGolfCourse " + ex);
+            }
+            return true;
+
+        }
+
+
     }
 }

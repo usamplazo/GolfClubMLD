@@ -1,0 +1,65 @@
+﻿@model GolfClubMLD.Models.GolfCourseBO
+@{
+    ViewBag.Title = "DeleteCourse";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>DeleteCourse</h2>
+@using (Html.BeginForm("DeleteCourse", "Admin", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(item => item.Id)
+<table>
+    <tr>
+        <td>
+            @Html.DisplayFor(item => item.CourseType.Name)
+        </td>
+    </tr>
+    <tr>
+        <td>
+            @Html.DisplayFor(item => item.Name)
+        </td>
+    </tr>
+    <tr>
+        <td>
+            @Html.DisplayFor(item => item.Price)
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <img src="@Model.PicUrl" alt="profilna slika" />
+        </td>
+    </tr>
+    <tr>
+        <td>
+            @Html.DisplayFor(item => item.CourseType.Descr)
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Nocna igra:  @Html.DisplayFor(item => item.CourseType.NightPly)
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Broj rupa:  @Html.DisplayFor(item => item.CourseType.NumOfHoles)
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Ciscenje:  @Html.DisplayFor(item => item.CourseType.Cleaning)
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Par:  @Html.DisplayFor(item => item.CourseType.Par)
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Prepreke:  @Html.DisplayFor(item => item.CourseType.Obstcl)
+        </td>
+    </tr>
+</table>
+    <input type="submit" value="Potvrdi brisanje" />
+}

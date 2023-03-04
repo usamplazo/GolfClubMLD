@@ -1,0 +1,63 @@
+﻿@model IEnumerable<GolfClubMLD.Models.GolfCourseBO>
+
+@{
+    ViewBag.Title = "GolfCoursesList";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>GolfCoursesList</h2>
+@if (ViewBag.AdminCourseUpdate != null)
+{
+    <div class="alert alert-success" role="alert">
+        @ViewBag.AdminCourseUpdate
+    </div>
+}
+@if (ViewBag.AdminCourseUpdateError != null)
+{
+    <div class="alert alert-warning" role="alert">
+        @ViewBag.AdminCourseUpdateError
+    </div>
+}
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PicUrl)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Price)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CorTypId)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PicUrl)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CorTypId)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "EditCourse", new { id = item.Id }) |
+                @Html.ActionLink("Delete", "DeleteCourse", new { id = item.Id })
+            </td>
+        </tr>
+    }
+
+</table>

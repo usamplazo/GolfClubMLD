@@ -298,5 +298,17 @@ namespace GolfClubMLD.Controllers
 
             return View(gc);
         }
+
+        [HttpPost]
+        public async Task<ActionResult> DeleteCourse(GolfCourseBO course)
+        {
+            if (!_adminRepo.DelCourse(course.Id))
+            {
+                ViewBag.AdminCourseUpdateError = "Greska prilikom brisanja terena, id: " + course.Id;
+                return View();
+            }
+            ViewBag.AdminCourseUpdate = "Uspesno obrisan teren";
+            return View("GolfCoursesList", await _adminRepo.GetAllCourses());
+        }
     }
 }
