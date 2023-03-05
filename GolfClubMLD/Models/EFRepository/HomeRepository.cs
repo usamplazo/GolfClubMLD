@@ -35,17 +35,6 @@ namespace GolfClubMLD.Models.EFRepository
             return await coursesByType;
         }
 
-        public async Task<List<CourseTermBO>> GetAllCourseTerm()
-        {
-            Task<List<CourseTermBO>> courseTerms = _gcEntities.CourseTerm
-                                                                .Select(ct => ct)
-                                                                .Include(c => c.GolfCourse)
-                                                                .Include(t => t.Term)
-                                                                .ProjectTo<CourseTermBO>()
-                                                                .ToListAsync();
-
-            return await courseTerms;
-        }
         #endregion
 
         #region Equipment

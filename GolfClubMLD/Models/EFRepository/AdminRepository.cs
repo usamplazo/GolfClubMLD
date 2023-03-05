@@ -189,6 +189,7 @@ namespace GolfClubMLD.Models.EFRepository
             }
             return true;
         }
+
         public bool DelCourse(int courseId)
         {
             GolfCourse gc = _adminEntities.GolfCourse.FirstOrDefault(g => g.id == courseId);
@@ -219,6 +220,16 @@ namespace GolfClubMLD.Models.EFRepository
             }
             return true;
 
+        }
+
+        public IEnumerable<TermBO> GetAllTerms()
+        {
+            IEnumerable<Term> terms = _adminEntities.Term.ToList();
+            List<TermBO> termsBO = new List<TermBO>();
+
+            AutoMapper.Mapper.Map(terms, termsBO);
+
+            return termsBO;
         }
 
 

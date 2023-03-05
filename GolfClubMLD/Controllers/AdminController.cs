@@ -310,5 +310,13 @@ namespace GolfClubMLD.Controllers
             ViewBag.AdminCourseUpdate = "Uspesno obrisan teren";
             return View("GolfCoursesList", await _adminRepo.GetAllCourses());
         }
+
+        [HttpGet]
+        public ActionResult TermsList()
+        {
+            IEnumerable<TermBO> terms =  _adminRepo.GetAllTerms();
+
+            return View(terms);
+        }
     }
 }

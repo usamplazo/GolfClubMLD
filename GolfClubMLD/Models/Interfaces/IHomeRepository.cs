@@ -8,7 +8,6 @@ namespace GolfClubMLD.Models.Interfaces
         #region Courses
         Task<List<GolfCourseBO>> GetCoursesBySearch(string search);
         Task<List<GolfCourseBO>> GetCoursesByType(int typeId);
-        Task<List<CourseTermBO>> GetAllCourseTerm();
         #endregion
 
         #region Equipment

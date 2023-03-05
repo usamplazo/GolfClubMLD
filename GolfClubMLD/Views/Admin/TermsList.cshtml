@@ -1,0 +1,36 @@
+﻿@model IEnumerable<GolfClubMLD.Models.TermBO>
+    @using GolfClubMLD.Models 
+@{
+    ViewBag.Title = "TermsList";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>CourseTermsList</h2>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Id)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.StartTime) - @Html.DisplayNameFor(model => model.EndTime)
+        </th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StartTime) -  @Html.DisplayFor(modelItem => item.EndTime)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "", new { id = item.Id }) |
+                @Html.ActionLink("Delete", "", new { id = item.Id }) |
+                @Html.ActionLink("Apply to course", "", new { id = item.Id })
+            </td>
+        </tr>
+    }
+
+</table>
