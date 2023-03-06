@@ -17,5 +17,9 @@ namespace GolfClubMLD.Models.Interfaces
         bool EditCourse(GolfCourseBO course);
 
         bool DelCourse(int courseId);
+
+        bool CreateEquipment(EquipmentBO equip);
+
+        bool CreateCourse(GolfCourseBO course);
     }
 }

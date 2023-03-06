@@ -154,6 +154,70 @@ namespace GolfClubMLD.Models.EFRepository
 
         }
 
+        public bool RemoveEquipment(EquipmentBO equip)
+        {
+            try
+            {
+                Equipment eq = _adminEntities.Equipment.FirstOrDefault(e => e.id == equip.Id);
+
+                if (eq is null)
+                    return false;
+
+                _adminEntities.Equipment.Remove(eq);
+                _adminEntities.SaveChanges();
+            }
+            catch (DbEntityValidationException e)
+            {
+                foreach (var eve in e.EntityValidationErrors)
+                {
+                    _logger.LogError("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
+                        eve.Entry.Entity.GetType().Name, eve.Entry.State);
+                    foreach (var ve in eve.ValidationErrors)
+                    {
+                        _logger.LogError("- Property: \"{0}\", Error: \"{1}\"",
+                            ve.PropertyName, ve.ErrorMessage);
+                    }
+                }
+                throw;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error: Admin => EditGolfCourse " + ex);
+            }
+            return true;
+        }
+
+        public bool CreateEquipment(EquipmentBO equip)
+        {
+            try
+            {
+                Equipment newEq = new Equipment();
+                AutoMapper.Mapper.Map(equip, newEq);
+
+                _adminEntities.Equipment.Add(newEq);
+                _adminEntities.SaveChanges();
+            }
+            catch (DbEntityValidationException e)
+            {
+                foreach (var eve in e.EntityValidationErrors)
+                {
+                    _logger.LogError("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
+                        eve.Entry.Entity.GetType().Name, eve.Entry.State);
+                    foreach (var ve in eve.ValidationErrors)
+                    {
+                        _logger.LogError("- Property: \"{0}\", Error: \"{1}\"",
+                            ve.PropertyName, ve.ErrorMessage);
+                    }
+                }
+                throw;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error: Admin => CreateEquipment " + ex);
+            }
+            return true;
+        }
+
         public bool EditCourse(GolfCourseBO course)
         {
             try
@@ -222,6 +286,36 @@ namespace GolfClubMLD.Models.EFRepository
 
         }
 
+        public bool CreateCourse(GolfCourseBO course)
+        {
+            try
+            {
+                GolfCourse newGolfCor = new GolfCourse();
+                AutoMapper.Mapper.Map(course, newGolfCor);
+
+                _adminEntities.GolfCourse.Add(newGolfCor);
+                _adminEntities.SaveChanges();
+            }
+            catch (DbEntityValidationException e)
+            {
+                foreach (var eve in e.EntityValidationErrors)
+                {
+                    _logger.LogError("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
+                        eve.Entry.Entity.GetType().Name, eve.Entry.State);
+                    foreach (var ve in eve.ValidationErrors)
+                    {
+                        _logger.LogError("- Property: \"{0}\", Error: \"{1}\"",
+                            ve.PropertyName, ve.ErrorMessage);
+                    }
+                }
+                throw;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error: Admin => EditGolfCourse " + ex);
+            }
+            return true;
+        }
         public IEnumerable<TermBO> GetAllTerms()
         {
             IEnumerable<Term> terms = _adminEntities.Term.ToList();

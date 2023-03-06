@@ -109,7 +109,7 @@ namespace GolfClubMLD.Controllers
                 ViewBag.AdminErrorMessage = "Registracija menadzera nije uspela !";
                 return View();
             }
-
+            ViewBag.AdminMessage = "Uspesna registracija menadzera";
             return View("UserList", _adminRepo.GetAllUsers());
         }
         [HttpGet]
@@ -198,15 +198,13 @@ namespace GolfClubMLD.Controllers
         [HttpPost]
         public ActionResult Deactivate(int id)
         {
-            if (_adminRepo.DeactCustomer(id))
-            {
+            if (!_adminRepo.DeactCustomer(id))
+                ViewBag.AdminErrorMessage = "Greska prilikom deaktivacije korisnika";
+
+            else
                 ViewBag.AdminMessage = "Uspesno deaktiviran nalog korisnika sa id: " + id;
 
-                return View("UserList", _adminRepo.GetAllUsers());
-            }
-
-            ViewBag.AdminErrorMessage = "Greska prilikom deaktivacije korisnika";
-            return View();
+            return View("UserList", _adminRepo.GetAllUsers());
         }
 
         [HttpGet]
@@ -215,6 +213,7 @@ namespace GolfClubMLD.Controllers
             IEnumerable<EquipmentBO> allEquip = await _adminRepo.GetAllEquipment();
             return View(allEquip);
         }
+
         [HttpGet]
         public ActionResult EditEquipment(int id)
         {
@@ -240,12 +239,69 @@ namespace GolfClubMLD.Controllers
             }
 
             if(!_adminRepo.UpdateEquipment(equip))
-            {
                 ViewBag.AdminEquipmentUpdateError = "Greska prilikom izmene opreme id: " + equip.Id;
-                return View();
-            }
-            ViewBag.AdminEquipmentUpdate = "Oprema uspesno izmenjena";
+
+            else
+                ViewBag.AdminEquipmentUpdate = "Oprema uspesno izmenjena";
+
             return View(await _adminRepo.GetAllEquipment());
+        }
+
+        [HttpGet]
+        public ActionResult DeleteEquipment(int id)
+        {
+            EquipmentBO equip = _adminRepo.SearchEquipment(id);
+            return View(equip);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> DeleteEquipment(EquipmentBO equip)
+        {
+            if (!_adminRepo.RemoveEquipment(equip))
+                ViewBag.AdminEquipmentUpdateError = "Greska prilikom brisanja opreme id: " + equip.Id;
+            else
+                ViewBag.AdminEquipmentUpdate = "Oprema uspesno obrisana";
+
+            return View(await _adminRepo.GetAllEquipment());
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> CreateEquipment()
+        {
+            ViewBag.EquipmentTypes = await _adminRepo.GetAllEquipmentTypes();
+            return View(new EquipmentBO());
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> CreateEquipment(EquipmentBO equip, int equipTypId)
+        {
+            ViewBag.EquipmentTypes = await _adminRepo.GetAllEquipmentTypes();
+
+            if (!ModelState.IsValid)
+                return View(equip);
+
+            if (equipTypId > 0)
+                equip.EquipmentTypId = equipTypId;
+            else
+                equip.EquipmentTypId = 100; //default value
+
+            //get profile picture
+            HttpPostedFileBase file = Request.Files["file"];
+            if (file != null)
+            {
+                equip.PicUrl = _adminRepo.GetImportedProfilePicture(file, Server.MapPath("~/Images/EquipmentImages/"));
+            }
+            else
+            {
+                equip.PicUrl = string.Empty;
+            }
+
+            if (!_adminRepo.CreateEquipment(equip))
+                ViewBag.AdminEquipmentUpdateError = "Greska prilikom dodavanja opreme ";
+            else
+                ViewBag.AdminEquipmentUpdate = "Oprema uspesno dodata";
+
+            return View("EquipmentList", await _adminRepo.GetAllEquipment());
         }
 
         [HttpGet]
@@ -308,6 +364,38 @@ namespace GolfClubMLD.Controllers
                 return View();
             }
             ViewBag.AdminCourseUpdate = "Uspesno obrisan teren";
+            return View("GolfCoursesList", await _adminRepo.GetAllCourses());
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> CreateCourse()
+        {
+            ViewBag.CourseTypes = await _adminRepo.GetAllCourseTypes();
+            return View(new GolfCourseBO());
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> CreateCourse(GolfCourseBO course)
+        {
+
+            ViewBag.CourseTypes = await _adminRepo.GetAllCourseTypes();
+
+            if (!ModelState.IsValid)
+                return View(course);
+
+            //get course picture
+            HttpPostedFileBase file = Request.Files["file"];
+            if (file != null)
+            {
+                course.PicUrl = _adminRepo.GetImportedProfilePicture(file, Server.MapPath("~/Images/CourseImages/"));
+            }
+
+            if (!_adminRepo.CreateCourse(course))
+            {
+                ViewBag.AdminCourseUpdateError = "Greska prilikom dodavanja terena";
+                return View(course);
+            }
+            ViewBag.AdminCourseUpdate = "Uspesno dodan teren";
             return View("GolfCoursesList", await _adminRepo.GetAllCourses());
         }
 

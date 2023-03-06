@@ -87,7 +87,8 @@
                 @Html.DisplayFor(modelItem => item.CredCardId)
             </td>
             <td>
-                @Html.ActionLink("Ugasi nalog", "DeactUser", new { id = item.Id })
+                @Html.ActionLink("Ugasi nalog ", "DeactUser", new { id = item.Id })
+                @Html.ActionLink("| Izmeni", "EditUser", new { id = item.Id })
             </td>
         </tr>
     }

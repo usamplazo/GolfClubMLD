@@ -1,16 +1,13 @@
 ﻿@model GolfClubMLD.Models.GolfCourseBO
-@using GolfClubMLD.Models
+    @using GolfClubMLD.Models
 @{
-    ViewBag.Title = "EditCourse";
+    ViewBag.Title = "CreateCourse";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>EditCourse</h2>
-<div class="form-group">
-    @Html.DisplayFor(model => model.CourseType.Name)
-</div>
+<h2>CreateCourse</h2>
 
-@using (Html.BeginForm("CreateCourse", "Admin", FormMethod.Post, new { @enctype = "multipart/form-data" }))
+@using (Html.BeginForm("EditCourse", "Admin", FormMethod.Post, new { @enctype = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
 

@@ -1,0 +1,34 @@
+﻿@model GolfClubMLD.Models.ViewModel.UserAndCreditCardViewModel
+@{
+    ViewBag.Title = "EditUser";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<h2>Edit User</h2>
+
+@using (Html.BeginForm("EditUser", "Admin", FormMethod.Post, new { @enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>UsersBO</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.Cust.Id)
+        @Html.HiddenFor(model => model.CredCard.Id)
+        @Html.HiddenFor(model => model.Cust.RoleId)
+
+        @Html.Partial("_Edit")
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index", "Admin")
+</div>
