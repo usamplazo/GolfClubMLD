@@ -262,7 +262,7 @@ namespace GolfClubMLD.Controllers
             else
                 ViewBag.AdminEquipmentUpdate = "Oprema uspesno obrisana";
 
-            return View(await _adminRepo.GetAllEquipment());
+            return View("EquipmentList", await _adminRepo.GetAllEquipment());
         }
 
         [HttpGet]
@@ -405,6 +405,47 @@ namespace GolfClubMLD.Controllers
             IEnumerable<TermBO> terms =  _adminRepo.GetAllTerms();
 
             return View(terms);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> CreateTerm()
+        {
+            ViewBag.AllGolfCourses = await _adminRepo.GetAllCourses();
+            return View();
+        }
+        [HttpPost]
+        public async Task<ActionResult> CreateTerm(TermBO term, string[] selCorses, string[] days)
+        {
+            ViewBag.AllGolfCourses = await _adminRepo.GetAllCourses();
+
+            if (!ModelState.IsValid)
+                return View(term);
+
+            if (selCorses.Length < 1 || days.Length < 1)
+            {
+                ViewBag.AdminTermError = "Morate selektovati dane!";
+                return View(term);
+            }
+
+            if (!_adminRepo.CreateTerm(term))
+            {
+                ViewBag.AdminTermError = "Greska prilikom kreiranja termina!";
+                return View(term);
+            }
+            int termId = _adminRepo.GetTermId();
+            foreach (string course in selCorses)
+            {
+                foreach(string day in days)
+                {
+                    if(!_adminRepo.CreateCourseTerm(termId, Convert.ToInt32(course), day))
+                    {
+                        ViewBag.AdminTermError = "Greska prilikom povezivanja termina i terena!";
+                        return View(term);
+                    }
+                }
+            }
+            ViewBag.AdminTermMessage = "Termin uspesno dodat.";
+            return View("TermsList", _adminRepo.GetAllTerms());
         }
     }
 }

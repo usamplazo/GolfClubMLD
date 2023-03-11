@@ -1,0 +1,33 @@
+﻿@using GolfClubMLD.Models
+@{
+    ViewBag.Title = "_ApplyToCourses";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@{
+    string[] allDays = new string[7]
+    {
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+            };
+}
+<div>
+    @foreach (var cor in (List<GolfCourseBO>)ViewBag.AllGolfCourses)
+    {
+        @cor.Name<input type="checkbox" name="selCorses" value="@cor.Id" />
+        <br />
+    }
+
+    <hr />
+    <hr />
+    @foreach (var day in allDays)
+    {
+        @day<input type="checkbox" name="days" value="@day" />
+        <br />
+    }
+</div>

@@ -13,14 +13,15 @@ namespace GolfClubMLD.App_Start
         public MappingProfile()
         {
             
-            CreateMap<GolfCourse, GolfCourseBO>().ReverseMap().ForMember(gc=>gc.CourseTerm, ri => ri.Ignore());
+            CreateMap<GolfCourse, GolfCourseBO>().ReverseMap().ForMember(gc=>gc.CourseTerms, ri => ri.Ignore());
             CreateMap<Equipment, EquipmentBO>().ReverseMap().ForMember(e => e.RentItems, ri => ri.Ignore());
+            CreateMap<Term, TermBO>().ReverseMap().ForMember(t=>t.CourseTerms, ri => ri.Ignore());
             CreateMap<CourseTerm, CourseTermBO>();
             CreateMap<CourseType, CourseTypeBO>();
             CreateMap<CreditCard, CreditCardBO>();
             CreateMap<Rent, RentBO>();
-            CreateMap<RentItems, RentItemsBO>();
-            CreateMap<Users, UsersBO>().ReverseMap().ForMember(c=>c.id, opt=>opt.Ignore());
+            CreateMap<RentItem, RentItemsBO>();
+            CreateMap<User, UsersBO>().ReverseMap().ForMember(c=>c.id, opt=>opt.Ignore());
         }
     }
 }

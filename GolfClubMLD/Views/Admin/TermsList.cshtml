@@ -1,11 +1,26 @@
 ﻿@model IEnumerable<GolfClubMLD.Models.TermBO>
-    @using GolfClubMLD.Models 
+@using GolfClubMLD.Models
 @{
     ViewBag.Title = "TermsList";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h2>CourseTermsList</h2>
+@if (ViewBag.AdminTerm != null)
+{
+    <div class="alert alert-success" role="alert">
+        @ViewBag.AdminTerm
+    </div>
+}
+@if (ViewBag.AdminTermError != null)
+{
+    <div class="alert alert-warning" role="alert">
+        @ViewBag.AdminTermError
+    </div>
+}
+<p>
+    @Html.ActionLink("Dodaj termin", "CreateTerm")
+</p>
 <table class="table">
     <tr>
         <th>
@@ -26,9 +41,8 @@
                 @Html.DisplayFor(modelItem => item.StartTime) -  @Html.DisplayFor(modelItem => item.EndTime)
             </td>
             <td>
-                @Html.ActionLink("Edit", "", new { id = item.Id }) |
-                @Html.ActionLink("Delete", "", new { id = item.Id }) |
-                @Html.ActionLink("Apply to course", "", new { id = item.Id })
+                @Html.ActionLink("Edit", "EditTerm", new { id = item.Id }) |
+                @Html.ActionLink("Delete", "DeleteTerm", new { id = item.Id })
             </td>
         </tr>
     }

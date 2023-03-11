@@ -21,5 +21,11 @@ namespace GolfClubMLD.Models.Interfaces
         bool CreateEquipment(EquipmentBO equip);
 
         bool CreateCourse(GolfCourseBO course);
+
+        bool CreateTerm(TermBO term);
+
+        int GetTermId();
+
+        bool CreateCourseTerm(int termId, int courseId, string day);
     }
 }

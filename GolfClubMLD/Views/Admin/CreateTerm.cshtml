@@ -1,0 +1,56 @@
+﻿@model GolfClubMLD.Models.TermBO
+@using GolfClubMLD.Models
+@{
+    ViewBag.Title = "CreateTerm";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>CreateTerm</h2>
+@if (ViewBag.AdminTermMessage != null)
+{
+    <div class="alert alert-success" role="alert">
+        @ViewBag.AdminTermMessage
+    </div>
+}
+@if (ViewBag.AdminTermError != null)
+{
+    <div class="alert alert-success" role="alert">
+        @ViewBag.AdminTermError
+    </div>
+}
+@using (Html.BeginForm("CreateTerm", "Admin", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Term</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.StartTime, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.StartTime, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.StartTime, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.EndTime, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.EndTime, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.EndTime, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        @Html.Partial("_ApplyToCourses")
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
