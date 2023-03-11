@@ -11,6 +11,8 @@
 *.sln.docstates
 *.sln
 *.js
+*.edmx
+edmx
 obj
 bin
 appsettings.json
